@@ -86,42 +86,24 @@ with host;
             };
           };
 
-          output =
-            if hostName == "h310m" then {
+          output = {
               "*".bg = "~/.config/wall.png fill"; #
               "*".scale = "1"; #
-              "${secondMonitor}" = {
-                mode = "1920x1080";
+              "${mainMonitor}" = {
+                mode = "3840x2160";
                 pos = "0 0";
               };
-              "${mainMonitor}" = {
-                mode = "1920x1080";
-                pos = "1920 0";
-              };
-            } else if hostName == "probook" then {
-              "*".bg = "~/.config/wall fill";
-              "*".scale = "1";
-              "${mainMonitor}" = {
-                mode = "1920x108";
-                pos = "0 0";
-              };
-            } else { };
-
-          workspaceOutputAssign =
-            if hostName == "beelink" || hostName == "h310m" then [
+	  };
+          workspaceOutputAssign =[
               { output = mainMonitor; workspace = "1"; }
               { output = mainMonitor; workspace = "2"; }
               { output = mainMonitor; workspace = "3"; }
               { output = mainMonitor; workspace = "4"; }
-              { output = secondMonitor; workspace = "5"; }
-              { output = secondMonitor; workspace = "6"; }
-              { output = secondMonitor; workspace = "7"; }
-              { output = secondMonitor; workspace = "8"; }
-            ] else if hostName == "probook" then [
-              { output = mainMonitor; workspace = "1"; }
-              { output = mainMonitor; workspace = "2"; }
-              { output = mainMonitor; workspace = "3"; }
-            ] else [ ];
+              { output = mainMonitor; workspace = "5"; }
+              { output = mainMonitor; workspace = "6"; }
+              { output = mainMonitor; workspace = "7"; }
+              { output = mainMonitor; workspace = "8"; }
+            ];
           defaultWorkspace = "workspace number 1";
 
           colors.focused = {

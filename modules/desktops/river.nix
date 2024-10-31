@@ -48,12 +48,7 @@ with host;
 
     home-manager.users.${vars.user} =
       let
-        monitor =
-          if hostName == "h310m" then
-            "riverctl spawn ${pkgs.wlr-randr}/bin/wlr-randr --output ${secondMonitor} --mode 1920x1080@60 --pos 0,0 --output ${mainMonitor} --mode 1920x1080@60 --pos 1920,0"
-          else if hostName == "vm" || hostName == "probook" then
-            "riverctl spawn ${pkgs.wlr-randr}/bin/wlr-randr --output ${mainMonitor} --mode 1920x1080@60 --pos 0,0"
-          else false;
+        monitor =    "riverctl spawn ${pkgs.wlr-randr}/bin/wlr-randr --output ${mainMonitor} --mode 3840x2160@60 --pos 0,0";
       in
       {
         home.file = {

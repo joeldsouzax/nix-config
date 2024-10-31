@@ -28,7 +28,6 @@ with lib;
         enable = true;
         xkb = {
           layout = "us";
-          options = "eurosign:e";
         };
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;

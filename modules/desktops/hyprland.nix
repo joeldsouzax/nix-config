@@ -256,38 +256,18 @@ with host;
             };
             monitor = [
               ",preferred,auto,1,mirror,${toString mainMonitor}"
-            ] ++ (if hostname == "beelink" || hostname == "h310m" then [
-              "${toString mainMonitor},1920x1080@60,1920x0,1"
-              "${toString secondMonitor},1920x1080@60,0x0,1"
-            ] else if hostname == "work" then [
-              "${toString mainMonitor},preferred,0x0,1"
-              "${toString secondMonitorDesc},1920x1200@60,1920x0,1"
-              "${toString thirdMonitorDesc},1920x1200@60,3840x0,1"
-            ] else if hostname == "xps" then [
-              "${toString mainMonitor},3840x2400@60,0x0,2"
-              "${toString secondMonitor},1920x1080@60,1920x0,1"
-              "${toString thirdMonitor},1920x1080@60,3840x0,1"
-            ] else [
-              "${toString mainMonitor},1920x1080@60,0x0,1"
-            ]);
-            workspace =
-              if hostname == "beelink" || hostname == "h310m" then [
+	      "${toString mainMonitor},3840x2160@60,0x0,1"];
+            workspace = [
                 "1, monitor:${toString mainMonitor}"
                 "2, monitor:${toString mainMonitor}"
                 "3, monitor:${toString mainMonitor}"
                 "4, monitor:${toString mainMonitor}"
-                "5, monitor:${toString secondMonitor}"
-                "6, monitor:${toString secondMonitor}"
-                "7, monitor:${toString secondMonitor}"
-                "8, monitor:${toString secondMonitor}"
-              ] else if hostname == "xps" || hostname == "work" then [
-                "1, monitor:${toString mainMonitor}"
-                "2, monitor:${toString mainMonitor}"
-                "3, monitor:${toString mainMonitor}"
-                "4, monitor:${toString secondMonitor}"
-                "5, monitor:${toString secondMonitor}"
-                "6, monitor:${toString secondMonitor}"
-              ] else [ ];
+                "5, monitor:${toString mainMonitor}"
+                "6, monitor:${toString mainMonitor}"
+                "7, monitor:${toString mainMonitor}"
+                "8, monitor:${toString mainMonitor}"
+		"9, monitor:${toString mainMonitor}"
+              ];
             animations = {
               enabled = false;
               bezier = [
@@ -319,24 +299,12 @@ with host;
               numlock_by_default = 1;
               accel_profile = "flat";
               sensitivity = 0.8;
-              touchpad =
-                if hostname == "work" || hostname == "xps" || hostname == "probook" then {
-                  natural_scroll = true;
-                  scroll_factor = 0.2;
-                  middle_button_emulation = true;
-                  tap-to-click = true;
-                } else { };
+              touchpad = {};
             };
             cursor = {
               no_hardware_cursors = true;
             };
-            gestures =
-              if hostname == "work" || hostname == "xps" || hostname == "probook" then {
-                workspace_swipe = true;
-                workspace_swipe_fingers = 3;
-                workspace_swipe_distance = 100;
-                workspace_swipe_create_new = true;
-              } else { };
+            gestures = {};
             dwindle = {
               pseudotile = false;
               force_split = 2;
@@ -423,10 +391,7 @@ with host;
               "SUPERCTRL,up,resizeactive,0 -60"
               "SUPERCTRL,down,resizeactive,0 60"
             ];
-            bindl =
-              if hostname == "xps" || hostname == "work" then [
-                ",switch:Lid Switch,exec,$HOME/.config/hypr/script/clamshell.sh"
-              ] else [ ];
+            bindl =[];
             windowrulev2 = [
               "float,title:^(Volume Control)$"
               "keepaspectratio,class:^(firefox)$,title:^(Picture-in-Picture)$"
@@ -452,13 +417,7 @@ with host;
               "${pkgs.blueman}/bin/blueman-applet"
               "${pkgs.swaynotificationcenter}/bin/swaync"
               # "${pkgs.hyprpaper}/bin/hyprpaper"
-            ] ++ (if hostname == "work" then [
-              "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
-              "${pkgs.rclone}/bin/rclone mount --daemon gdrive: /GDrive --vfs-cache-mode=writes"
-              # "${pkgs.google-drive-ocamlfuse}/bin/google-drive-ocamlfuse /GDrive"
-            ] else [ ]) ++ (if hostname == "xps" then [
-              "${pkgs.networkmanagerapplet}/bin/nm-applet --indicator"
-            ] else [ ]);
+            ];
             # env = [
             #   "XCURSOR,Catppuccin-Mocha-Dark-Cursors"
             #   "XCURSOR_SIZE,24"
@@ -472,7 +431,7 @@ with host;
               #!/bin/sh
 
               if grep open /proc/acpi/button/lid/${lid}/state; then
-                ${config.programs.hyprland.package}/bin/hyprctl keyword monitor "${toString mainMonitor}, 1920x1080, 0x0, 1"
+                ${config.programs.hyprland.package}/bin/hyprctl keyword monitor "${toString mainMonitor}, 3840x2160, 0x0, 1"
               else
                 if [[ `hyprctl monitors | grep "Monitor" | wc -l` != 1 ]]; then
                   ${config.programs.hyprland.package}/bin/hyprctl keyword monitor "${toString mainMonitor}, disable"

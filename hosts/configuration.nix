@@ -4,12 +4,12 @@ let
 in
 {
   imports = ( import ../modules/desktops ++
-    import ../modules/editors ++
     import ../modules/programs ++
     import ../modules/services ++
     import ../modules/shell ++
+    import ../modules/editors ++
     import ../modules/theming);
-
+   
   boot = {
    tmp = {
     cleanOnBoot = true;
@@ -19,7 +19,8 @@ in
 
   users.users.${vars.user} = {
    isNormalUser = true;
-   extraGroups = ["whell" "video" "audio" "camera" "networkmanager" "lp" "scanner"];
+   home = "/home/${vars.user}";
+   extraGroups = ["wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner"];
   };
 
   time.timeZone = "Europe/Oslo";

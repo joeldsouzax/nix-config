@@ -8,17 +8,7 @@ let
 in
 with host;
 let
-  output =
-    if hostname == "beelink" || hostname == "h310m" then [
-      mainMonitor
-      secondMonitor
-    ] else if hostname == "work" || hostname == "xps" then [
-      mainMonitor
-      secondMonitor
-      thirdMonitor
-    ] else [
-      mainMonitor
-    ];
+  output = [mainMonitor];
   modules-left = with config;
     if hyprland.enable == true then [
       "custom/menu"
@@ -29,8 +19,7 @@ let
       "sway/mode"
     ] else [ ];
 
-  modules-right =
-    if hostname == "beelink" || hostname == "h310m" then [
+  modules-right = [
       "custom/ds4"
       "custom/mouse"
       "custom/kb"
@@ -38,20 +27,6 @@ let
       "network"
       "cpu"
       "memory"
-      "custom/pad"
-      "pulseaudio"
-      "custom/sink"
-      "custom/pad"
-      "clock"
-      "tray"
-      "custom/notification"
-    ] else [
-      "cpu"
-      "memory"
-      "custom/pad"
-      "battery"
-      "custom/pad"
-      "backlight"
       "custom/pad"
       "pulseaudio"
       "custom/sink"

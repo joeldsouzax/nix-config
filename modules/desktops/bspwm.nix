@@ -8,15 +8,7 @@
 with lib;
 with host;
 let
-  monitor =
-    if hostName == "beelink" then
-      "${pkgs.xorg.xrandr}/bin/xrandr --output ${secondMonitor} --mode 1920x1080 --pos 0x0 --rotate normal --output ${mainMonitor} --primary --mode 1920x1080 --pos 1920x0 --rotate normal"
-    else if hostName == "work" then
-      "${pkgs.xorg.xrandr}/bin/xrandr --output ${mainMonitor} --mode 1920x1080 --pos 0x0 --rotate normal --primary --output ${secondMonitor} --mode 1920x1200 --pos 1920x0 --rotate normal --output ${thirdMonitor} --mode 1920x1200 --pos 3840x0 --rotate normal"
-    else if hostName == "vm" || hostName == "probook" then
-      "${pkgs.xorg.xrandr}/bin/xrandr --mode 1920x1080 --pos 0x0 --rotate normal"
-    else "";
-
+  monitor = "${pkgs.xorg.xrandr}/bin/xrandr --output ${mainMonitor} --mode 3840x2170 --rate 60 --pos 0x0 --rotate normal";
   extra = ''
     killall -q polybar &
     while pgrep -u $UID -x polybar >/dev/null; do sleep 1;done
@@ -24,11 +16,11 @@ let
     WORKSPACES
 
     bspc config border_width      3
-    bspc config window_gaps      12
+    bspc config window_gaps       5
     bspc config split_ratio     0.5
 
     bspc config click_to_focus            true
-    bspc config focus_follows_pointer     false
+    bspc config focus_follows_pointer     true
     bspc config borderless_monocle        false
     bspc config gapless_monocle           false
 
@@ -44,18 +36,12 @@ let
 
   extraConf = builtins.replaceStrings [ "WORKSPACES" ]
     [
-      (if hostName == "beelink" || hostName == "work" then ''
-        bspc monitor ${mainMonitor} -d 1 2 3
-        bspc monitor ${secondMonitor} -d 4 5 6
-        bspc monitor ${thirdMonitor} -d 7 8 9
-        bspc wm -O ${mainMonitor} ${secondMonitor} ${thirdMonitor}
+      ''
+        bspc monitor ${mainMonitor} -d 1 2 3 4 5 6 7 8 9
+        bspc wm -O ${mainMonitor}
         polybar sec &
         polybar thi &
       ''
-      else if hostName == "vm" || hostName == "probook" then ''
-        bspc monitor -d 1 2 3 4 5
-      ''
-      else "")
     ]
     "${extra}";
 in
@@ -89,7 +75,6 @@ in
           enable = true;
           xkb = {
             layout = "us";
-            options = "eurosign:e";
           };
           autoRepeatInterval = 50;
           autoRepeatDelay = 200;
@@ -154,15 +139,13 @@ in
           windowManager = {
             bspwm = {
               enable = true;
-              monitors =
-                if hostName == "beelink" then {
-                  ${mainMonitor} = [ "1" "2" "3" "4" "5" ];
-                  ${secondMonitor} = [ "6" "7" "8" "9" "0" ];
-                } else { };
+              monitors = {
+	         ${mainMonitor} = [ "1" "2" "3" "4" "5" "6" "7" "8" "9"];
+	      };
               rules = {
                 # Window Rules (xprop)
                 "Emacs" = {
-                  desktop = "3";
+                  desktop = "2";
                   follow = true;
                   state = "tiled";
                 };
