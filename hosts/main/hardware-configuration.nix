@@ -33,27 +33,12 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking = with host; {
-    useDHCP = lib.mkDefault true;
-    hostName = hostName;
-    bridges = {
-      "br0" = {
-         iterfaces = ["enp1s0"];
-      };
+    useDHCP = false;
+    hostName = hostname;
+    networkmanager = {
+    enable = true;
     };
-    interfaces = {
-     br0 = {
-       useDHCP = false;
-       ipv4.addresses = [{
-         address = "192.168.0.50";
-         prefixLength = 24;
-       }];
-     };
-    };
-    enableIPv6 = false;
-    defaultGateway = "192.168.0.1";
-    nameserver = [ "192.168.0.4" "1.1.1.1"];
-    firewall.enable = false;
-  };
+   };
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp0s20f0u3.useDHCP = lib.mkDefault true;
 

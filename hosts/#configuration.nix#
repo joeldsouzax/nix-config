@@ -67,8 +67,6 @@ in
     btop
     coreutils
     git
-    gvfs
-    cifs-utils
     killall
     nix-tree
     lshw

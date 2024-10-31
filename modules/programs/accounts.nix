@@ -6,7 +6,7 @@
 { lib, pkgs, vars, host, ... }:
 
 {
-  config = lib.mkIf (host.hostName == "beelink" || host.hostName == "work" || host.hostName == "xps") {
+  config = lib.mkIf (host.hostname == "main") {
     environment.systemPackages = with pkgs; [
       gnome-control-center
       gnome-online-accounts

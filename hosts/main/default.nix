@@ -40,7 +40,6 @@
         	rclone
 		simple-scan
 		slack
-		nvidia-offload
 	];
   };
   flatpak = {
