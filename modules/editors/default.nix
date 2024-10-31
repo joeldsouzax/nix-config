@@ -13,5 +13,5 @@
 #
 
 [
-   ./doom-emacs
+   ./doom-emacs/alt/home.nix
 ]
