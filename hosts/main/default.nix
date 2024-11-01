@@ -1,24 +1,19 @@
-{ config, pkgs, vars, ...}:
-{
-  imports = [ ./hardware-configuration.nix];
+{ config, pkgs, vars, ... }: {
+  imports = [ ./hardware-configuration.nix ];
   boot = {
     loader = {
-     systemd-boot = {
-      enable = true;
-      configurationLimit = 3;
-     };
-     efi = {
-      canTouchEfiVariables = true;
-     };
-     timeout = 5;
+      systemd-boot = {
+        enable = true;
+        configurationLimit = 3;
+      };
+      efi = { canTouchEfiVariables = true; };
+      timeout = 5;
     };
   };
   nixpkgs.config.nvidia.acceptLicense = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   hardware = {
-    graphics = {
-      enable = true;
-    };
+    graphics = { enable = true; };
     nvidia = {
       modesetting.enable = true;
       powerManagement.enable = true;
@@ -36,17 +31,9 @@
   hyprland.enable = true;
   programs.light.enable = true;
   environment = {
-	systemPackages = with pkgs; [
-		discord
-        	rclone
-		simple-scan
-		slack
-	];
+    systemPackages = with pkgs; [ discord rclone simple-scan slack ];
   };
   flatpak = {
-	extraPackages = [
-		"com.github.tchx84.Flatseal"
-		"com.stremio.Stremio"
-	];
+    extraPackages = [ "com.github.tchx84.Flatseal" "com.stremio.Stremio" ];
   };
 }
