@@ -80,6 +80,7 @@ in {
         nodejs
         ispell
         sqlite
+        nil
 
         #audio/video
         alsa-utils
@@ -91,6 +92,7 @@ in {
         pulseaudio
         qpwgraph
         vlc
+        spotify
 
         # apps
         appimage-run

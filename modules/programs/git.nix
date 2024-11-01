@@ -12,6 +12,7 @@
         delta.enable = true;
         userName = "Joel DSouza";
         userEmail = "joeldsouzax@gmail.com";
+        signing.key = "A3C444A7";
         lfs = { enable = true; };
         extraConfig = {
           init.defaultBranch = "main";
