@@ -266,7 +266,7 @@ with host;
                 "6, monitor:${toString mainMonitor}"
                 "7, monitor:${toString mainMonitor}"
                 "8, monitor:${toString mainMonitor}"
-		"9, monitor:${toString mainMonitor}"
+		            "9, monitor:${toString mainMonitor}"
               ];
             animations = {
               enabled = false;
@@ -339,7 +339,7 @@ with host;
               ",F11,fullscreen,"
               "SUPER,R,forcerendererreload"
               "SUPERSHIFT,R,exec,${config.programs.hyprland.package}/bin/hyprctl reload"
-              "SUPER,T,exec,${pkgs.${vars.terminal}}/bin/${vars.terminal} -e nvim"
+              "SUPER,T,exec,${pkgs.${vars.terminal}}/bin/${vars.terminal} -e emacs"
               "SUPER,K,exec,${config.programs.hyprland.package}/bin/hyprctl switchxkblayout keychron-k8-keychron-k8 next"
               "SUPER,left,movefocus,l"
               "SUPER,right,movefocus,r"

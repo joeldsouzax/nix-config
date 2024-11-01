@@ -79,6 +79,15 @@ in
     smartmontools
     wget
     xdg-utils
+
+    #editors
+    nixfmt-classic
+    shfmt
+    shellcheck
+    graphviz
+    nodejs
+    ispell
+    sqlite
     
     #audio/video
     alsa-utils
@@ -106,6 +115,13 @@ in
     unrar
     wpsoffice
     zip
+
+    #encryption
+    age
+    age-plugin-youbikey
+    gnupg
+    libfido2
+    pinentry
    ] ++
    (with stable; [
      image-roll
