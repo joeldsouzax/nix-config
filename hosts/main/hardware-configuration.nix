@@ -23,11 +23,6 @@
     options = [ "fmask=0077" "dmask=0077" ];
   };
 
-  fileSystems."/home/joel/Code" = {
-    device = "/dev/sda1";
-    fsType = "ext4";
-  };
-
   swapDevices =
     [{ device = "/dev/disk/by-uuid/01172beb-8b2c-46a9-9a8b-474cde5dcd2a"; }];
 

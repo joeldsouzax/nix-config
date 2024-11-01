@@ -1,4 +1,3 @@
-#
 #  GTK
 #
 
@@ -13,7 +12,7 @@
         gtk.enable = true;
         name = "Dracula-cursors";
         package = pkgs.dracula-theme;
-        size = 16;
+        size = 18;
       };
     };
 
@@ -35,9 +34,7 @@
         name = "Papirus-Dark";
         package = pkgs.papirus-icon-theme;
       };
-      font = {
-        name = "FiraCode Nerd Font Mono Medium";
-      };
+      font = { name = "FiraCode Nerd Font Mono Medium"; };
     };
 
     # qt = {

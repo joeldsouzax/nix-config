@@ -1,14 +1,11 @@
-#
-#  Bar
+# Bar
 #
 
 { config, lib, pkgs, vars, host, ... }:
+let colors = import ../theming/colors.nix;
+in with host;
 let
-  colors = import ../theming/colors.nix;
-in
-with host;
-let
-  output = [mainMonitor];
+  output = [ mainMonitor ];
   modules-left = with config;
     if hyprland.enable == true then [
       "custom/menu"
@@ -17,36 +14,35 @@ let
       "sway/workspaces"
       "sway/window"
       "sway/mode"
-    ] else [ ];
+    ] else
+      [ ];
 
   modules-right = [
-      "custom/ds4"
-      "custom/mouse"
-      "custom/kb"
-      "custom/pad"
-      "network"
-      "cpu"
-      "memory"
-      "custom/pad"
-      "pulseaudio"
-      "custom/sink"
-      "custom/pad"
-      "clock"
-      "tray"
-      "custom/notification"
-    ];
+    "custom/ds4"
+    "custom/mouse"
+    "custom/kb"
+    "custom/pad"
+    "network"
+    "cpu"
+    "memory"
+    "custom/pad"
+    "pulseaudio"
+    "custom/sink"
+    "custom/pad"
+    "clock"
+    "tray"
+    "custom/notification"
+  ];
 
   sinkBuiltIn = "Built-in Audio Analog Stereo";
-  sinkVideocard = ''Ellesmere HDMI Audio \[Radeon RX 470\/480 \/ 570\/580\/590\] Digital Stereo \(HDMI 3\)'';
+  sinkVideocard =
+    "Ellesmere HDMI Audio \\[Radeon RX 470\\/480 \\/ 570\\/580\\/590\\] Digital Stereo \\(HDMI 3\\)";
   sinkBluetooth = "S10 Bluetooth Speaker";
   headset = sinkBuiltIn;
   speaker = sinkBluetooth;
-in
-{
+in {
   config = lib.mkIf (config.wlwm.enable) {
-    environment.systemPackages = with pkgs; [
-      waybar
-    ];
+    environment.systemPackages = with pkgs; [ waybar ];
 
     home-manager.users.${vars.user} = with colors.scheme.default; {
       programs.waybar = {
@@ -62,7 +58,7 @@ in
             border: none;
             border-radius: 0;
             font-family: FiraCode Nerd Font Mono;
-            font-size: 12px;
+            font-size: 16px;
             text-shadow: 0px 0px 5px #000000;
           }
           button:hover {
@@ -152,7 +148,7 @@ in
             "custom/menu" = {
               format = "<span font='16'></span>";
               # on-click = ''${pkgs.eww}/bin/eww open --toggle menu --screen 0'';
-              on-click = ''sleep 0.1; .config/wofi/power.sh'';
+              on-click = "sleep 0.1; .config/wofi/power.sh";
               on-click-right = "sleep 0.1; ${pkgs.wofi}/bin/wofi --show drun";
               tooltip = false;
             };
@@ -160,13 +156,17 @@ in
               tooltip = false;
               format = "{icon}";
               format-icons = {
-                notification = "<span font='16'></span><span foreground='red'><sup></sup></span>";
-                none = "<span font='16'></span>";
-                dnd-notification = "<span font='16'></span><span foreground='red'><sup></sup></span>";
+                notification =
+                  "<span font='18'></span><span foreground='red'><sup></sup></span>";
+                none = "<span font='18'></span>";
+                dnd-notification =
+                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
                 dnd-none = "<span font='16'></span>";
-                inhibited-notification = "<span font='16'></span><span foreground='red'><sup></sup></span>";
+                inhibited-notification =
+                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
                 inhibited-none = "<span font='16'></span>";
-                dnd-inhibited-notification = "<span font='16'></span><span foreground='red'><sup></sup></span>";
+                dnd-inhibited-notification =
+                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
                 dnd-inhibited-none = "<span font='16'></span>";
               };
               return-type = "json";
@@ -177,7 +177,7 @@ in
               escape = true;
             };
             "sway/workspaces" = {
-              format = "<span font='11'>{icon}</span>";
+              format = "<span font='14'>{icon}</span>";
               format-icons = {
                 # "1"="";
                 # "2"="";
@@ -211,34 +211,35 @@ in
               };
             };
             "wlr/workspaces" = {
-              format = "<span font='11'>{name}</span>";
+              format = "<span font='14'>{name}</span>";
               active-only = false;
               on-click = "activate";
             };
             "hyprland/workspaces" = {
-              format = "<span font='11'>{name}</span>";
+              format = "<span font='14'>{name}</span>";
               window-rewrite = { };
             };
             clock = {
               format = "{:%b %d %H:%M}  ";
-              on-click = "sleep 0.1; ${pkgs.eww}/bin/eww open --toggle calendar --screen 0";
+              on-click =
+                "sleep 0.1; ${pkgs.eww}/bin/eww open --toggle calendar --screen 0";
             };
             cpu = {
-              format = " {usage}% <span font='11'></span> ";
+              format = " {usage}% <span font='16'></span> ";
               interval = 1;
             };
             disk = {
-              format = "{percentage_used}% <span font='11'></span>";
-              path = "/";
+              format = "{percentage_used}% <span font='16'></span>";
+              path = "/home/joel/Code";
               interval = 30;
             };
             memory = {
-              format = "{}% <span font='11'></span>";
+              format = "{}% <span font='16'></span>";
               interval = 1;
             };
             backlight = {
               device = "intel_backlight";
-              format = "{percent}% <span font='11'>{icon}</span>";
+              format = "{percent}% <span font='16'>{icon}</span>";
               format-icons = [ "" "󰖙" ];
               on-scroll-down = "${pkgs.light}/bin/light -U 5";
               on-scroll-up = "${pkgs.light}/bin/light -A 5";
@@ -255,17 +256,21 @@ in
               max-length = 25;
             };
             network = {
-              format-wifi = "<span font='11'></span>";
+              format-wifi = "<span font='16'></span>";
               format-ethernet = "<span font='11'>󰈀</span>";
               format-linked = "<span font='11'>󱘖</span> {ifname} (No IP)";
               format-disconnected = "<span font='11'>󱘖</span> Not connected";
               tooltip-format = "{essid} {ipaddr}/{cidr}";
             };
             pulseaudio = {
-              format = "<span font='13'>{icon}</span> {volume}% {format_source} ";
-              format-bluetooth = "<span font='13'>{icon}</span> {volume}% {format_source} ";
-              format-bluetooth-muted = "<span font='13'>x</span> {volume}% {format_source} ";
-              format-muted = "<span font='13'>x</span> {volume}% {format_source} ";
+              format =
+                "<span font='13'>{icon}</span> {volume}% {format_source} ";
+              format-bluetooth =
+                "<span font='13'>{icon}</span> {volume}% {format_source} ";
+              format-bluetooth-muted =
+                "<span font='13'>x</span> {volume}% {format_source} ";
+              format-muted =
+                "<span font='13'>x</span> {volume}% {format_source} ";
               format-source = "<span font='14'></span> ";
               format-source-muted = "<span font='14'></span> ";
               format-icons = {
@@ -275,7 +280,8 @@ in
               tooltip-format = "{desc}, {volume}%";
               scroll-step = 5;
               on-click = "${pkgs.pamixer}/bin/pamixer -t";
-              on-click-right = "${pkgs.pamixer}/bin/pamixer --default-source -t";
+              on-click-right =
+                "${pkgs.pamixer}/bin/pamixer --default-source -t";
               on-click-middle = "${pkgs.pavucontrol}/bin/pavucontrol";
             };
             "custom/sink" = {
@@ -303,69 +309,44 @@ in
               interval = 60;
               tooltip = false;
             };
-            tray = {
-              icon-size = if hostname == "xps" then 16 else 13;
-            };
+            tray = { icon-size = 16; };
           };
         };
       };
       home.file = {
         ".config/waybar/script/sink.sh" = {
-          text =
-            if hostname == "beelink" || hostname == "h310m" then ''
-              #!/bin/sh
+          text = ''
+            #!/bin/sh
 
-              HEAD=$(awk '/ ${headset}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
-              SPEAK=$(awk '/ ${speaker}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
+            HEAD=$(awk '/ ${headset}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
+            SPEAK=$(awk '/ ${speaker}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
 
-              if [[ $SPEAK = "*" ]]; then
-                printf "<span font='10'>󰓃</span>\n"
-              elif [[ $HEAD = "*" ]]; then
-                printf "<span font='13'></span>\n"
-              fi
-              exit 0
-            '' else ''
-              #!/bin/sh
-
-              SINK=$(${pkgs.pulseaudio}/bin/pactl list sinks | grep "Active Port" | awk '{ print $3 }')
-
-              if [[ $SINK == "analog-output-headphones" ]]; then
-                printf "<span font='13'></span>\n"
-              elif [[ $SINK == "analog-output-speaker" ]]; then
-                printf "<span font='10'>󰓃</span>\n"
-              fi
-              exit 0
-            '';
+            if [[ $SPEAK = "*" ]]; then
+              printf "<span font='10'>󰓃</span>\n"
+            elif [[ $HEAD = "*" ]]; then
+              printf "<span font='13'></span>\n"
+            fi
+            exit 0
+          '';
           executable = true;
         };
         ".config/waybar/script/switch.sh" = {
-          text =
-            if hostname == "beelink" || hostname == "h310m" then ''
-              #!/bin/sh
+          text = ''
+            #!/bin/sh
 
-              ID1=$(awk '/ ${headset}/ {sub(/.$/,"",$2); print $2 }' <(${pkgs.wireplumber}/bin/wpctl status) | head -n 1)
-              ID2=$(awk '/ ${speaker}/ {sub(/.$/,"",$2); print $2 }' <(${pkgs.wireplumber}/bin/wpctl status) | sed -n 2p)
+            ID1=$(awk '/ ${headset}/ {sub(/.$/,"",$2); print $2 }' <(${pkgs.wireplumber}/bin/wpctl status) | head -n 1)
+            ID2=$(awk '/ ${speaker}/ {sub(/.$/,"",$2); print $2 }' <(${pkgs.wireplumber}/bin/wpctl status) | sed -n 2p)
 
-              HEAD=$(awk '/ ${headset}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
-              SPEAK=$(awk '/ ${speaker}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
+            HEAD=$(awk '/ ${headset}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
+            SPEAK=$(awk '/ ${speaker}/ { print $2 }' <(${pkgs.wireplumber}/bin/wpctl status | grep "*") | head -n 1)
 
-              if [[ $SPEAK = "*" ]]; then
-                ${pkgs.wireplumber}/bin/wpctl set-default $ID1
-              elif [[ $HEAD = "*" ]]; then
-                ${pkgs.wireplumber}/bin/wpctl set-default $ID2
-              fi
-              exit 0
-            '' else ''
-              #!/bin/sh
-
-              SINK=$(${pkgs.pulseaudio}/bin/pactl list sinks | grep "Active Port" | awk '{ print $3 }')
-
-              if [[ $SINK == "analog-output-headphones" ]]; then
-                ${pkgs.pulseaudio}/bin/pactl set-sink-port 0 analog-output-speaker
-              elif [[ $SINK == "analog-output-speaker" ]]; then
-                ${pkgs.pulseaudio}/bin/pactl set-sink-port 0 analog-output-headphones
-              fi
-            '';
+            if [[ $SPEAK = "*" ]]; then
+              ${pkgs.wireplumber}/bin/wpctl set-default $ID1
+            elif [[ $HEAD = "*" ]]; then
+              ${pkgs.wireplumber}/bin/wpctl set-default $ID2
+            fi
+            exit 0
+          '';
           executable = true;
         };
         ".config/waybar/script/mouse.sh" = {

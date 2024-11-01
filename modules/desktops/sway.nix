@@ -1,4 +1,3 @@
-#
 #  Sway Configuration
 #  Enable with "sway.enable = true;"
 #
@@ -6,8 +5,7 @@
 { config, lib, pkgs, vars, host, ... }:
 
 with lib;
-with host;
-{
+with host; {
   options = {
     sway = {
       enable = mkOption {
@@ -55,15 +53,21 @@ with host;
           menu = "${pkgs.wofi}/bin/wofi --show drun";
 
           startup = [
-            { command = "${pkgs.autotiling}/bin/autotiling"; always = true; }
-            { command = "exec ${pkgs.blueman}/bin/blueman-applet"; always = true; }
+            {
+              command = "${pkgs.autotiling}/bin/autotiling";
+              always = true;
+            }
+            {
+              command = "exec ${pkgs.blueman}/bin/blueman-applet";
+              always = true;
+            }
           ];
 
           bars = [ ];
 
           fonts = {
             names = [ "Source Code Pro" ];
-            size = 10.0;
+            size = 12.0;
           };
 
           # gaps = {
@@ -87,23 +91,47 @@ with host;
           };
 
           output = {
-              "*".bg = "~/.config/wall.png fill"; #
-              "*".scale = "1"; #
-              "${mainMonitor}" = {
-                mode = "3840x2160";
-                pos = "0 0";
-              };
-	  };
-          workspaceOutputAssign =[
-              { output = mainMonitor; workspace = "1"; }
-              { output = mainMonitor; workspace = "2"; }
-              { output = mainMonitor; workspace = "3"; }
-              { output = mainMonitor; workspace = "4"; }
-              { output = mainMonitor; workspace = "5"; }
-              { output = mainMonitor; workspace = "6"; }
-              { output = mainMonitor; workspace = "7"; }
-              { output = mainMonitor; workspace = "8"; }
-            ];
+            "*".bg = "~/.config/wall.png fill";
+            "*".scale = "1";
+            "${mainMonitor}" = {
+              mode = "3840x2160";
+              pos = "0 0";
+            };
+          };
+          workspaceOutputAssign = [
+            {
+              output = mainMonitor;
+              workspace = "1";
+            }
+            {
+              output = mainMonitor;
+              workspace = "2";
+            }
+            {
+              output = mainMonitor;
+              workspace = "3";
+            }
+            {
+              output = mainMonitor;
+              workspace = "4";
+            }
+            {
+              output = mainMonitor;
+              workspace = "5";
+            }
+            {
+              output = mainMonitor;
+              workspace = "6";
+            }
+            {
+              output = mainMonitor;
+              workspace = "7";
+            }
+            {
+              output = mainMonitor;
+              workspace = "8";
+            }
+          ];
           defaultWorkspace = "workspace number 1";
 
           colors.focused = {
@@ -143,8 +171,10 @@ with host;
             "Alt+2" = "workspace number 2";
             "Alt+3" = "workspace number 3";
 
-            "Alt+Shift+Left" = "move container to workspace prev, workspace prev";
-            "Alt+Shift+Right" = "move container to workspace next, workspace next";
+            "Alt+Shift+Left" =
+              "move container to workspace prev, workspace prev";
+            "Alt+Shift+Right" =
+              "move container to workspace next, workspace next";
 
             "Alt+Shift+1" = "move container to workspace number 1";
             "Alt+Shift+2" = "move container to workspace number 2";
@@ -162,7 +192,8 @@ with host;
             "XF86AudioLowerVolume" = "exec ${pkgs.pamixer}/bin/pamixer -d 10";
             "XF86AudioRaiseVolume" = "exec ${pkgs.pamixer}/bin/pamixer -i 10";
             "XF86AudioMute" = "exec ${pkgs.pamixer}/bin/pamixer -t";
-            "XF86AudioMicMute" = "exec ${pkgs.pamixer}/bin/pamixer --default-source -t";
+            "XF86AudioMicMute" =
+              "exec ${pkgs.pamixer}/bin/pamixer --default-source -t";
 
             "XF86MonBrightnessDown" = "exec ${pkgs.light}/bin/light -U  5";
             "XF86MonBrightnessUp" = "exec ${pkgs.light}/bin/light -A 5";
