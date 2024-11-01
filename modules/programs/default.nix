@@ -20,5 +20,6 @@
   ./waybar.nix
   ./wofi.nix
   ./git.nix
+  ./direnv.nix
   # ./games.nix
 ]

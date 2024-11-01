@@ -1,4 +1,4 @@
-# Terminal Emulator
+# Git
 #
 
 { vars, ... }:
