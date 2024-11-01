@@ -132,7 +132,10 @@ in {
   };
 
   hardware.pulseaudio.enable = false;
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
   services = {
+    blueman.enable = true;
     printing = { enable = true; };
     pipewire = {
       enable = true;
