@@ -65,6 +65,7 @@ in
    systemPackages = with pkgs; [
     # terminal
     terminal
+    bat
     btop
     coreutils
     git
