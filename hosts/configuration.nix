@@ -113,11 +113,16 @@ in {
         gnupg
         libfido2
         pinentry
+        pinentry-curses
       ] ++ (with stable; [ image-roll ]);
   };
 
   programs = {
     dconf.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
     nix-ld = {
       enable = true;
       libraries = [ ];

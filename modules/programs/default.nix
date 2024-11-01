@@ -1,5 +1,4 @@
-#
-#  Apps
+# Apps
 #
 #  flake.nix
 #   ├─ ./hosts
@@ -20,5 +19,6 @@
   ./rofi.nix
   ./waybar.nix
   ./wofi.nix
+  ./git.nix
   # ./games.nix
 ]

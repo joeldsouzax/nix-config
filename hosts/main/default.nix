@@ -12,6 +12,7 @@
   };
   nixpkgs.config.nvidia.acceptLicense = true;
   services.xserver.videoDrivers = [ "nvidia" ];
+  services.pcscd.enable = true;
   hardware = {
     graphics = { enable = true; };
     nvidia = {
@@ -30,6 +31,7 @@
 
   hyprland.enable = true;
   programs.light.enable = true;
+
   environment = {
     systemPackages = with pkgs; [ discord rclone simple-scan slack ];
   };
