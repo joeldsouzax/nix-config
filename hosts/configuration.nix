@@ -119,7 +119,6 @@ in
 
     #encryption
     age
-    age-plugin-youbikey
     gnupg
     libfido2
     pinentry
