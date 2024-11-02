@@ -1,4 +1,3 @@
-#
 #  System Menu
 #
 
@@ -7,15 +6,10 @@
 let
   inherit (config.home-manager.users.${vars.user}.lib.formats.rasi) mkLiteral;
   colors = import ../theming/colors.nix;
-in
-{
+in {
   config = lib.mkIf (config.x11wm.enable) {
     home-manager.users.${vars.user} = {
-      home = {
-        packages = with pkgs; [
-          rofi-power-menu
-        ];
-      };
+      home = { packages = with pkgs; [ rofi-power-menu ]; };
 
       programs = {
         rofi = {
@@ -82,16 +76,12 @@ in
               spacing = mkLiteral "8px";
             };
 
-            "element normal urgent" = {
-              text-color = mkLiteral "@fg1";
-            };
+            "element normal urgent" = { text-color = mkLiteral "@fg1"; };
 
-            "element normal active" = {
-              text-color = mkLiteral "@fg1";
-            };
+            "element normal active" = { text-color = mkLiteral "@fg1"; };
 
             "element selected" = {
-              text-color = mkLiteral "@bg0"; #1
+              text-color = mkLiteral "@bg0"; # 1
               background-color = mkLiteral "@fg1";
             };
 
@@ -99,13 +89,9 @@ in
               background-color = mkLiteral "@fg1";
             };
 
-            "element-icon" = {
-              size = mkLiteral "0.8em";
-            };
+            "element-icon" = { size = mkLiteral "0.8em"; };
 
-            "element-text" = {
-              text-color = mkLiteral "inherit";
-            };
+            "element-text" = { text-color = mkLiteral "inherit"; };
 
             "scrollbar" = {
               handle-width = mkLiteral "4px";

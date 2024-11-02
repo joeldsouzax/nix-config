@@ -134,7 +134,7 @@ in {
           Main = {
             layer = if config.hyprland.enable then "top" else "bottom";
             position = "top";
-            height = 27;
+            height = 36;
             # output = output;
 
             tray = { spacing = 5; };
