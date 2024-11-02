@@ -71,6 +71,8 @@ in {
         smartmontools
         wget
         xdg-utils
+        cmake
+        make
 
         #editors
         nixfmt-classic
@@ -109,6 +111,9 @@ in {
         unrar
         wpsoffice
         zip
+        maim
+        gnuplot
+        grip
 
         #encryption
         age
