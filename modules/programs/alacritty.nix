@@ -17,6 +17,25 @@
       };
       starship.enable = true;
       starship.enableZshIntegration = true;
+      autojump = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      hstr = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      bacon = {
+        enable = true;
+        settings = {
+          jobs = {
+            default = {
+              command = [ "cargo" "build" "--all-features" "--color" "always" ];
+              need_stdout = true;
+            };
+          };
+        };
+      };
       alacritty = {
         enable = true;
         settings = {
