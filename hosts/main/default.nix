@@ -1,5 +1,6 @@
 { config, pkgs, vars, ... }: {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ ./hardware-configuration.nix ]
+    ++ (import ../../modules/desktops/virtualisation);
   boot = {
     loader = {
       systemd-boot = {

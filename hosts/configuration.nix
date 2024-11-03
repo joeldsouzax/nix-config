@@ -72,7 +72,7 @@ in {
         wget
         xdg-utils
         cmake
-        make
+
 
         #editors
         nixfmt-classic
