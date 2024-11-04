@@ -71,8 +71,6 @@ in {
         smartmontools
         wget
         xdg-utils
-        cmake
-
 
         #editors
         nixfmt-classic
