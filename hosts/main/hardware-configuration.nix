@@ -31,7 +31,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking = with host; {
-    useDHCP = false;
+    useDHCP = true;
     hostName = hostname;
     networkmanager = { enable = true; };
     firewall.allowedTCPPorts = [ 57621 ];
