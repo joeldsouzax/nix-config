@@ -10,7 +10,7 @@
     [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.rtl8192eu ];
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/5f48eeb3-2368-4f34-95ed-bb919296d841";
@@ -31,7 +31,7 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking = with host; {
-    useDHCP = true;
+    useDHCP = lib.mkDefault true;
     hostName = hostname;
     networkmanager = { enable = true; };
     firewall.allowedTCPPorts = [ 57621 ];
