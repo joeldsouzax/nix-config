@@ -72,6 +72,12 @@ in {
         wget
         xdg-utils
 
+        #build-tools
+        cmake
+        gnumake
+        gcc
+        libtool
+
         #editors
         nixfmt-classic
         shfmt
