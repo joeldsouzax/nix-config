@@ -1,4 +1,4 @@
-#  Hyprland Configuration
+# Hyprland Configuration
 #  Enable with "hyprland.enable = true;"
 #
 
@@ -242,7 +242,7 @@ with host; {
             active_opacity = 1;
             inactive_opacity = 1;
             fullscreen_opacity = 1;
-            drop_shadow = false;
+            # drop_shadow = false;
           };
           monitor = [
             ",preferred,auto,1,mirror,${toString mainMonitor}"
