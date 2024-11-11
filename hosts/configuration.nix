@@ -82,6 +82,9 @@ in {
         nixfmt-classic
         shfmt
         emacsPackages.treesit-grammars.with-all-grammars
+        tree-sitter
+        emacsPackages.tsc
+        emacsPackages.tree-sitter-langs
         tree-sitter-grammars.tree-sitter-tsx
         tree-sitter-grammars.tree-sitter-typescript
         emacsPackages.treesit-auto
