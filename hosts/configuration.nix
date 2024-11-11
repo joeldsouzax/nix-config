@@ -78,9 +78,13 @@ in {
         gcc
         libtool
 
-        #editors
+        #editorss
         nixfmt-classic
         shfmt
+        emacsPackages.treesit-grammars.with-all-grammars
+        tree-sitter-grammars.tree-sitter-tsx
+        tree-sitter-grammars.tree-sitter-typescrip
+        emacsPackages.treesit-auto
         shellcheck
         graphviz
         nodejs
