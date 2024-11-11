@@ -125,6 +125,7 @@ in {
         libfido2
         pinentry
         pinentry-curses
+        vesktop
       ] ++ (with stable; [ image-roll ]);
   };
 

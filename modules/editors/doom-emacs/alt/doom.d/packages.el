@@ -49,5 +49,15 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
-
+(package! mermaid-ts-mode
+  :recipe (:host github
+           :repo "JonathanHope/mermaid-ts-mode"
+           :branch "main"
+           :files ("mermaid-ts-mode.el")))
+(package! ob-mermaid)
 (package! nginx-mode)
+(package! treesit-auto)
+(package! astro-ts-mode)
+(when (modulep! +lsp)
+  (package! lsp-tailwindcss
+    :recipe (:host github :repo "merrickluo/lsp-tailwindcss")))

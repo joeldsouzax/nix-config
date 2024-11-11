@@ -61,9 +61,9 @@
           doom-emacs hyprland hyprspace plasma-manager vars;
       });
 
-      homeConfigurations = (import ./home.nix {
-        inherit (nixpkgs) lib;
-        inherit inputs nixpkgs nixpkgs-stable home-manager nixgl vars;
-      });
+      # homeConfigurations = (import ./home.nix {
+      #   inherit (nixpkgs) lib;
+      #   inherit inputs nixpkgs nixpkgs-stable home-manager nixgl vars;
+      # });
     };
 }

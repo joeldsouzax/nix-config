@@ -53,51 +53,77 @@
   (setq rust-format-on-save t))
 
 (after! rustic
-  (setq
-   ;; lsp-inlay-hint-enable t
-   rustic-format-on-save t
-   lsp-eldoc-render-all t
-   lsp-rust-analyzer-closing-brace-hints t
-   lsp-rust-analyzer-binding-mode-hints t
-   lsp-rust-analyzer-diagnostics-warnings-as-info t
-   lsp-rust-analyzer-display-chaining-hints t
-   lsp-rust-analyzer-display-lifetime-elision-hints-enable t
-   lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names "skip_trivial"
-   ;; lsp-rust-analyzer-display-closure-return-type-hints t
-   lsp-rust-analyzer-display-reborrow-hints t
-   lsp-rust-analyzer-display-parameter-hints t))
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  (setq lsp-signature-auto-activate t)
+  (setq lsp-signature-doc-lines 5)  ; Limit hover doc lines
+  (setq lsp-eldoc-enable-hover t)
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-show-with-cursor t)
+  (setq lsp-ui-doc-position 'at-point)
+  (setq lsp-ui-doc-max-height 160)
+  (setq lsp-ui-doc-max-width 80)
+  (setq rustic-format-on-save t)
+  (setq lsp-rust-analyzer-display-reborrow-hints t)
+  (setq lsp-rust-analyzer-server-display-inlay-hints t)
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  (setq lsp-rust-analyzer-display-chaining-hints t)
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
+  (setq lsp-rust-analyzer-display-closure-return-type-hints t)
+  (setq lsp-rust-analyzer-display-parameter-hints t))
 
 
 (use-package! nginx-mode
   :defer t)
 
 ;; -------------------- org -------------------- ;
-(use-package mermaid-mode
-  :defer
-  :config
-  (setq mermaid-mmdc-location "~/node_modules/.bin/mmdc"
-        ob-mermaid-cli-path "~/node_modules/.bin/mmdc"))
+(use-package! mermaid-ts-mode)
+(use-package! ob-mermaid)
 
-;;-------------------- mail server stuffd --------------------;;
+;; -------------------- astrojs --------------------;
 ;;
 
-(after! mu4e
-  (setq sendmail-program (executable-find "msmtp")
-        send-mail-function #'smtpmail-send-it
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from")
-        message-send-mail-function #'message-send-mail-with-sendmail))
+(use-package! treesit-auto
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
 
 
-(set-email-account! "Devrandom.co"
-                    '((mu4e-sent-folder       . "/devrandom/sent")
-                      (mu4e-drafts-folder     . "/devrandom/drafts")
-                      (mu4e-trash-folder      . "/devrandom/trash")
-                      (mu4e-refile-folder     . "/devrandom/all_mail")
-                      (smtpmail-smtp-user     . "joel@devrandom.co")
-                      (user-mail-address      . "joel@devrandom.co")    ;; only needed for mu < 1.4
-                      (mu4e-compose-signature . "---\nJoel DSouza "))
-                    t)
+(use-package! astro-ts-mode
+  :after treesit-auto
+  :init
+  (when (modulep! +lsp)
+    (add-hook 'astro-ts-mode-hook #'lsp! 'append))
+  :config
+  (global-treesit-auto-mode)
+  (let ((astro-recipe (make-treesit-auto-recipe
+                       :lang 'astro
+                       :ts-mode 'astro-ts-mode
+                       :url "https://github.com/virchau13/tree-sitter-astro"
+                       :revision "master"
+                       :source-dir "src")))
+    (add-to-list 'treesit-auto-recipe-list astro-recipe)))
+
+
+(set-formatter! 'prettier-astro
+  '("npx" "prettier" "--parser=astro"
+    (apheleia-formatters-indent "--use-tabs" "--tab-width" 'astro-ts-mode-indent-offset))
+  :modes '(astro-ts-mode))
+
+(use-package! lsp-tailwindcss
+  :when (modulep! +lsp)
+  :init
+  (setq! lsp-tailwindcss-add-on-mode t)
+  :config
+  (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
+
+;; MDX Support
+(add-to-list 'auto-mode-alist '("\\.\\(mdx\\)$" . markdown-mode))
+(when (modulep! +lsp)
+  (add-hook 'markdown-mode-local-vars-hook #'lsp! 'append))
+
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
