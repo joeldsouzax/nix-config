@@ -83,7 +83,7 @@ in {
         shfmt
         emacsPackages.treesit-grammars.with-all-grammars
         tree-sitter-grammars.tree-sitter-tsx
-        tree-sitter-grammars.tree-sitter-typescrip
+        tree-sitter-grammars.tree-sitter-typescript
         emacsPackages.treesit-auto
         shellcheck
         graphviz
