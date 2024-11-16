@@ -1,4 +1,4 @@
-#  GTK
+# GTK
 #
 
 { lib, config, pkgs, host, vars, ... }:
@@ -6,20 +6,20 @@
 {
   home-manager.users.${vars.user} = {
     home = {
-      file.".config/wall.png".source = ./wall.png;
+      file.".config/wall.png".source = ./pure-black.jpg;
       file.".config/wall.mp4".source = ./wall.mp4;
       pointerCursor = {
         gtk.enable = true;
         name = "Dracula-cursors";
         package = pkgs.dracula-theme;
-        size = 18;
+        size = 24;
       };
     };
 
     gtk = lib.mkIf (config.gnome.enable == false) {
       enable = true;
       theme = {
-        #name = "Dracula";
+        # name = "Dracula";
         #name = "Catppuccin-Mocha-Compact-Blue-Dark";
         name = "Orchis-Dark-Compact";
         #package = pkgs.dracula-theme;
