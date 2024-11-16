@@ -135,9 +135,9 @@ with host; {
         enable = true;
         settings = {
           general = {
-            hide_cursor = true;
+            hide_cursor = false;
             no_fade_in = false;
-            disable_loading_bar = true;
+            disable_loading_bar = false;
             grace = 0;
           };
           background = [{
@@ -184,7 +184,7 @@ with host; {
             before_sleep_cmd = "${pkgs.systemd}/bin/loginctl lock-session";
             after_sleep_cmd =
               "${config.programs.hyprland.package}/bin/hyprctl dispatch dpms on";
-            ignore_dbus_inhibit = true;
+            ignore_dbus_inhibit = false;
             lock_cmd =
               "pidof ${pkgs.hyprlock}/bin/hyprlock || ${pkgs.hyprlock}/bin/hyprlock";
           };
@@ -228,9 +228,9 @@ with host; {
         # '';
         settings = {
           general = {
-            border_size = 2;
-            gaps_in = 3;
-            gaps_out = 6;
+            border_size = 3;
+            gaps_in = 1;
+            gaps_out = 2;
             "col.active_border" = "0x99${active}";
             "col.inactive_border" = "0x66${inactive}";
             resize_on_border = true;
@@ -314,7 +314,7 @@ with host; {
             "SUPER,Return,exec,${pkgs.${vars.terminal}}/bin/${vars.terminal}"
             "SUPER,Q,killactive,"
             "SUPER,Escape,exit,"
-            "SUPER,S,exec,${pkgs.systemd}/bin/systemctl suspend"
+            # "SUPER,S,exec,${pkgs.systemd}/bin/systemctl suspend"
             "SUPER,L,exec,${pkgs.hyprlock}/bin/hyprlock"
             # "SUPER,E,exec,GDK_BACKEND=x11 ${pkgs.pcmanfm}/bin/pcmanfm"
             "SUPER,E,exec,${pkgs.pcmanfm}/bin/pcmanfm"
