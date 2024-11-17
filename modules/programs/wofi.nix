@@ -1,28 +1,21 @@
-#
-#  System Menu
+# System Menu
 #
 
 { config, lib, pkgs, vars, ... }:
 
-let
-  colors = import ../theming/colors.nix;
-in
-{
+let colors = import ../theming/colors.nix;
+in {
   config = lib.mkIf (config.wlwm.enable) {
     home-manager.users.${vars.user} = {
-      home = {
-        packages = with pkgs; [
-          wofi
-        ];
-      };
+      home = { packages = with pkgs; [ wofi ]; };
 
       home.file = with colors.scheme.default.hex; {
         ".config/wofi/config" = {
           text = ''
             width=100%
-            height=27
+            height=36
             xoffset=0
-            yoffset=-27
+            yoffset=-36
             location=1
             prompt=Search...
             filter_rate=100
@@ -33,7 +26,7 @@ in
             content_halign=fill
             insensitive=true
             allow_images=true
-            image_size=10
+            image_size=18
             hide_scroll=true
           '';
         };
