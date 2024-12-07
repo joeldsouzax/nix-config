@@ -246,7 +246,7 @@ with host; {
           };
           monitor = [
             ",preferred,auto,1,mirror,${toString mainMonitor}"
-            "${toString secondMonitor},1920x1080@60,0x0,1"
+            "${toString secondMonitor},1920x1080@60,0x0,1,transform,3"
             "${toString mainMonitor},3840x2160@60,0x0,1"
           ];
           workspace = [
@@ -254,11 +254,11 @@ with host; {
             "2, monitor:${toString mainMonitor}"
             "3, monitor:${toString mainMonitor}"
             "4, monitor:${toString mainMonitor}"
-            "5, monitor:${toString mainMonitor}"
-            "6, monitor:${toString mainMonitor}"
-            "7, monitor:${toString mainMonitor}"
-            "8, monitor:${toString mainMonitor}"
-            "9, monitor:${toString mainMonitor}"
+            "5, monitor:${toString secondMonitor}"
+            "6, monitor:${toString secondMonitor}"
+            "7, monitor:${toString secondMonitor}"
+            "8, monitor:${toString secondMonitor}"
+            "9, monitor:${toString secondMonitor}"
           ];
           animations = {
             enabled = false;
