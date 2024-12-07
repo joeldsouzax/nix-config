@@ -95,7 +95,7 @@ with host; {
             "*".scale = "1";
             "${mainMonitor}" = {
               mode = "3840x2160";
-              pos = "1920 0";
+              pos = "1080 0";
             };
             "${secondMonitor}" = {
               mode = "1920x1080";

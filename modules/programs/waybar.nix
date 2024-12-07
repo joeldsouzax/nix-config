@@ -5,7 +5,7 @@
 let colors = import ../theming/colors.nix;
 in with host;
 let
-  output = [ mainMonitor ];
+  output = [ mainMonitor secondMonitor ];
   modules-left = with config;
     if hyprland.enable == true then [
       "custom/menu"
