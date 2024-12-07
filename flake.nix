@@ -38,6 +38,8 @@
       inputs.hyprland.follows = "hyprland";
     };
 
+
+
     plasma-manager = {
       url = "github:pjones/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
