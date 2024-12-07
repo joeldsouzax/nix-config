@@ -246,8 +246,8 @@ with host; {
           };
           monitor = [
             ",preferred,auto,1,mirror,${toString mainMonitor}"
-            "${toString mainMonitor},3840x2160@60,0x0,1"
             "${toString secondMonitor},1920x1080@60,0x0,1"
+            "${toString mainMonitor},3840x2160@60,1920x0,1"
           ];
           workspace = [
             "1, monitor:${toString secondMonitor}"

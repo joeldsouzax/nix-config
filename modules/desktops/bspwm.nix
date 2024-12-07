@@ -8,7 +8,7 @@ with lib;
 with host;
 let
   monitor =
-    "${pkgs.xorg.xrandr}/bin/xrandr --output ${secondMonitor} --mode 1920x1080 --pos 0x0 --rotate left --output ${mainMonitor} --mode 3840x2170 --rate 60 --pos 0x0 --rotate normal";
+    "${pkgs.xorg.xrandr}/bin/xrandr --output ${secondMonitor} --mode 1920x1080 --pos 0x0 --rotate left --output ${mainMonitor} --mode 3840x2170 --rate 60 --pos 1920x0 --rotate normal";
   extra = ''
     killall -q polybar &
     while pgrep -u $UID -x polybar >/dev/null; do sleep 1;done
