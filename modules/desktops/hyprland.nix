@@ -228,7 +228,7 @@ with host; {
         # '';
         settings = {
           general = {
-            border_size = 3;
+            border_size = 1;
             gaps_in = 1;
             gaps_out = 2;
             "col.active_border" = "0x99${active}";
@@ -238,7 +238,7 @@ with host; {
             layout = "dwindle";
           };
           decoration = {
-            rounding = 6;
+            rounding = 3;
             active_opacity = 1;
             inactive_opacity = 1;
             fullscreen_opacity = 1;
@@ -247,13 +247,13 @@ with host; {
           monitor = [
             ",preferred,auto,1,mirror,${toString mainMonitor}"
             "${toString secondMonitor},1920x1080@60,0x0,1"
-            "${toString mainMonitor},3840x2160@60,1080x0,1"
+            "${toString mainMonitor},3840x2160@60,0x0,1"
           ];
           workspace = [
-            "1, monitor:${toString secondMonitor}"
-            "2, monitor:${toString secondMonitor}"
-            "3, monitor:${toString secondMonitor}"
-            "4, monitor:${toString secondMonitor}"
+            "1, monitor:${toString mainMonitor}"
+            "2, monitor:${toString mainMonitor}"
+            "3, monitor:${toString mainMonitor}"
+            "4, monitor:${toString mainMonitor}"
             "5, monitor:${toString mainMonitor}"
             "6, monitor:${toString mainMonitor}"
             "7, monitor:${toString mainMonitor}"

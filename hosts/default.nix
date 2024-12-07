@@ -21,8 +21,8 @@ in {
       inherit inputs system stable hyprland hyprspace vars;
       host = {
         hostname = "main";
-        mainMonitor = "DP-0";
-        secondMonitor = "HDMI-A-0";
+        mainMonitor = "eDP-1";
+        secondMonitor = "HDMI-1";
       };
     };
     modules = [

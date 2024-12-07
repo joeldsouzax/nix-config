@@ -95,28 +95,29 @@ with host; {
             "*".scale = "1";
             "${mainMonitor}" = {
               mode = "3840x2160";
-              pos = "1080 0";
+              pos = "0 0";
             };
             "${secondMonitor}" = {
               mode = "1920x1080";
               pos = "0 0";
+              transform = 90;
             };
           };
           workspaceOutputAssign = [
             {
-              output = secondMonitor;
+              output = mainMonitor;
               workspace = "1";
             }
             {
-              output = secondMonitor;
+              output = mainMonitor;
               workspace = "2";
             }
             {
-              output = secondMonitor;
+              output = mainMonitor;
               workspace = "3";
             }
             {
-              output = secondMonitor;
+              output = mainMonitor;
               workspace = "4";
             }
             {
@@ -134,6 +135,14 @@ with host; {
             {
               output = mainMonitor;
               workspace = "8";
+            }
+            {
+              output = mainMonitor;
+              workspace = "9";
+            }
+            {
+              output = mainMonitor;
+              workspace = "10";
             }
           ];
           defaultWorkspace = "workspace number 1";
