@@ -1,4 +1,4 @@
-#  Sway Configuration
+# Sway Configuration
 #  Enable with "sway.enable = true;"
 #
 
@@ -97,22 +97,26 @@ with host; {
               mode = "3840x2160";
               pos = "0 0";
             };
+            "${secondMonitor}" = {
+              mode = "1920x1080";
+              pos = "0 0";
+            };
           };
           workspaceOutputAssign = [
             {
-              output = mainMonitor;
+              output = secondMonitor;
               workspace = "1";
             }
             {
-              output = mainMonitor;
+              output = secondMonitor;
               workspace = "2";
             }
             {
-              output = mainMonitor;
+              output = secondMonitor;
               workspace = "3";
             }
             {
-              output = mainMonitor;
+              output = secondMonitor;
               workspace = "4";
             }
             {
