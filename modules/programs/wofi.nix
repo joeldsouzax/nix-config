@@ -33,43 +33,44 @@ in {
         ".config/wofi/style.css" = {
           text = ''
             window {
-              /*background-color: #${bg};*/
-              background-color: rgba(0, 0, 0, 0.8);
+              background-color: #${bg};
             }
 
             #input {
-              all: unset;
-              border: none;
+              border-radius: 6px;
+              padding-right: 5px;
               color: #${text};
               background-color: #${bg};
-              padding-left: 5px;
             }
 
             #outer-box {
               border: none;
-              border-bottom: 1px solid #${active};
+
+            }
+
+            #inner-box {
+              padding: none;
             }
 
             #text:selected {
               /*color: rgba(255, 255, 255, 0.8);*/
-              color: rgba(0, 0, 0, 0.8);
+              /*color: rgba(0, 0, 0, 0.8);*/
             }
 
             #entry {
               color: #${text};
-              padding-right: 10px;
+              padding-right: 5px;
             }
 
             #entry:selected {
-              all: unset;
-              border-radius: 0px;
+              border-radius: 6px;
               background-color: #${active};
-              padding-right: 10px;
+              padding-right: 5px;
             }
 
             #img {
               padding-right: 5px;
-              padding-left: 10px;
+              padding-left: 5px;
             }
           '';
         };

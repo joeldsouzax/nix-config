@@ -228,13 +228,13 @@ with host; {
         # '';
         settings = {
           general = {
-            border_size = 1;
-            gaps_in = 1;
-            gaps_out = 2;
+            border_size = 3;
+            gaps_in = 3;
+            gaps_out = 3;
             "col.active_border" = "0x99${active}";
             "col.inactive_border" = "0x66${inactive}";
             resize_on_border = true;
-            hover_icon_on_border = false;
+            hover_icon_on_border = true;
             layout = "dwindle";
           };
           decoration = {
@@ -246,7 +246,7 @@ with host; {
           };
           monitor = [
             ",preferred,auto,1,mirror,${toString mainMonitor}"
-            "${toString secondMonitor},1920x1080@60,0x0,1,transform,3"
+            "${toString secondMonitor},1920x1080@60,-1920x0,1,transform,3"
             "${toString mainMonitor},3840x2160@60,0x0,1"
           ];
           workspace = [

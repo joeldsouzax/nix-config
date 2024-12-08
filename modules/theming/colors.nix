@@ -1,14 +1,13 @@
-#
-#  System Themes
+# System Themes
 #
 
 {
   scheme = {
     default = {
-      scheme = "One Dark Pro";
+      scheme = "Joel Oslo Dark";
       hex = {
-        bg = "111111";
-        fg = "f7f7f7";
+        bg = "000000";
+        fg = "ffffff";
         red = "e06c75";
         orange = "d19a66";
         yellow = "e5c07b";
@@ -21,13 +20,13 @@
         gray = "5c6370";
         highlight = "e2be7d";
         comment = "7f848e";
-        active = "f7870a";
-        inactive = "013864";
-        text = "999999";
+        active = "f706CF";
+        inactive = "791E94";
+        text = "ffffff";
       };
       rgb = {
-        bg = "17, 17, 17";
-        fg = "247, 247, 247";
+        bg = "0, 0, 0";
+        fg = "255, 255, 255";
         red = "224, 108, 118";
         orange = "209, 154, 102";
         yellow = "229, 192, 123";
@@ -40,9 +39,9 @@
         gray = "92, 99, 112";
         highlight = "226, 191, 125";
         comment = "127, 132, 142";
-        active = "247, 135, 10";
-        inactive = "1, 56, 100";
-        text = "153, 153, 153";
+        active = "247, 6, 207";
+        inactive = "121, 30, 148";
+        text = "255, 255, 255";
       };
     };
 
@@ -89,34 +88,34 @@
     };
 
     doom = {
-      scheme    = "Doom One Dark";
-      black     = "000000";
-      red       = "ff6c6b";
-      orange    = "da8548";
-      yellow    = "ecbe7b";
-      green     = "95be65";
-      teal      = "4db5bd";
-      blue      = "6eaafb";
+      scheme = "Doom One Dark";
+      black = "000000";
+      red = "ff6c6b";
+      orange = "da8548";
+      yellow = "ecbe7b";
+      green = "95be65";
+      teal = "4db5bd";
+      blue = "6eaafb";
       dark-blue = "2257a0";
-      magenta   = "c678dd";
-      violet    = "a9a1e1";
-      cyan      = "6cdcf7";
+      magenta = "c678dd";
+      violet = "a9a1e1";
+      cyan = "6cdcf7";
       dark-cyan = "5699af";
-      emphasis  = "50536b";
-      text      = "dfdfdf";
-      text-alt  = "b2b2b2";
-      fg        = "abb2bf";
-      bg        = "282c34";
+      emphasis = "50536b";
+      text = "dfdfdf";
+      text-alt = "b2b2b2";
+      fg = "abb2bf";
+      bg = "282c34";
     };
 
     dracula = {
-      scheme = "Dracula";
-      base00 = "282936"; #background
+      scheme = "Drsacula";
+      base00 = "282936"; # background
       base01 = "3a3c4e";
       base02 = "4d4f68";
       base03 = "626483";
       base04 = "62d6e8";
-      base05 = "e9e9f4"; #foreground
+      base05 = "e9e9f4"; # foreground
       base06 = "f1f2f8";
       base07 = "f7f7fb";
       base08 = "ea51b2";

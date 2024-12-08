@@ -65,10 +65,10 @@ in {
             background-color: rgba(${rgb.active},0.4);
           }
           window#waybar {
-            background-color: rgba(0, 0, 0 , 0.5);
+            background-color: rgba(${rgb.bg} , 0);
             transition-property: background-color;
             transition-duration: .5s;
-            border-bottom: 1px solid rgba(${rgb.active}, 0.99);
+            /*border-bottom: 1px solid rgba(${rgb.active}, 0.99);*/
           }
           window#waybar.hidden {
             opacity: 0.2;
@@ -99,12 +99,14 @@ in {
             padding: 0px 5px 0px 5px;
           }
           #workspaces button {
+            border-radius: 6px;
             padding: 0px 7px;
             min-width: 5px;
             color: rgba(${rgb.text},1);
           }
           #workspaces button:hover {
-            background-color: rgba(0,0,0,0.2);
+            color: rgba(${rgb.active},1);
+            background-color: rgba(${rgb.inactive},0.2);
           }
           #workspaces button.visible {
             background-color: rgba(${rgb.active}, 0.3);
@@ -146,7 +148,7 @@ in {
               tooltip = false;
             };
             "custom/menu" = {
-              format = "<span font='16'></span>";
+              format = "<span font='18'></span>";
               # on-click = ''${pkgs.eww}/bin/eww open --toggle menu --screen 0'';
               on-click = "sleep 0.1; .config/wofi/power.sh";
               on-click-right = "sleep 0.1; ${pkgs.wofi}/bin/wofi --show drun";
@@ -177,7 +179,7 @@ in {
               escape = true;
             };
             "sway/workspaces" = {
-              format = "<span font='14'>{icon}</span>";
+              format = "<span font='18'>{icon}</span>";
               format-icons = {
                 # "1"="";
                 # "2"="";
@@ -192,6 +194,7 @@ in {
                 "6" = "6";
                 "7" = "7";
                 "8" = "8";
+                "9" = "9";
               };
               all-outputs = true;
               persistent_workspaces = {
@@ -208,15 +211,16 @@ in {
                 "6" = [ ];
                 "7" = [ ];
                 "8" = [ ];
+                "9" = [ ];
               };
             };
             "wlr/workspaces" = {
-              format = "<span font='14'>{name}</span>";
+              format = "<span font='18'>{name}</span>";
               active-only = false;
               on-click = "activate";
             };
             "hyprland/workspaces" = {
-              format = "<span font='14'>{name}</span>";
+              format = "<span font='18'>{name}</span>";
               window-rewrite = { };
             };
             clock = {
@@ -225,21 +229,21 @@ in {
                 "sleep 0.1; ${pkgs.eww}/bin/eww open --toggle calendar --screen 0";
             };
             cpu = {
-              format = " {usage}% <span font='16'></span> ";
+              format = " {usage}% <span font='18'></span> ";
               interval = 1;
             };
             disk = {
-              format = "{percentage_used}% <span font='16'></span>";
-              path = "/home/joel/Code";
+              format = "{percentage_used}% <span font='18'></span>";
+              path = "/home/joel/";
               interval = 30;
             };
             memory = {
-              format = "{}% <span font='16'></span>";
+              format = "{}% <span font='18'></span>";
               interval = 1;
             };
             backlight = {
               device = "intel_backlight";
-              format = "{percent}% <span font='16'>{icon}</span>";
+              format = "{percent}% <span font='18'>{icon}</span>";
               format-icons = [ "" "󰖙" ];
               on-scroll-down = "${pkgs.light}/bin/light -U 5";
               on-scroll-up = "${pkgs.light}/bin/light -A 5";
@@ -264,15 +268,15 @@ in {
             };
             pulseaudio = {
               format =
-                "<span font='13'>{icon}</span> {volume}% {format_source} ";
+                "<span font='18'>{icon}</span> {volume}% {format_source} ";
               format-bluetooth =
-                "<span font='13'>{icon}</span> {volume}% {format_source} ";
+                "<span font='18'>{icon}</span> {volume}% {format_source} ";
               format-bluetooth-muted =
-                "<span font='13'>x</span> {volume}% {format_source} ";
+                "<span font='18'>x</span> {volume}% {format_source} ";
               format-muted =
-                "<span font='13'>x</span> {volume}% {format_source} ";
-              format-source = "<span font='14'></span> ";
-              format-source-muted = "<span font='14'></span> ";
+                "<span font='18'>x</span> {volume}% {format_source} ";
+              format-source = "<span font='18'></span> ";
+              format-source-muted = "<span font='18'></span> ";
               format-icons = {
                 default = [ "" "" "" ];
                 headphone = "";
@@ -419,7 +423,6 @@ in {
             else
               printf "\n"
             fi
-
             exit 0
           '';
           executable = true;
