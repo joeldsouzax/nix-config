@@ -106,6 +106,7 @@ in {
         appimage-run
         firefox
         google-chrome
+        foliate
         remmina
 
         #file manager
