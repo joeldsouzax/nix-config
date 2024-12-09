@@ -86,6 +86,7 @@ in {
         shellcheck
         graphviz
         nodejs
+        python3
         ispell
         sqlite
         nil
