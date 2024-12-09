@@ -2,7 +2,7 @@
   imports = [ ./hardware-configuration.nix ]
     ++ (import ../../modules/desktops/virtualisation);
   boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_11;
     loader = {
       systemd-boot = {
         enable = true;
