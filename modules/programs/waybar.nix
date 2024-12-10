@@ -58,7 +58,7 @@ in {
             border: none;
             border-radius: 0;
             font-family: FiraCode Nerd Font Mono;
-            font-size: 16px;
+            font-size: 18px;
             text-shadow: 0px 0px 5px #000000;
           }
           button:hover {
@@ -313,7 +313,7 @@ in {
               interval = 60;
               tooltip = false;
             };
-            tray = { icon-size = 16; };
+            tray = { icon-size = 18; };
           };
         };
       };
