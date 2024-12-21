@@ -10,7 +10,7 @@
 #
 
 [
-  ./alacritty.nix
+  ./others.nix
   ./accounts.nix
   ./eww.nix
   ./flatpak.nix

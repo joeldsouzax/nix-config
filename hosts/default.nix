@@ -1,13 +1,8 @@
-{ inputs, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager, doom-emacs
-, hyprland, hyprspace, plasma-manager, vars, ... }:
+{ inputs, nixpkgs, nixpkgs-stable, home-manager, hyprland, hyprspace, vars, ...
+}:
 
 let
   system = "x86_64-linux";
-  pkgs = import nixpkgs {
-    inherit system;
-    config.allowUnfree = true;
-  };
-
   stable = import nixpkgs-stable {
     inherit system;
     config.allowUnfree = true;

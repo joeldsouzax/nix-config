@@ -3,7 +3,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
-    nixos-hardware.url = "github:nixos/nixos-hardware/master";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -24,12 +24,6 @@
       url = "github:nix-community/emacs-overlay";
       flake = false;
     };
-    # Nix-community doom emacs
-    doom-emacs = {
-      url = "github:nix-community/nix-doom-emacs";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.emacs-overlay.follows = "emacs-overlay";
-    };
 
     hyprland = { url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; };
 
@@ -38,15 +32,9 @@
       inputs.hyprland.follows = "hyprland";
     };
 
-    plasma-manager = {
-      url = "github:pjones/plasma-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.home-manager.follows = "nixpkgs";
-    };
   };
-  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, nixos-hardware, home-manager
-    , home-manager-stable, nixgl, doom-emacs, hyprland, hyprspace
-    , plasma-manager, ... }:
+  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
+    , home-manager-stable, hyprland, hyprspace, ... }:
     let
       vars = {
         user = "joel";
@@ -57,8 +45,8 @@
     in {
       nixosConfigurations = (import ./hosts {
         inherit (nixpkgs) lib;
-        inherit inputs nixpkgs nixpkgs-stable nixos-hardware home-manager
-          doom-emacs hyprland hyprspace plasma-manager vars;
+        inherit inputs nixpkgs nixpkgs-stable home-manager hyprland hyprspace
+          vars;
       });
     };
 }
