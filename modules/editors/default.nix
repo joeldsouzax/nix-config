@@ -1,4 +1,3 @@
-#
 #  Editors
 #
 #  flake.nix
@@ -12,6 +11,4 @@
 #           └─ ...
 #
 
-[
-   ./doom-emacs/alt/home.nix
-]
+[ ./doom-emacs/default.nix ]
