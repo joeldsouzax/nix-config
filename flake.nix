@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
+    nur = {
+      url = "github:nix-community/NUR";
+    };
+
     nixgl = {
       url = "github:guibou/nixGL";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -25,6 +29,12 @@
       flake = false;
     };
 
+    doom-emacs = {
+      url = "github:nix-community/nix-doom-emacs";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.emacs-overlay.follows = "emacs-overlay";
+    };
+
     hyprland = { url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; };
 
     hyprspace = {
@@ -34,7 +44,7 @@
 
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, hyprland, hyprspace, ... }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, ... }:
     let
       vars = {
         user = "joel";
@@ -45,7 +55,7 @@
     in {
       nixosConfigurations = (import ./hosts {
         inherit (nixpkgs) lib;
-        inherit inputs nixpkgs nixpkgs-stable home-manager hyprland hyprspace
+        inherit inputs nixpkgs nixpkgs-stable home-manager nur doom-emacs hyprland hyprspace
           vars;
       });
     };
