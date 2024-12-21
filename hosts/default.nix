@@ -1,4 +1,4 @@
-{ inputs, nixpkgs, nixpkgs-stable, home-manager, hyprland, hyprspace, vars, ...
+{ inputs, nixpkgs, nixpkgs-stable, home-manager, nur, doom-emacs, hyprland, hyprspace, vars, ...
 }:
 
 let
@@ -21,6 +21,7 @@ in {
       };
     };
     modules = [
+      nur.modules.nixos.default
       ./main
       ./configuration.nix
       home-manager.nixosModules.home-manager
