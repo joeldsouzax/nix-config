@@ -38,8 +38,6 @@
       inputs.hyprland.follows = "hyprland";
     };
 
-
-
     plasma-manager = {
       url = "github:pjones/plasma-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -62,10 +60,5 @@
         inherit inputs nixpkgs nixpkgs-stable nixos-hardware home-manager
           doom-emacs hyprland hyprspace plasma-manager vars;
       });
-
-      # homeConfigurations = (import ./home.nix {
-      #   inherit (nixpkgs) lib;
-      #   inherit inputs nixpkgs nixpkgs-stable home-manager nixgl vars;
-      # });
     };
 }
