@@ -40,7 +40,6 @@
 
 (after! (treemacs projectile)
   (treemacs-indent-guide-mode 1))
-
 (use-package treemacs-nerd-icons
   :after treemacs
   :config
@@ -87,69 +86,67 @@
   :custom
   (treesit-auto-install 'prompt)
   :config
-  (treesit-auto-add-to-auto-mode-alist '(astro))
+  (treesit-auto-add-to-auto-mode-alist '(astro)))
 
-  (use-package! astro-ts-mode
-    :after treesit-auto
-    :init
-    ;; (when (modulep! +lsp)
-    ;;   (add-hook 'astro-ts-mode-hook #'lsp! 'append))
-    :config
-    (let ((astro-recipe (make-treesit-auto-recipe
-                         :lang 'astro
-                         :ts-mode 'astro-ts-mode
-                         :url "https://github.com/virchau13/tree-sitter-astro"
-                         :revision "master"
-                         :source-dir "src")))
-      (add-to-list 'treesit-auto-recipe-list astro-recipe)))
+;; (use-package! astro-ts-mode
+;;   :after treesit-auto
+;;   :init
+;;   :config
+;;   (let ((astro-recipe (make-treesit-auto-recipe
+;;                        :lang 'astro
+;;                        :ts-mode 'astro-ts-mode
+;;                        :url "https://github.com/virchau13/tree-sitter-astro"
+;;                        :revision "master"
+;;                        :source-dir "src")))
+;;     (add-to-list 'treesit-auto-recipe-list astro-recipe)))
 
 
-  (set-formatter! 'prettier-astro
-    '("npx" "prettier" "--parser=astro"
-      (apheleia-formatters-indent "--use-tabs" "--tab-width" 'astro-ts-mode-indent-offset))
-    :modes '(astro-ts-mode))
+;; (set-formatter! 'prettier-astro
+;;   '("npx" "prettier" "--parser=astro"
+;;     (apheleia-formatters-indent "--use-tabs" "--tab-width" 'astro-ts-mode-indent-offset))
+;;   :modes '(astro-ts-mode))
 
-  (use-package! lsp-tailwindcss
-    :when (modulep! +lsp)
-    :init
-    (setq! lsp-tailwindcss-add-on-mode t)
-    :config
-    (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
+;; (use-package! lsp-tailwindcss
+;;   :when (modulep! +lsp)
+;;   :init
+;;   (setq! lsp-tailwindcss-add-on-mode t)
+;;   :config
+;;   (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
 
-  ;; MDX Support
-  (add-to-list 'auto-mode-alist '("\\.\\(mdx\\)$" . markdown-mode))
-  (when (modulep! +lsp)
-    (add-hook 'markdown-mode-local-vars-hook #'lsp! 'append))
+;; MDX Support
+(add-to-list 'auto-mode-alist '("\\.\\(mdx\\)$" . markdown-mode))
+(when (modulep! +lsp)
+  (add-hook 'markdown-mode-local-vars-hook #'lsp! 'append))
 
 
-  ;; Whenever you reconfigure a package, make sure to wrap your config in an
-  ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
-  ;;
-  ;;   (after! PACKAGE
-  ;;     (setq x y))
-  ;;
-  ;; The exceptions to this rule:
-  ;;
-  ;;   - Setting file/directory variables (like `org-directory')
-  ;;   - Setting variables which explicitly tell you to set them before their
-  ;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
-  ;;   - Setting doom variables (which start with 'doom-' or '+').
-  ;;
-  ;; Here are some additional functions/macros that will help you configure Doom.
-  ;;
-  ;; - `load!' for loading external *.el files relative to this one
-  ;; - `use-package!' for configuring packages
-  ;; - `after!' for running code after a package has loaded
-  ;; - `add-load-path!' for adding directories to the `load-path', relative to
-  ;;   this file. Emacs searches the `load-path' when you load packages with
-  ;;   `require' or `use-package'.
-  ;; - `map!' for binding new keys
-  ;;
-  ;; To get information about any of these functions/macros, move the cursor over
-  ;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
-  ;; This will open documentation for it, including demos of how they are used.
-  ;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
-  ;; etc).
-  ;;
-  ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
-  ;; they are implemented.
+;; Whenever you reconfigure a package, make sure to wrap your config in an
+;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
+;;
+;;   (after! PACKAGE
+;;     (setq x y))
+;;
+;; The exceptions to this rule:
+;;
+;;   - Setting file/directory variables (like `org-directory')
+;;   - Setting variables which explicitly tell you to set them before their
+;;     package is loaded (see 'C-h v VARIABLE' to look up their documentation).
+;;   - Setting doom variables (which start with 'doom-' or '+').
+;;
+;; Here are some additional functions/macros that will help you configure Doom.
+;;
+;; - `load!' for loading external *.el files relative to this one
+;; - `use-package!' for configuring packages
+;; - `after!' for running code after a package has loaded
+;; - `add-load-path!' for adding directories to the `load-path', relative to
+;;   this file. Emacs searches the `load-path' when you load packages with
+;;   `require' or `use-package'.
+;; - `map!' for binding new keys
+;;
+;; To get information about any of these functions/macros, move the cursor over
+;; the highlighted symbol at press 'K' (non-evil users must press 'C-c c k').
+;; This will open documentation for it, including demos of how they are used.
+;; Alternatively, use `C-h o' to look up a symbol (functions, variables, faces,
+;; etc).
+;;
+;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
+;; they are implemented.
