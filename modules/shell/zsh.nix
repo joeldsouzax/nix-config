@@ -1,13 +1,10 @@
-#
 #  Shell
 #
 
 { pkgs, vars, ... }:
 
 {
-  users.users.${vars.user} = {
-    shell = pkgs.zsh;
-  };
+  users.users.${vars.user} = { shell = pkgs.zsh; };
 
   programs = {
     zsh = {

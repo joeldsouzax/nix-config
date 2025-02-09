@@ -1,4 +1,4 @@
-#  Editors
+# Editors
 #
 #  flake.nix
 #   ├─ ./hosts

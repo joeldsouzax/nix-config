@@ -91,6 +91,7 @@ in {
         ispell
         sqlite
         nil
+        code-cursor
 
         #audio/video
         alsa-utils
