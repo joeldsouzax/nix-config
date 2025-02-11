@@ -4,48 +4,39 @@
 { config, lib, pkgs, modulesPath, ... }:
 
 {
-  imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
-    ];
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+  boot.initrd.availableKernelModules =
+    [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel"];
-  boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";
-      fsType = "ext4";
-    };
-
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/FDB7-5CF1";
-      fsType = "vfat";
-      options = [ "fmask=0077" "dmask=0077" ];
-    };
-
+  boot.kernelModules = [ "kvm-intel" "8852au" ];
   boot.extraModulePackages = [
-    (config.boot.kernelPackages.rtl8188eus-aircrack.overrideAttrs {
-      src = pkgs.fetchFromGitHub {
-        owner = "aircrack-ng";
-        repo = "rtl8188eus";
-        rev = "3fae7237ba121f1169e9a2ea55040dc123697d3b";
-        hash = "sha256-ILSMEt9nMdg1ZbFeatWm8Yxf6a/E7Vm7KtKhN933KTc=";
-      };
-      patches = [ ];
-      meta.broken = false;
-    })
+    config.boot.kernelPackages.rtl8188eus-aircrack
+    config.boot.kernelPackages.rtl8852bu
   ];
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/3ff00db8-aef8-440a-9430-ac688887e0a4"; }
-    ];
-
-
   services.udev.extraRules =
-  ''
-    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${lib.getExe pkgs.usb-modeswitch} -K -v 0bda -p 1a2b"
-  '';
+    # Switch Archer TX20U Nano from CDROM mode (default) to WiFi mode.
+    ''
+      ATTR{idVendor}=="0bda", ATTR{idProduct}=="8179", RUN+="${
+        lib.getExe pkgs.usb-modeswitch
+      } -K -v 0bda -p 8179"
+    '';
+
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/FDB7-5CF1";
+    fsType = "vfat";
+    options = [ "fmask=0077" "dmask=0077" ];
+  };
+
+  swapDevices =
+    [{ device = "/dev/disk/by-uuid/3ff00db8-aef8-440a-9430-ac688887e0a4"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -56,5 +47,6 @@
   # networking.interfaces.wlp0s20f0u7.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  hardware.cpu.intel.updateMicrocode =
+    lib.mkDefault config.hardware.enableRedistributableFirmware;
 }
