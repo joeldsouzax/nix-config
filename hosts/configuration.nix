@@ -19,6 +19,9 @@ in {
       [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
   };
 
+
+  networking.networkmanager.enable = true;
+
   time.timeZone = "Europe/Oslo";
   i18n = { defaultLocale = "en_US.UTF-8"; };
 
@@ -190,10 +193,10 @@ in {
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.rocmSupport = true;
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 
   home-manager.users.${vars.user} = {
-    home.stateVersion = "24.05";
+    home.stateVersion = "24.11";
     programs.home-manager.enable = true;
     xdg = {
       mime.enable = true;
