@@ -10,8 +10,8 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.rtl8852au ];
+  boot.kernelModules = [ "kvm-intel"];
+  boot.extraModulePackages = [ ];
 
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";
@@ -24,9 +24,28 @@
       options = [ "fmask=0077" "dmask=0077" ];
     };
 
+  boot.extraModulePackages = [
+    (config.boot.kernelPackages.rtl8188eus-aircrack.overrideAttrs {
+      src = pkgs.fetchFromGitHub {
+        owner = "aircrack-ng";
+        repo = "rtl8188eus";
+        rev = "3fae7237ba121f1169e9a2ea55040dc123697d3b";
+        hash = "sha256-ILSMEt9nMdg1ZbFeatWm8Yxf6a/E7Vm7KtKhN933KTc=";
+      };
+      patches = [ ];
+      meta.broken = false;
+    })
+  ];
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/3ff00db8-aef8-440a-9430-ac688887e0a4"; }
     ];
+
+
+  services.udev.extraRules =
+  ''
+    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${lib.getExe pkgs.usb-modeswitch} -K -v 0bda -p 1a2b"
+  '';
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
