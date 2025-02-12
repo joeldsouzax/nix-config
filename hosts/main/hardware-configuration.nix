@@ -10,18 +10,18 @@
     [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
 
-  boot.kernelModules = [ "kvm-intel" "8852au" ];
+  boot.kernelModules = [ "kvm-intel" "8852bu" ];
   boot.extraModulePackages = [
     config.boot.kernelPackages.rtl8188eus-aircrack
     config.boot.kernelPackages.rtl8852bu
   ];
 
   services.udev.extraRules =
-    # Switch Archer TX20U Nano from CDROM mode (default) to WiFi mode.
+    # Switch Archer ax1800U Nano from CDROM mode (default) to WiFi mode.
     ''
-      ATTR{idVendor}=="0bda", ATTR{idProduct}=="8179", RUN+="${
+      ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${
         lib.getExe pkgs.usb-modeswitch
-      } -K -v 0bda -p 8179"
+      } -K -v 0bda -p 1a2b"
     '';
 
   fileSystems."/" = {
