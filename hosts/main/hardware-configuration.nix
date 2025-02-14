@@ -9,20 +9,20 @@
   boot.initrd.availableKernelModules =
     [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-
-  boot.kernelModules = [ "kvm-intel" "8852bu" ];
+  boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [
-    config.boot.kernelPackages.rtl8188eus-aircrack
-    config.boot.kernelPackages.rtl8852bu
+    # config.boot.kernelPackages.rtl8188eus-aircrack
+    config.boot.kernelPackages.rtl8852au
+    # config.boot.kernelPackages.rtl8852bu
   ];
 
-  services.udev.extraRules =
-    # Switch Archer ax1800U Nano from CDROM mode (default) to WiFi mode.
-    ''
-      ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${
-        lib.getExe pkgs.usb-modeswitch
-      } -K -v 0bda -p 1a2b"
-    '';
+  # services.udev.extraRules =
+  #   # Switch Archer ax1800U Nano from CDROM mode (default) to WiFi mode.
+  #   ''
+  #     ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${
+  #       lib.getExe pkgs.usb-modeswitchx
+  #     } -K -v 0bda -p 1a2b"
+  #   '';
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";

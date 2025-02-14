@@ -60,7 +60,6 @@ with host; {
       } else {
         # QT_QPA_PLATFORM = "wayland";
         QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
-
         GDK_BACKEND = "wayland";
         WLR_NO_HARDWARE_CURSORS = "1";
         MOZ_ENABLE_WAYLAND = "1";
@@ -215,6 +214,12 @@ with host; {
         enable = true;
         package = hyprland.packages.${pkgs.system}.hyprland;
         xwayland.enable = true;
+        systemd.enable = true;
+        extraConfig = ''
+          misc {
+          vfr=off
+          }
+        '';
         # plugins = [
         #   hyprspace.packages.${pkgs.system}.Hyprspace
         # ];

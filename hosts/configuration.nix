@@ -19,8 +19,8 @@ in {
       [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
   };
 
-
   networking.networkmanager.enable = true;
+  security.chromiumSuidSandbox.enable = true;
 
   time.timeZone = "Europe/Oslo";
   i18n = { defaultLocale = "en_US.UTF-8"; };
@@ -59,7 +59,6 @@ in {
     systemPackages = with pkgs;
       [
         # terminal
-
         terminal
         bat
         btop
@@ -94,7 +93,6 @@ in {
         ispell
         sqlite
         nil
-        code-cursor
 
         #audio/video
         alsa-utils
