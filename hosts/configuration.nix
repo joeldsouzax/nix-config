@@ -21,6 +21,11 @@ in {
 
   networking.networkmanager.enable = true;
   security.chromiumSuidSandbox.enable = true;
+  
+  hardware.opengl.enable = true;
+  hardware.opengl.extraPackages = [ pkgs.libvdpau-va-gl ];
+  environment.variables.VDPAU_DRIVER = "va_gl";
+  environment.variables.LIBVA_DRIVER_NAME = "nvidia";
 
   time.timeZone = "Europe/Oslo";
   i18n = { defaultLocale = "en_US.UTF-8"; };
@@ -56,6 +61,9 @@ in {
       EDITOR = "${vars.editor}";
       VISUAL = "${vars.editor}";
     };
+    sessionVariables = {
+ NIXOS_OZONE_WL = "1";
+};
     systemPackages = with pkgs;
       [
         # terminal
