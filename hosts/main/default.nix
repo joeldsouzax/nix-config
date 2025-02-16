@@ -2,7 +2,7 @@
   imports = [ ./hardware-configuration.nix ]
     ++ (import ../../modules/desktops/virtualisation);
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_11;
+    # kernelPackages = pkgs.linuxPackages_6_10;
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     loader = {
       systemd-boot = {
