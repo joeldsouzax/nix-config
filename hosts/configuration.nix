@@ -21,7 +21,7 @@ in {
 
   networking.networkmanager.enable = true;
   security.chromiumSuidSandbox.enable = true;
-  
+
   hardware.opengl.enable = true;
   hardware.opengl.extraPackages = [ pkgs.libvdpau-va-gl ];
   environment.variables.VDPAU_DRIVER = "va_gl";
@@ -61,9 +61,7 @@ in {
       EDITOR = "${vars.editor}";
       VISUAL = "${vars.editor}";
     };
-    sessionVariables = {
- NIXOS_OZONE_WL = "1";
-};
+    sessionVariables = { NIXOS_OZONE_WL = "1"; };
     systemPackages = with pkgs;
       [
         # terminal
@@ -120,6 +118,7 @@ in {
         google-chrome
         foliate
         remmina
+        auth0-cli
 
         #file manager
         file-roller
