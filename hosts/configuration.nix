@@ -140,6 +140,7 @@ in {
         pinentry
         pinentry-curses
         vesktop
+        signal-desktop
       ] ++ (with stable; [ image-roll ]);
   };
 
