@@ -141,6 +141,7 @@ in {
         pinentry-curses
         vesktop
         signal-desktop
+        mongodb-compass
       ] ++ (with stable; [ image-roll ]);
   };
 
