@@ -44,6 +44,9 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
+  networking.nameservers =
+    [ "8.8.8.8" "8.8.4.4" ]; # Google's public DNS servers
+
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
   # networking.interfaces.wlp0s20f0u7.useDHCP = lib.mkDefault true;
 
