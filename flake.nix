@@ -14,9 +14,7 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    nur = {
-      url = "github:nix-community/NUR";
-    };
+    nur = { url = "github:nix-community/NUR"; };
 
     nixgl = {
       url = "github:guibou/nixGL";
@@ -55,8 +53,10 @@
     in {
       nixosConfigurations = (import ./hosts {
         inherit (nixpkgs) lib;
-        inherit inputs nixpkgs nixpkgs-stable home-manager nur doom-emacs hyprland hyprspace
-          vars;
+        inherit inputs nixpkgs nixpkgs-stable home-manager nur doom-emacs
+          hyprland hyprspace vars;
       });
+
+      darwinConfiguration = { };
     };
 }
