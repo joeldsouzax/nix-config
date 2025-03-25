@@ -40,9 +40,35 @@
       inputs.hyprland.follows = "hyprland";
     };
 
+    ## mac
+    ##
+
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    homebrew-core = {
+      url = "github:homebrew/homebrew-core";
+      flake = false;
+    };
+    homebrew-cask = {
+      url = "github:homebrew/homebrew-cask";
+      flake = false;
+    };
+    homebrew-bundle = {
+      url = "github:homebrew/homebrew-bundle";
+      flake = false;
+    };
+    emacs-plus = {
+      url = "github:d12frosted/homebrew-emacs-plus";
+      flake = false;
+    };
+
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, ... }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin
+    , nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, emacs-plus
+    , ... }:
     let
       vars = {
         user = "joel";
@@ -57,6 +83,9 @@
           hyprland hyprspace vars;
       });
 
-      darwinConfiguration = { };
+      darwinConfiguration = (import ./darwin {
+        inherit self nix-darwin home-manager nix-homebrew homebrew-core
+          homebrew-cask homebrew-bundle emacs-plus;
+      });
     };
 }
