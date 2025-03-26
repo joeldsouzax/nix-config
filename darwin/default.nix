@@ -22,12 +22,12 @@
           # User owning the Homebrew prefix
           user = "joeldsouza";
           # Optional: Declarative tap management
-          taps = {
-            "homebrew/homebrew-core" = homebrew-core;
-            "homebrew/homebrew-cask" = homebrew-cask;
-            "homebrew/homebrew-bundle" = homebrew-bundle;
-            "d12frosted/homebrew-emacs-plus" = emacs-plus;
-          };
+          # taps = {
+          #   "homebrew/homebrew-core" = homebrew-core;
+          #   "homebrew/homebrew-cask" = homebrew-cask;
+          #   "homebrew/homebrew-bundle" = homebrew-bundle;
+          #   "d12frosted/homebrew-emacs-plus" = emacs-plus;
+          # };
 
           # Optional: Enable fully-declarative tap management
           #
