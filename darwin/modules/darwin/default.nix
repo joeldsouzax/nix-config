@@ -67,45 +67,45 @@
 
   # backwards compat; don't change
   system.stateVersion = 4;
-  homebrew = {
-    # This is a module from nix-darwin
-    # Homebrew is *installed* via the flake input nix-homebrew
-    enable = true;
-    onActivation = {
-      cleanup = "uninstall";
-      # this sucks, as the entire homebrew does. gah
-      autoUpdate = true;
-      upgrade = true;
-    };
+  # homebrew = {
+  #   # This is a module from nix-darwin
+  #   # Homebrew is *installed* via the flake input nix-homebrew
+  #   enable = true;
+  #   onActivation = {
+  #     cleanup = "uninstall";
+  #     # this sucks, as the entire homebrew does. gah
+  #     autoUpdate = true;
+  #     upgrade = true;
+  #   };
 
-    global.autoUpdate = false;
-    casks = pkgs.callPackage ./casks.nix { };
+  #   global.autoUpdate = false;
+  #   casks = pkgs.callPackage ./casks.nix { };
 
-    # These app IDs are from using the mas CLI app
-    # mas = mac app store
-    # https://github.com/mas-cli/mas
-    #
-    # $ nix shell nixpkgs#mas
-    # $ mas search <app name>
-    #
-    masApps = {
-      #"1password" = 1333542190;
-    };
+  #   # These app IDs are from using the mas CLI app
+  #   # mas = mac app store
+  #   # https://github.com/mas-cli/mas
+  #   #
+  #   # $ nix shell nixpkgs#mas
+  #   # $ mas search <app name>
+  #   #
+  #   masApps = {
+  #     #"1password" = 1333542190;
+  #   };
 
-    brews = [
-      {
-        name = "emacs-plus@30";
-        args = [ "with-native-comp" "with-mailutils" "with-ctags" "with-poll" ];
-      }
-      "pinentry"
-      "gcc"
-      "libgccjit"
-      "libtool"
-      "zlib"
-      "bzip2"
-      "libjpeg"
-    ];
-  };
+  #   brews = [
+  #     {
+  #       name = "emacs-plus@30";
+  #       args = [ "with-native-comp" "with-mailutils" "with-ctags" "with-poll" ];
+  #     }
+  #     "pinentry"
+  #     "gcc"
+  #     "libgccjit"
+  #     "libtool"
+  #     "zlib"
+  #     "bzip2"
+  #     "libjpeg"
+  #   ];
+  # };
 
   #  osascript -e 'tell application "Finder" to make alias file to posix file "/opt/homebrew/opt/emacs-plus@29/Emacs.app" at POSIX file "/Applications"'
 }
