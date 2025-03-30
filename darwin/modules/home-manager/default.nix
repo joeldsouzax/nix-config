@@ -97,11 +97,5 @@
 
   programs.starship.enable = true;
   programs.starship.enableZshIntegration = true;
-  # write all your configs here emacs included ? maybe.
-  #
-  #
-
-  # mail client for emacs
-
 
 }
