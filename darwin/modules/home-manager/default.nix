@@ -8,7 +8,7 @@
   home.sessionVariables = {
     PAGER = "less";
     CLICOLOR = 1;
-    EDITOR = "nvim";
+    EDITOR = "emacs";
   };
   programs.bat.enable = true;
   programs.bat.config.theme = "TwoDark";
