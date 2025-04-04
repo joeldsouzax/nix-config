@@ -83,9 +83,9 @@
           hyprland hyprspace vars;
       });
 
-      darwinConfiguration = (import ./darwin {
-        inherit self nix-darwin home-manager nix-homebrew homebrew-core
-          homebrew-cask homebrew-bundle emacs-plus;
-      });
+      # darwinConfiguration = (import ./darwin {
+      #   inherit self nix-darwin home-manager nix-homebrew homebrew-core
+      #     homebrew-cask homebrew-bundle emacs-plus;
+      # });
     };
 }
