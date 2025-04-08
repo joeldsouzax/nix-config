@@ -10,20 +10,18 @@
     [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
 
-  boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [
-    # config.boot.kernelPackages.rtl8188eus-aircrack
-    config.boot.kernelPackages.rtl8852au
-    # config.boot.kernelPackages.rtl8852bu
-  ];
+  hardware.enableRedistributableFirmware = true;
 
-  # services.udev.extraRules =
-  #   # Switch Archer ax1800U Nano from CDROM mode (default) to WiFi mode.
-  #   ''
-  #     ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${
-  #       lib.getExe pkgs.usb-modeswitchx
-  #     } -K -v 0bda -p 1a2b"
-  #   '';
+  boot.kernelModules = [ "kvm-intel" ];
+  boot.extraModulePackages = [ config.boot.kernelPackages.rtl8852au ];
+  boot.kernelPackages = pkgs.linuxPackages_6_12;
+
+  # Add the udev rule to trigger usb_modeswitch for the storage mode ID
+  services.udev.extraRules = ''
+    ATTR{idVendor}=="0bda", ATTR{idProduct}=="1a2b", RUN+="${
+      lib.getExe pkgs.usb-modeswitch
+    } -K -v 0bda -p 1a2b"
+  '';
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";
@@ -36,6 +34,9 @@
     options = [ "fmask=0077" "dmask=0077" ];
   };
 
+  hardware.graphics.enable = true;
+  hardware.graphics.extraPackages = [ pkgs.libvdpau-va-gl ];
+
   swapDevices =
     [{ device = "/dev/disk/by-uuid/3ff00db8-aef8-440a-9430-ac688887e0a4"; }];
 
@@ -45,9 +46,11 @@
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
 
   networking = {
+    networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
     nameservers = [ "8.8.8.8" "8.8.4.4" ];
-    firewall.enable = false;
+    firewall.allowedTCPPorts = [ 57621 ];
+    firewall.allowedUDPPorts = [ 5353 ];
   };
   # networking.useDHCP = lib.mkDefault true;
   # networking.nameservers =

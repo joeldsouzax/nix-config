@@ -18,12 +18,8 @@ in {
     extraGroups =
       [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
   };
-
-  networking.networkmanager.enable = true;
   security.chromiumSuidSandbox.enable = true;
 
-  hardware.opengl.enable = true;
-  hardware.opengl.extraPackages = [ pkgs.libvdpau-va-gl ];
   environment.variables.VDPAU_DRIVER = "va_gl";
   environment.variables.LIBVA_DRIVER_NAME = "nvidia";
 
@@ -132,6 +128,7 @@ in {
         maim
         gnuplot
         grip
+        usb-modeswitch
 
         #encryption
         age
