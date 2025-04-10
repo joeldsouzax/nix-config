@@ -18,10 +18,13 @@
   services.xserver.videoDrivers = [ "nvidia" ];
   services.pcscd.enable = true;
   hardware = {
-    graphics = { enable = true; };
+    graphics = {
+      enable = true;
+      extraPackages = [ pkgs.libvdpau-va-gl ];
+    };
     nvidia = {
       modesetting.enable = true;
-      powerManagement.enable = false;
+      powerManagement.enable = true;
       powerManagement.finegrained = false;
       open = false;
       nvidiaSettings = true;

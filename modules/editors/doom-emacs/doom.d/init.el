@@ -124,7 +124,7 @@
        ;;crystal           ; ruby at the speed of c
        ;; (csharp +dotnet +lsp)            ; unity, .NET, and mono shenanigans
        ;;data              ; config/data formats
-       ;;(dart +flutter)   ; paint ui and not much else
+       (dart +flutter +lsp)   ; paint ui and not much else
        ;;dhall
        ;;(elixir +lsp)            ; erlang done right
        ;;elm               ; care for a cup of TEA?
@@ -143,10 +143,10 @@
        ;;hy                ; readability of scheme w/ speed of python
        ;;idris             ; a language you can depend on
        (json +lsp)              ; At least it ain't XML
-       ;;(java +lsp)       ; the poster child for carpal tunnel syndrome
+       (java +lsp)       ; the poster child for carpal tunnel syndrome
        (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
-       ;;kotlin            ; a better, slicker Java(Script)
+       (kotlin +lsp)            ; a better, slicker Java(Script)
        ;;latex             ; writing papers in Emacs has never been so fun
        ;;lean              ; for folks with too much to prove
        ;;ledger            ; be audit you can be
