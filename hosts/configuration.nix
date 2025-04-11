@@ -139,6 +139,7 @@ in {
         vesktop
         signal-desktop
         mongodb-compass
+        code-cursor
       ] ++ (with stable; [ image-roll ]);
   };
 
