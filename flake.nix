@@ -3,7 +3,6 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
-
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -83,9 +82,9 @@
           hyprland hyprspace vars;
       });
 
-      # darwinConfiguration = (import ./darwin {
-      #   inherit self nix-darwin home-manager nix-homebrew homebrew-core
-      #     homebrew-cask homebrew-bundle emacs-plus;
-      # });
+      darwinConfiguration = (import ./darwin {
+        inherit self nix-darwin home-manager nix-homebrew homebrew-core
+          homebrew-cask homebrew-bundle emacs-plus;
+      });
     };
 }
