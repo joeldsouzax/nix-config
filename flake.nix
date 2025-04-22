@@ -2,14 +2,14 @@
   description = "nixos configuration";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager-stable = {
-      url = "github:nix-community/home-manager/release-23.11";
+      url = "github:nix-community/home-manager/release-24.11";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
@@ -42,32 +42,33 @@
     ## mac
     ##
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
-    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+    # nix-darwin.url = "github:LnL7/nix-darwin";
+    # nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
-    homebrew-core = {
-      url = "github:homebrew/homebrew-core";
-      flake = false;
-    };
-    homebrew-cask = {
-      url = "github:homebrew/homebrew-cask";
-      flake = false;
-    };
-    homebrew-bundle = {
-      url = "github:homebrew/homebrew-bundle";
-      flake = false;
-    };
-    emacs-plus = {
-      url = "github:d12frosted/homebrew-emacs-plus";
-      flake = false;
-    };
+    # nix-homebrew.url = "github:zhaofengli-wip/nix-homebrew";
+    # homebrew-core = {
+    #   url = "github:homebrew/homebrew-core";
+    #   flake = false;
+    # };
+    # homebrew-cask = {
+    #   url = "github:homebrew/homebrew-cask";
+    #   flake = false;
+    # };
+    # homebrew-bundle = {
+    #   url = "github:homebrew/homebrew-bundle";
+    #   flake = false;
+    # };
+    # emacs-plus = {
+    #   url = "github:d12frosted/homebrew-emacs-plus";
+    #   flake = false;
+    # };
 
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin
-    , nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, emacs-plus
-    , ... }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace,
+    #   nix-darwin
+    # , nix-homebrew, homebrew-core, homebrew-cask, homebrew-bundle, emacs-plus
+    ... }:
     let
       vars = {
         user = "joel";
@@ -82,9 +83,9 @@
           hyprland hyprspace vars;
       });
 
-      darwinConfiguration = (import ./darwin {
-        inherit self nix-darwin home-manager nix-homebrew homebrew-core
-          homebrew-cask homebrew-bundle emacs-plus;
-      });
+      # darwinConfiguration = (import ./darwin {
+      #   inherit self nix-darwin home-manager nix-homebrew homebrew-core
+      #     homebrew-cask homebrew-bundle emacs-plus;
+      # });
     };
 }

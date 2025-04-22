@@ -155,11 +155,11 @@ in {
     };
   };
 
-  hardware.pulseaudio.enable = false;
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services = {
     blueman.enable = true;
+    pulseaudio.enable = false;
     printing = { enable = true; };
     pipewire = {
       enable = true;
