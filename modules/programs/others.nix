@@ -1,16 +1,24 @@
 # Terminal Emulator
 #
 
-{ vars, ... }:
+{ pkgs, vars, ... }:
 
 {
+  environment = { systemPackages = with pkgs; [ chawan ]; };
   home-manager.users.${vars.user} = {
     programs = {
       bat.enable = true;
       bat.config.theme = "TwoDark";
       fzf.enable = true;
       fzf.enableZshIntegration = true;
-      eza.enable = true;
+
+      eza = {
+        enable = true;
+        enableZshIntegration = true;
+        colors = "always";
+        git = true;
+        icons = "always";
+      };
       dircolors = {
         enable = true;
         enableZshIntegration = true;
@@ -25,17 +33,16 @@
         enable = true;
         enableZshIntegration = true;
       };
-      # bacon = {
-      #   enable = true;
-      #   settings = {
-      #     jobs = {
-      #       default = {
-      #         command = [ "cargo" "build" "--all-features" "--color" "always" ];
-      #         need_stdout = true;
-      #       };
-      #     };
-      #   };
-      # };
+      chawan = {
+        enable = true;
+        settings = {
+          pager."C-k" = "() => pager.load('https://duckduckgo.com/?=')";
+        };
+      };
+      gallery-dl = {
+        enable = true;
+        settings = { extractor.base-directory = "~/Downloads"; };
+      };
     };
   };
 }

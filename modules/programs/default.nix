@@ -21,5 +21,6 @@
   ./wofi.nix
   ./git.nix
   ./direnv.nix
+  ./ghostty.nix
   # ./games.nix
 ]

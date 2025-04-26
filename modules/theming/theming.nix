@@ -8,11 +8,12 @@
     home = {
       file.".config/wall.png".source = ./pure-black.jpg;
       file.".config/wall.mp4".source = ./wall.mp4;
+
       pointerCursor = {
         gtk.enable = true;
         name = "Dracula-cursors";
         package = pkgs.dracula-theme;
-        size = 24;
+        size = 32;
       };
     };
 
