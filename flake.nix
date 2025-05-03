@@ -73,7 +73,7 @@
       vars = {
         user = "joel";
         location = "$HOME/.setup";
-        terminal = "kitty";
+        terminal = "ghostty";
         editor = "vim";
       };
     in {

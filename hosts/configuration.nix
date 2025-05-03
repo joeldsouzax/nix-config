@@ -51,6 +51,8 @@ in {
     nerd-fonts.fira-code
   ];
 
+  services.udev.packages = [ pkgs.android-udev-rules ];
+
   environment = {
     variables = {
       TERMINAL = "${vars.terminal}";
@@ -137,7 +139,6 @@ in {
         pinentry
         pinentry-curses
         vesktop
-        signal-desktop
         mongodb-compass
         code-cursor
       ] ++ (with stable; [ image-roll ]);

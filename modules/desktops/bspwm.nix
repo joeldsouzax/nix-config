@@ -133,7 +133,7 @@ in {
       xorg.xev # Event Viewer
       xorg.xkill # Process Killer
       xorg.xrandr # Monitor Settings
-      xterm # Terminal
+
     ];
 
     home-manager.users.${vars.user} = {

@@ -14,7 +14,7 @@
   ./accounts.nix
   ./eww.nix
   ./flatpak.nix
-  ./kitty.nix
+  # ./kitty.nix
   ./obs.nix
   ./rofi.nix
   ./waybar.nix

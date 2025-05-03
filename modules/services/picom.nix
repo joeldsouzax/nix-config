@@ -1,4 +1,3 @@
-#
 #  Compositor
 #
 
@@ -39,7 +38,7 @@
           #"85:class_i ?= 'rofi'"
           "95:class_i *= 'discord'"
           "95:class_i *= 'emacs'"
-          "95:class_i *= 'kitty'"
+          "95:class_i *= 'ghostty'"
           #"100:fullscreen"
         ]; # Find with $ xprop | grep "WM_CLASS"
 

@@ -397,7 +397,7 @@ with host; {
             "size 24% 24%, title:(Firefox)"
             "move 74% 74%, title:(Firefox)"
             "pin, title:^(Firefox)$"
-            "opacity 0.9, class:^(kitty)"
+            "opacity 0.9, class:^(ghostty)"
             "tile,initialTitle:^WPS.*"
           ];
           exec-once = [

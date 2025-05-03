@@ -1,13 +1,11 @@
-#
-#  Gnome Configuration
+# Gnome Configuration
 #  Enable with "gnome.enable = true;"
 #  View dconf changes with $ dconf watch /
 #
 
 { config, lib, pkgs, vars, ... }:
 
-with lib;
-{
+with lib; {
   options = {
     gnome = {
       enable = mkOption {
@@ -18,17 +16,13 @@ with lib;
   };
 
   config = mkIf (config.gnome.enable) {
-    programs = {
-      zsh.enable = true;
-    };
+    programs = { zsh.enable = true; };
 
     services = {
       libinput.enable = true;
       xserver = {
         enable = true;
-        xkb = {
-          layout = "us";
-        };
+        xkb = { layout = "us"; };
         displayManager.gdm.enable = true;
         desktopManager.gnome.enable = true;
       };
@@ -45,9 +39,10 @@ with lib;
         gnome-tweaks
         yelp
       ];
-      gnome.excludePackages = (with pkgs; [
-        # gnome-tour
-      ]);
+      gnome.excludePackages = (with pkgs;
+        [
+          # gnome-tour
+        ]);
     };
 
     home-manager.users.${vars.user} = {
@@ -76,24 +71,23 @@ with lib;
           clock-show-weekday = true;
           show-battery-percentage = true;
         };
-        "org/gnome/desktop/privacy" = {
-          report-technical-problems = "false";
-        };
-        "org/gnome/desktop/calendar" = {
-          show-weekdate = true;
-        };
+        "org/gnome/desktop/privacy" = { report-technical-problems = "false"; };
+        "org/gnome/desktop/calendar" = { show-weekdate = true; };
         "org/gnome/desktop/background" = {
           color-shading-type = "solid";
           picture-options = "zoom";
-          picture-uri = "file:///run/current-system/sw/share/backgrounds/gnome/blobs-l.svg";
-          picture-uri-dark = "file:///run/current-system/sw/share/backgrounds/gnome/blobs-d.svg";
+          picture-uri =
+            "file:///run/current-system/sw/share/backgrounds/gnome/blobs-l.svg";
+          picture-uri-dark =
+            "file:///run/current-system/sw/share/backgrounds/gnome/blobs-d.svg";
           primary-color = "#241f31";
           secondary-color = "#000000";
         };
         "org/gnome/desktop/screensaver" = {
           color-shading-type = "solid";
           picture-options = "zoom";
-          picture-uri = "file:///run-current-system/sw/share/backgrounds/gnome/blobs-l.svg";
+          picture-uri =
+            "file:///run-current-system/sw/share/backgrounds/gnome/blobs-l.svg";
           primary-color = "#241f31";
           secondary-color = "#000000";
         };
@@ -154,21 +148,24 @@ with lib;
           ];
           search = [ "<super>space" ];
         };
-        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" = {
-          binding = "<super>return";
-          command = "kitty";
-          name = "open-terminal";
-        };
-        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" = {
-          binding = "<super>t";
-          command = "kitty nvim";
-          name = "open-editor";
-        };
-        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" = {
-          binding = "<super>e";
-          command = "nautilus";
-          name = "open-file-browser";
-        };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
+          {
+            binding = "<super>return";
+            command = "ghostty";
+            name = "open-terminal";
+          };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
+          {
+            binding = "<super>t";
+            command = "ghostty nvim";
+            name = "open-editor";
+          };
+        "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" =
+          {
+            binding = "<super>e";
+            command = "nautilus";
+            name = "open-file-browser";
+          };
 
         "org/gnome/shell/extensions/caffeine" = {
           enable-fullscreen = true;
@@ -176,9 +173,7 @@ with lib;
           show-indicator = true;
           show-notification = false;
         };
-        "org/gnome/shell/extensions/blur-my-shell" = {
-          brightness = 0.9;
-        };
+        "org/gnome/shell/extensions/blur-my-shell" = { brightness = 0.9; };
         "org/gnome/shell/extensions/blur-my-shell/panel" = {
           customize = true;
           sigma = 0;
@@ -187,9 +182,7 @@ with lib;
           customize = true;
           sigma = 0;
         };
-        "org/gnome/shell/extensions/pip-on-top" = {
-          stick = true;
-        };
+        "org/gnome/shell/extensions/pip-on-top" = { stick = true; };
         "org/gnome/shell/extensions/forge" = {
           window-gap-size = 8;
           dnd-center-layout = "swap";
@@ -221,7 +214,8 @@ with lib;
 
       xdg.desktopEntries.GDrive = {
         name = "GDrive";
-        exec = "${pkgs.rclone}/bin/rclone mount --daemon gdrive: /GDrive --vfs-cache-mode=writes";
+        exec =
+          "${pkgs.rclone}/bin/rclone mount --daemon gdrive: /GDrive --vfs-cache-mode=writes";
       };
     };
   };
