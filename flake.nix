@@ -74,7 +74,7 @@
         user = "joel";
         location = "$HOME/.setup";
         terminal = "ghostty";
-        editor = "vim";
+        editor = "emacs";
       };
     in {
       nixosConfigurations = (import ./hosts {
