@@ -199,7 +199,7 @@ in {
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.rocmSupport = true;
-  system.stateVersion = "24.11";
+  system.stateVersion = "24.05";
 
   home-manager.users.${vars.user} = {
     home.stateVersion = "24.11";
