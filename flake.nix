@@ -56,5 +56,7 @@
           hyprland hyprspace vars;
       });
 
+      darwin =  {};
+
     };
 }
