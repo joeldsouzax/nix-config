@@ -56,6 +56,6 @@
           hyprland hyprspace vars;
       });
 
-      darwin =  { import ./darwin {}};
+      darwin =  { import ./darwin { inherit (nixpkgs) lib; };};
     };
 }
