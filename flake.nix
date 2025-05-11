@@ -56,7 +56,6 @@
           hyprland hyprspace vars;
       });
 
-      darwin =  {};
-
+      darwin =  { import ./darwin {}};
     };
 }
