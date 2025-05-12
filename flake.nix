@@ -39,9 +39,12 @@
       inputs.hyprland.follows = "hyprland";
     };
 
+    nix-darwin.url = "github:nix-darwin/nix-darwin/master";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, ... }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin ... }:
     let
       vars = {
         user = "joel";
@@ -56,6 +59,9 @@
           hyprland hyprspace vars;
       });
 
-      darwin =  { import ./darwin { inherit (nixpkgs) lib; };};
+      darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {
+       modules = [ ./darwin ];
+        specialArgs = { inherit inputs; };
+      };
     };
 }
