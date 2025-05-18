@@ -44,7 +44,8 @@
 
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin ... }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin, ...
+    }:
     let
       vars = {
         user = "joel";
@@ -60,7 +61,7 @@
       });
 
       darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {
-       modules = [ ./darwin ];
+        modules = [ ./darwin ];
         specialArgs = { inherit inputs; };
       };
     };
