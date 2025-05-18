@@ -46,7 +46,7 @@ with host; {
 
     home-manager.users.${vars.user} = let
       monitor =
-        "riverctl spawn ${pkgs.wlr-randr}/bin/wlr-randr --output ${secondMonitor} --mode 1920x1080@60 --pos 0,0 --transform 90 --output ${mainMonitor} --mode 3840x2160@60 --pos 0,0";
+        "riverctl spawn ${pkgs.wlr-randr}/bin/wlr-randr --output ${secondMonitor} --mode 1920x1080@60 --pos 0,0 --output ${mainMonitor} --mode 3840x2160@60 --pos 0,0";
     in {
       home.file = {
         ".config/river/init" = {
