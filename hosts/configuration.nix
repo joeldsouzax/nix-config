@@ -199,10 +199,10 @@ in {
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.rocmSupport = true;
-  system.stateVersion = "24.05";
+  system.stateVersion = "25.05";
 
   home-manager.users.${vars.user} = {
-    home.stateVersion = "24.11";
+    home.stateVersion = "25.05";
     programs.home-manager.enable = true;
     xdg = {
       mime.enable = true;
