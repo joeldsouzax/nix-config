@@ -37,7 +37,6 @@
       };
       font = { name = "FiraCode Nerd Font Mono Medium"; };
     };
-
     # qt = {
     #   enable = true;
     #   platformTheme.name = "gtk";

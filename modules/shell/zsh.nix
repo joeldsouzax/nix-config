@@ -1,4 +1,4 @@
-#  Shell
+# Shell
 #
 
 { pkgs, vars, ... }:
@@ -13,12 +13,10 @@
       syntaxHighlighting.enable = true;
       enableCompletion = true;
       histSize = 100000;
-
       ohMyZsh = {
         enable = true;
         plugins = [ "git" ];
       };
-
       shellInit = ''
         # Spaceship
         source ${pkgs.spaceship-prompt}/share/zsh/site-functions/prompt_spaceship_setup
