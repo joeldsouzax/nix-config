@@ -70,10 +70,7 @@ with host; {
             size = 12.0;
           };
 
-          # gaps = {
-          #   inner = 5;
-          #   outer = 5;
-          # };
+
 
           input = {
             # Input modules: $ man sway-input

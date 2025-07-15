@@ -95,6 +95,7 @@ in {
         nodejs
         python3
         ispell
+        nchat
         sqlite
         nil
 
@@ -131,6 +132,7 @@ in {
         gnuplot
         grip
         usb-modeswitch
+        telegram-desktop
 
         #encryption
         age

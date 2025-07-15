@@ -1,5 +1,4 @@
-#
-#  Qemu/KVM With Virt-Manager
+# Qemu/KVM With Virt-Manager
 #
 
 { config, pkgs, vars, ... }:
@@ -10,6 +9,11 @@
     options kvm_intel emulate_invalid_guest_state=0
     options kvm ignore_nsrs=1
   ''; # For OSX-KVM
+
+  boot.kernelParams = [
+    "systemd.unified_cgroup_hierarchy=1"
+    "systemd.legacy_systemd_cgroup_controller=0"
+  ];
 
   users.groups = {
     libvirtd.members = [ "root" "${vars.user}" ];
@@ -41,9 +45,7 @@
     ];
   };
 
-  services = {
-    gvfs.enable = true;
-  };
+  services = { gvfs.enable = true; };
 
   # OpenGL in VM
   # 1. Install virglrenderer

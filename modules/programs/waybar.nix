@@ -48,128 +48,67 @@ in {
       programs.waybar = {
         enable = true;
         package = pkgs.waybar;
-        # systemd = {
-        #   enable = true;
-        #   target = "hyprland-session.target";
-        # };
-
         style = ''
           * {
             border: none;
             border-radius: 0;
             font-family: FiraCode Nerd Font Mono;
             font-size: 18px;
-            text-shadow: 0px 0px 5px #000000;
           }
-          button:hover {
-            background-color: rgba(${rgb.active},0.4);
-          }
+
           window#waybar {
-            background-color: rgba(${rgb.bg} , 0);
-            transition-property: background-color;
-            transition-duration: .5s;
-            /*border-bottom: 1px solid rgba(${rgb.active}, 0.99);*/
+            background-color: transparent; /* Make the bar invisible */
           }
-          window#waybar.hidden {
-            opacity: 0.2;
-          }
-          #workspace,
-          #mode,
-          #clock,
-          #pulseaudio,
-          #custom-sink,
-          #network,
-          #mpd,
-          #memory,
-          #network,
-          #window,
-          #cpu,
-          #disk,
-          #backlight,
-          #battery,
-          #custom-mouse,
-          #custom-kb,
-          #custom-ds4,
-          #tray {
-            color: #${hex.text};
-            background-clip: padding-box;
-          }
-          #custom-menu, #custom-notification {
-            color: rgba(255, 255, 255, 0.9);
-            padding: 0px 5px 0px 5px;
-          }
-          #workspaces button {
-            border-radius: 6px;
-            padding: 0px 7px;
-            min-width: 5px;
-            color: rgba(${rgb.text},1);
-          }
-          #workspaces button:hover {
-            color: rgba(${rgb.active},1);
-            background-color: rgba(${rgb.inactive},0.2);
-          }
-          #workspaces button.visible {
-            background-color: rgba(${rgb.active}, 0.3);
-          }
-          /*#workspaces button.focused {*/
-          #workspaces button.active {
-            color: rgba(${rgb.fg},1);
-            background-color: rgba(${rgb.active}, 0.8);
-          }
-          #workspaces button.hidden {
-            color: #${hex.text};
-          }
-          #battery.warning {
-            color: #ff5d17;
-            background-color: rgba(0,0,0,0);
-          }
-          #battery.critical {
-            color: #ff200c;
-            background-color: rgba(0,0,0,0);
-          }
-          #battery.charging {
-            color: #9ece6a;
-            background-color: rgba(0,0,0,0);
+
+          /* Style for our status dots */
+          #network, #custom-notification {
+            padding: 0 5px; /* Add some spacing around the dots */
+            color: transparent; /* Hide any default text */
           }
         '';
+
         settings = {
           Main = {
             layer = if config.hyprland.enable then "top" else "bottom";
             position = "top";
-            height = 36;
-            # output = output;
+            height = 20;
+            exclusive = false; # Don't reserve space on the screen
+            passthrough =
+              true; # Allow clicks to "pass through" the transparent bar
+            modules-left = [ ];
 
-            tray = { spacing = 5; };
-            modules-left = modules-left;
-            modules-right = modules-right;
+            # Only show network and notification modules on the right
+            modules-right = [ "network" "custom/notification" ];
 
-            "custom/pad" = {
-              format = "      ";
-              tooltip = false;
+            # --- MODULE CONFIGURATIONS ---
+
+            "network" = {
+              # Show a blue dot when WiFi is connected
+              format-wifi = "<span foreground='blue'>●</span>";
+
+              # Show nothing if disconnected or on another connection type
+              format-ethernet = "";
+              format-linked = "";
+              format-disconnected = "";
+              tooltip = false; # Disable tooltip popup on hover
             };
-            "custom/menu" = {
-              format = "<span font='18'></span>";
-              # on-click = ''${pkgs.eww}/bin/eww open --toggle menu --screen 0'';
-              on-click = "sleep 0.1; .config/wofi/power.sh";
-              on-click-right = "sleep 0.1; ${pkgs.wofi}/bin/wofi --show drun";
-              tooltip = false;
-            };
+
             "custom/notification" = {
               tooltip = false;
               format = "{icon}";
               format-icons = {
-                notification =
-                  "<span font='18'></span><span foreground='red'><sup></sup></span>";
-                none = "<span font='18'></span>";
-                dnd-notification =
-                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
-                dnd-none = "<span font='16'></span>";
-                inhibited-notification =
-                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
-                inhibited-none = "<span font='16'></span>";
-                dnd-inhibited-notification =
-                  "<span font='16'></span><span foreground='red'><sup></sup></span>";
-                dnd-inhibited-none = "<span font='16'></span>";
+                # Show a red dot when there is a notification
+                "notification" = "<span foreground='red'>●</span>";
+                "dnd-notification" = "<span foreground='red'>●</span>";
+                "inhibited-notification" = "<span foreground='red'>●</span>";
+                "dnd-inhibited-notification" =
+                  "<span foreground='red'>●</span>";
+
+                # Show nothing when there are no notifications
+                "none" = "";
+                "dnd-none" = "";
+                "inhibited-none" = "";
+                "dnd-inhibited-none" = "";
               };
               return-type = "json";
               exec-if = "which swaync-client";
@@ -178,142 +117,6 @@ in {
               on-click-right = "sleep 0.1; swaync-client -d -sw";
               escape = true;
             };
-            "sway/workspaces" = {
-              format = "<span font='18'>{icon}</span>";
-              format-icons = {
-                # "1"="";
-                # "2"="";
-                # "3"="";
-                # "4"="";
-                # "5"="";
-                "1" = "1";
-                "2" = "2";
-                "3" = "3";
-                "4" = "4";
-                "5" = "5";
-                "6" = "6";
-                "7" = "7";
-                "8" = "8";
-                "9" = "9";
-              };
-              all-outputs = true;
-              persistent_workspaces = {
-                # "1" = [];
-                # "2" = [];
-                # "3" = [];
-                # "4" = [];
-                # "5" = [];
-                "1" = [ ];
-                "2" = [ ];
-                "3" = [ ];
-                "4" = [ ];
-                "5" = [ ];
-                "6" = [ ];
-                "7" = [ ];
-                "8" = [ ];
-                "9" = [ ];
-              };
-            };
-            "wlr/workspaces" = {
-              format = "<span font='18'>{name}</span>";
-              active-only = false;
-              on-click = "activate";
-            };
-            "hyprland/workspaces" = {
-              format = "<span font='18'>{name}</span>";
-              window-rewrite = { };
-            };
-            clock = {
-              format = "{:%b %d %H:%M}  ";
-              on-click =
-                "sleep 0.1; ${pkgs.eww}/bin/eww open --toggle calendar --screen 0";
-            };
-            cpu = {
-              format = " {usage}% <span font='18'></span> ";
-              interval = 1;
-            };
-            disk = {
-              format = "{percentage_used}% <span font='18'></span>";
-              path = "/home/joel/";
-              interval = 30;
-            };
-            memory = {
-              format = "{}% <span font='18'></span>";
-              interval = 1;
-            };
-            backlight = {
-              device = "intel_backlight";
-              format = "{percent}% <span font='18'>{icon}</span>";
-              format-icons = [ "" "󰖙" ];
-              on-scroll-down = "${pkgs.light}/bin/light -U 5";
-              on-scroll-up = "${pkgs.light}/bin/light -A 5";
-            };
-            battery = {
-              interval = 1;
-              states = {
-                warning = 30;
-                critical = 15;
-              };
-              format = "{capacity}% <span font='11'>{icon}</span>";
-              format-charging = "{capacity}% <span font='11'></span>";
-              format-icons = [ "" "" "" "" "" ];
-              max-length = 25;
-            };
-            network = {
-              format-wifi = "<span font='16'></span>";
-              format-ethernet = "<span font='11'>󰈀</span>";
-              format-linked = "<span font='11'>󱘖</span> {ifname} (No IP)";
-              format-disconnected = "<span font='11'>󱘖</span> Not connected";
-              tooltip-format = "{essid} {ipaddr}/{cidr}";
-            };
-            pulseaudio = {
-              format =
-                "<span font='18'>{icon}</span> {volume}% {format_source} ";
-              format-bluetooth =
-                "<span font='18'>{icon}</span> {volume}% {format_source} ";
-              format-bluetooth-muted =
-                "<span font='18'>x</span> {volume}% {format_source} ";
-              format-muted =
-                "<span font='18'>x</span> {volume}% {format_source} ";
-              format-source = "<span font='18'></span> ";
-              format-source-muted = "<span font='18'></span> ";
-              format-icons = {
-                default = [ "" "" "" ];
-                headphone = "";
-              };
-              tooltip-format = "{desc}, {volume}%";
-              scroll-step = 5;
-              on-click = "${pkgs.pamixer}/bin/pamixer -t";
-              on-click-right =
-                "${pkgs.pamixer}/bin/pamixer --default-source -t";
-              on-click-middle = "${pkgs.pavucontrol}/bin/pavucontrol";
-            };
-            "custom/sink" = {
-              format = "{}";
-              exec = "$HOME/.config/waybar/script/sink.sh";
-              interval = 2;
-              on-click = "$HOME/.config/waybar/script/switch.sh";
-              tooltip = false;
-            };
-            "custom/mouse" = {
-              format = "{}";
-              exec = "$HOME/.config/waybar/script/mouse.sh";
-              interval = 60;
-              tooltip = false;
-            };
-            "custom/kb" = {
-              format = "{}";
-              exec = "$HOME/.config/waybar/script/kb.sh";
-              interval = 60;
-              tooltip = false;
-            };
-            "custom/ds4" = {
-              format = "{}";
-              exec = "$HOME/.config/waybar/script/ds4.sh";
-              interval = 60;
-              tooltip = false;
-            };
-            tray = { icon-size = 18; };
           };
         };
       };

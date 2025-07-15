@@ -11,10 +11,14 @@ in {
       home.file = with colors.scheme.default.hex; {
         ".config/wofi/config" = {
           text = ''
+            # --- ADD THIS LINE ---
+            layer=overlay
+
             width=100%
             height=36
             xoffset=0
-            yoffset=-36
+            # --- CHANGE THIS LINE ---
+            yoffset=0
             location=1
             prompt=Search...
             filter_rate=100
