@@ -97,7 +97,6 @@ with host; {
           user = vars.user;
         };
       };
-      vt = 7;
     };
 
     systemd.sleep.extraConfig = ''

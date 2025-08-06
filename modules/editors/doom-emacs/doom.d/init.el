@@ -104,7 +104,7 @@
        ;;prodigy           ; FIXME managing external services & code builders
        rgb               ; creating color strings
        ;;taskrunner        ; taskrunner for all your projects
-       ;;terraform         ; infrastructure as code
+       terraform         ; infrastructure as code
        ;;tmux              ; an API for interacting with tmux
        tree-sitter       ; syntax and parsing, sitting in a tree...
        ;;upload            ; map local to remote projects via ssh/ftp
@@ -155,11 +155,11 @@
        ;;nim               ; python + lisp at the speed of c
        (nix +lsp +tree-sitter)               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +dragndrop +gnuplot +noter +hugo +present +pomodoro +pretty +roam2)             ; organize your plain life in plain text
+       (org +dragndrop +gnuplot +noter +hugo +present +pomodoro +pretty +roam2 +jupyter +ipython)             ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       ;;python            ; beautiful is better than ugly
+       (python +conda +lsp +cython +pyenv +pyright +poetry)            ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework everss
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6

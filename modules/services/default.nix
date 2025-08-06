@@ -1,4 +1,3 @@
-#
 #  Services
 #
 #  flake.nix
@@ -13,6 +12,7 @@
 [
   ./avahi.nix
   # ./dunst.nix
+  ./expressvpn.nix
   ./flameshot.nix
   ./picom.nix
   ./polybar.nix

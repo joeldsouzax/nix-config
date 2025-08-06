@@ -64,6 +64,7 @@ in {
       [
         # terminal
         terminal
+        tmux
         bat
         btop
         coreutils
@@ -133,6 +134,8 @@ in {
         grip
         usb-modeswitch
         telegram-desktop
+        expressvpn
+        lmstudio
 
         #encryption
         age
