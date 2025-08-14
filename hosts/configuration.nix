@@ -135,7 +135,7 @@ in {
         usb-modeswitch
         telegram-desktop
         expressvpn
-        lmstudio
+
 
         #encryption
         age
