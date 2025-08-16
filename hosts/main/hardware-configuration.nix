@@ -23,7 +23,15 @@
     } -K -v 0bda -p 1a2b"
   '';
 
+  fileSystems."/nix/store" = {
+    device = "/dev/disk/by-label/DataDrive"; # This is your /dev/sda1
+    fsType = "ext4";
+  };
 
+  fileSystems."/home/joel/Code" = {
+    device = "/dev/disk/by-uuid/55f85a49-7faa-44e0-b416-6eac820faadc";
+    fsType = "ext4";
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/34197c02-19aa-4176-83ba-652edf72b1a0";
