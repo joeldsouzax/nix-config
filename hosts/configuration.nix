@@ -17,6 +17,8 @@ in {
     home = "/home/${vars.user}";
     extraGroups =
       [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
+
+    linger = true;
   };
   security.chromiumSuidSandbox.enable = true;
 
@@ -135,7 +137,7 @@ in {
         usb-modeswitch
         telegram-desktop
         expressvpn
-
+        newsflash
 
         #encryption
         age

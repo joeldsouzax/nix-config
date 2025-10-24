@@ -178,6 +178,7 @@
        (yaml +lsp)              ; JSON, but readable
        ;;zig               ; C, but simpler
        (toml +lsp)
+       (protobuf +tree-sitter)
 
        :email
        ;;(mu4e +org)
