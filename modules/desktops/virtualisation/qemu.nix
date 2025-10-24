@@ -8,7 +8,7 @@
     options kvm_intel nested=1
     options kvm_intel emulate_invalid_guest_state=0
     options kvm ignore_nsrs=1
-  ''; # For OSX-KVM
+  '';
 
   boot.kernelParams = [
     "systemd.unified_cgroup_hierarchy=1"
@@ -24,27 +24,23 @@
     libvirtd = {
       enable = true;
       qemu = {
-        verbatimConfig = ''
-          nvram = [ "${pkgs.OVMF}/FV/OVMF.fd:${pkgs.OVMF}/FV/OVMF_VARS.fd" ]
-        '';
+        package = pkgs.qemu_kvm;
         swtpm.enable = true;
+        vhostUserPackages = [ pkgs.virtiofsd ];
       };
     };
+
     spiceUSBRedirection.enable = true;
   };
 
-  environment = {
-    systemPackages = with pkgs; [
-      virt-manager # VM Interface
-      virt-viewer # Remote VM
-      qemu # Virtualizer
-      OVMF # UEFI Firmware
-      gvfs # Shared Directory
-      swtpm # TPM
-      virglrenderer # Virtual OpenGL
-    ];
-  };
+  security.polkit.enable = true;
 
-  services = { gvfs.enable = true; };
+  environment.systemPackages = with pkgs; [
+    virt-manager
+    virt-viewer
+    OVMF
+    swtpm
+    virglrenderer
+  ];
 }
 
