@@ -188,7 +188,13 @@ in {
 
     dnsmasq = {
       enable = true;
-      settings = { address = "/resiliq.com/192.168.122.100"; };
+      settings = {
+        address = "/resiliq.com/192.168.122.100";
+        bind-interfaces = true;
+        listen-address = "127.0.0.1";
+        except-interface = "virbr0";
+      };
+
     };
   };
 
@@ -226,7 +232,7 @@ in {
           "image/jpeg" = [ "image-roll.desktop" "feh.desktop" ];
           "image/png" = [ "image-roll.desktop" "feh.desktop" ];
           "text/plain" = "emacs.desktop";
-          "text/html" = "emacs.desktop";
+          "text/html" = "google-chrome.desktop";
           "text/csv" = "emacs.desktop";
           "application/pdf" = [
             "wps-office-pdf.desktop"

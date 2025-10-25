@@ -6,15 +6,16 @@
 {
   home-manager.users.${vars.user} = {
     programs = {
+      delta = {
+        enable = true;
+        enableGitIntegration = true;
+      };
       git = {
         enable = true;
         ignores = [ "*.swp" ];
-        delta.enable = true;
-        userName = "Joel DSouza";
-        userEmail = "joeldsouzax@gmail.com";
-        signing.key = "2CE4286073195A43";
-        lfs = { enable = true; };
-        extraConfig = {
+        settings = {
+          user.name = "Joel DSouza";
+          user.email = "joeldsouzax@gmail.com";
           init.defaultBranch = "main";
           core = {
             editor = "emacs";
@@ -25,6 +26,9 @@
           rebase.autoStash = true;
           extraConfig = { credential.helper = "oauth"; };
         };
+        signing.key = "2CE4286073195A43";
+        lfs = { enable = true; };
+
       };
     };
   };
