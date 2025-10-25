@@ -16,8 +16,8 @@
   ];
 
   users.groups = {
-    libvirtd.members = [ "root" "${vars.user}" ];
-    kvm.members = [ "root" "${vars.user}" ];
+    libvirtd.members = [ vars.user ];
+    kvm.members = [ vars.user ];
   };
 
   virtualisation = {
@@ -27,9 +27,12 @@
         package = pkgs.qemu_kvm;
         swtpm.enable = true;
         vhostUserPackages = [ pkgs.virtiofsd ];
+        runAsRoot = false;
+        verbatimConfig = ''
+          namespaces = []
+        '';
       };
     };
-
     spiceUSBRedirection.enable = true;
   };
 
@@ -38,8 +41,6 @@
   environment.systemPackages = with pkgs; [
     virt-manager
     virt-viewer
-    OVMF
-    swtpm
     virglrenderer
   ];
 }

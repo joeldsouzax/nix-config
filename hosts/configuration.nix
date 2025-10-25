@@ -192,13 +192,14 @@ in {
         address = "/resiliq.com/192.168.122.100";
         bind-interfaces = true;
         listen-address = "127.0.0.1";
-        except-interface = "virbr0";
+        port = 53;
       };
 
     };
   };
 
-  networking.networkmanager = { dns = "dnsmasq"; };
+  networking.networkmanager = { enable = true; };
+  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
 
   flatpak.enable = true;
   nix = {

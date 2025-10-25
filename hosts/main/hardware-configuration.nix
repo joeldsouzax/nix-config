@@ -44,7 +44,6 @@
     options = [ "fmask=0077" "dmask=0077" ];
   };
 
-
   hardware.graphics.extraPackages = [ pkgs.libvdpau-va-gl ];
 
   swapDevices =
@@ -58,7 +57,6 @@
   networking = {
     networkmanager.enable = true;
     useDHCP = lib.mkDefault true;
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
     firewall.allowedTCPPorts = [ 57621 ];
     firewall.allowedUDPPorts = [ 5353 ];
   };
