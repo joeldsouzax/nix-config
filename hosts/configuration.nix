@@ -185,7 +185,14 @@ in {
         HostKeyAlgorithms +ssh-rsa
       '';
     };
+
+    dnsmasq = {
+      enable = true;
+      settings = { address = "/resiliq.com/192.168.122.100"; };
+    };
   };
+
+  networking.networkmanager = { dns = "dnsmasq"; };
 
   flatpak.enable = true;
   nix = {
