@@ -189,17 +189,19 @@ in {
     dnsmasq = {
       enable = true;
       settings = {
-        address = "/resiliq.com/192.168.122.100";
+        address = "/resiliq.com/192.168.123.100";
         bind-interfaces = true;
         listen-address = "127.0.0.1";
         port = 53;
+        no-resolv = true;
+        server = [ "1.1.1.1" "8.8.8.8" ];
       };
 
     };
   };
 
   networking.networkmanager = { enable = true; };
-  networking.nameservers = [ "1.1.1.1" "8.8.8.8" ];
+  networking.nameservers = [ "127.0.0.1" ];
 
   flatpak.enable = true;
   nix = {
