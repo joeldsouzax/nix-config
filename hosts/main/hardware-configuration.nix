@@ -59,6 +59,7 @@
     useDHCP = lib.mkDefault true;
     firewall.allowedTCPPorts = [ 57621 ];
     firewall.allowedUDPPorts = [ 5353 ];
+    firewall.trustedInterfaces = [ "virbr1" ];
   };
   # networking.useDHCP = lib.mkDefault true;
   # networking.nameservers =
