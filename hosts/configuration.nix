@@ -135,7 +135,6 @@ in {
         gnuplot
         grip
         usb-modeswitch
-        telegram-desktop
         expressvpn
         newsflash
 
@@ -146,8 +145,6 @@ in {
         pinentry
         pinentry-curses
         vesktop
-        mongodb-compass
-        code-cursor
       ] ++ (with stable; [ image-roll ]);
   };
 
