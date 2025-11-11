@@ -183,22 +183,45 @@ in {
       '';
     };
 
-    dnsmasq = {
-      enable = true;
-      settings = {
-        address = "/resiliq.com/192.168.123.100";
-        bind-interfaces = true;
-        listen-address = "127.0.0.1";
-        port = 53;
-        no-resolv = true;
-        server = [ "1.1.1.1" "8.8.8.8" ];
-      };
+    # dnsmasq = {
+    #   enable = true;
+    #   settings = {
+    #     address = "/resiliq.com/192.168.123.100";
 
-    };
+    #     bind-interfaces = true;
+    #     listen-address = "127.0.0.1";
+    #     port = 53;
+
+    #     server = [ "1.1.1.1" "8.8.8.8" ];
+    #     cache-size = 1000;
+    #     no-negcache = true;
+    #   };
+
+    # };
   };
 
-  networking.networkmanager = { enable = true; };
-  networking.nameservers = [ "127.0.0.1" ];
+  # networking.networkmanager = {
+  #   enable = true;
+  #   dns = "default";
+  #   insertNameservers = [ "127.0.0.1" ];
+  # };
+  # networking.nameservers = [ "127.0.0.1" "1.1.1.1" "8.8.8.8" ];
+
+  services.dnsmasq.enable = false;
+
+  networking.networkmanager = {
+    enable = true;
+    dns = "dnsmasq";
+  };
+
+  # Remove this line completely
+  # networking.nameservers = [ "127.0.0.1" ];
+
+  environment.etc."NetworkManager/dnsmasq.d/resiliq.conf".text = ''
+    address=/resiliq.com/192.168.123.100
+    server=1.1.1.1
+    server=8.8.8.8
+  '';
 
   flatpak.enable = true;
   nix = {
