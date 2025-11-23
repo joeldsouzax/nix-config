@@ -17,7 +17,6 @@ in {
     home = "/home/${vars.user}";
     extraGroups =
       [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
-
     linger = true;
   };
   security.chromiumSuidSandbox.enable = true;
@@ -183,45 +182,53 @@ in {
       '';
     };
 
-    # dnsmasq = {
-    #   enable = true;
-    #   settings = {
-    #     address = "/resiliq.com/192.168.123.100";
-
-    #     bind-interfaces = true;
-    #     listen-address = "127.0.0.1";
-    #     port = 53;
-
-    #     server = [ "1.1.1.1" "8.8.8.8" ];
-    #     cache-size = 1000;
-    #     no-negcache = true;
-    #   };
-
-    # };
   };
 
-  # networking.networkmanager = {
-  #   enable = true;
-  #   dns = "default";
-  #   insertNameservers = [ "127.0.0.1" ];
-  # };
-  # networking.nameservers = [ "127.0.0.1" "1.1.1.1" "8.8.8.8" ];
+  ## Networking and DNS
+  networking = {
+    networkmanager.enable = true;
+    useDHCP = lib.mkDefault true;
+    firewall.allowedTCPPorts = [ 57621 ];
+    firewall.allowedUDPPorts = [ 5353 ];
+    firewall.trustedInterfaces = [ "virbr1" ];
+  };
 
-  services.dnsmasq.enable = false;
+  networking.networkmanager.dns = "none";
+  networking.nameservers = [ "127.0.0.1" "::1" ];
 
-  networking.networkmanager = {
+  services.dnsmasq = {
     enable = true;
-    dns = "dnsmasq";
+    settings = {
+      server = [ "1.1.1.1" "8.8.8.8" ];
+      domain-needed = true;
+      bogus-priv = true;
+      no-resolv = true;
+      address = [ "/resiliq.com/127.0.0.1" "/resiliq.com/::1" ];
+    };
   };
+  services.resolved.enable = false;
+  services.nginx = {
+    enable = true;
+    streamConfig = ''
+      upstream resiliq_backend {
+         server 192.168.123.100:443 max_fails=1 fail_timeout=5s;
+         server resiliq.com:443 backup;
+      }
 
-  # Remove this line completely
-  # networking.nameservers = [ "127.0.0.1" ];
+      server {
+        listen 127.0.0.1:443;
+        listen [::1]:443;
+        proxy_pass resiliq_backend;
+        ssl_preread on;
+        resolver 8.8.8.8;
+      }
 
-  environment.etc."NetworkManager/dnsmasq.d/resiliq.conf".text = ''
-    address=/resiliq.com/192.168.123.100
-    server=1.1.1.1
-    server=8.8.8.8
-  '';
+      server {
+          listen 127.0.0.1:80;
+          proxy_pass resiliq_backend; 
+      }
+    '';
+  };
 
   flatpak.enable = true;
   nix = {
