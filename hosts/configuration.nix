@@ -204,6 +204,9 @@ in {
       bogus-priv = true;
       no-resolv = true;
       address = [ "/resiliq.com/127.0.0.1" "/resiliq.com/::1" ];
+
+      interface = "lo";
+      bind-interfaces = true;
     };
   };
   services.resolved.enable = false;
