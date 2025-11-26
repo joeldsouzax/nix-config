@@ -203,8 +203,11 @@ in {
       domain-needed = true;
       bogus-priv = true;
       no-resolv = true;
-      address = [ "/resiliq.com/127.0.0.1" "/resiliq.com/::1" ];
-
+      address = [
+        "/resiliq.com/127.0.0.1"
+        "/resiliq.com/::1"
+        "/vm.resiliq.com/192.168.123.100"
+      ];
       interface = "lo";
       bind-interfaces = true;
     };
