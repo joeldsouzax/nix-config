@@ -206,7 +206,7 @@ in {
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     age.keyFile = "/home/joel/.config/sops/age/keys.txt";
 
-    secrets = { "cat_key" = { }; };
+    secrets = { "ca_key" = { }; };
   };
 
   ## Custom CA
