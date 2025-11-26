@@ -1,0 +1,10 @@
+keys:
+  - &admin_joel age1e49nq4hmsduxk4jylqgaqprkjzl97c4r3gavptmdh0k8a8mpuvtqy04l6y
+  - &host_main age1a09s8rj4vvxcrjdveeup4xk5pv69d4rul7qhxc9ynwq93d60ha2qh5pe7u
+
+creation_rules:
+  - path_regex: secrets/.*$
+    key_groups:
+      - age:
+          - *admin_joel
+          - *host_main

@@ -184,6 +184,18 @@ in {
 
   };
 
+  sops = {
+    defaultSopsFile = ../secrets/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    age.keyFile = "/home/joel/.config/sops/age/keys.txt";
+
+    secrets = { "hello" = { }; };
+  };
+
+  ## Custom CA
+  security.pki.certificateFiles = [ ./CA.crt ];
+
   ## Networking and DNS
   networking = {
     networkmanager.enable = true;

@@ -42,10 +42,14 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin/master";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin, ...
-    }:
+    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin
+    , sops-nix, ... }:
     let
       vars = {
         user = "joel";
@@ -57,7 +61,7 @@
       nixosConfigurations = (import ./hosts {
         inherit (nixpkgs) lib;
         inherit inputs nixpkgs nixpkgs-stable home-manager nur doom-emacs
-          hyprland hyprspace vars;
+          hyprland hyprspace sops-nix vars;
       });
 
       darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {

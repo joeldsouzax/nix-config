@@ -1,5 +1,5 @@
-{ inputs, nixpkgs, nixpkgs-stable, home-manager, nur, doom-emacs, hyprland, hyprspace, vars, ...
-}:
+{ inputs, nixpkgs, nixpkgs-stable, home-manager, nur, doom-emacs, hyprland
+, hyprspace, sops-nix, vars, ... }:
 
 let
   system = "x86_64-linux";
@@ -13,7 +13,7 @@ in {
   main = lib.nixosSystem {
     inherit system;
     specialArgs = {
-      inherit inputs system stable hyprland hyprspace vars;
+      inherit inputs system stable hyprland hyprspace vars sops-nix;
       host = {
         hostname = "main";
         mainMonitor = "DP-3";
@@ -24,6 +24,7 @@ in {
       nur.modules.nixos.default
       ./main
       ./configuration.nix
+      sops-nix.nixosModules.sops
       home-manager.nixosModules.home-manager
       {
         home-manager.useGlobalPkgs = true;
