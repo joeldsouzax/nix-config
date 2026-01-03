@@ -15,8 +15,16 @@ in {
   users.users.${vars.user} = {
     isNormalUser = true;
     home = "/home/${vars.user}";
-    extraGroups =
-      [ "wheel" "video" "audio" "camera" "networkmanager" "lp" "scanner" ];
+    extraGroups = [
+      "wheel"
+      "video"
+      "audio"
+      "camera"
+      "networkmanager"
+      "lp"
+      "scanner"
+      "adbusers"
+    ];
     linger = true;
   };
   security.chromiumSuidSandbox.enable = true;
@@ -68,7 +76,7 @@ in {
     nerd-fonts.fira-code
   ];
 
-  services.udev.packages = [ pkgs.android-udev-rules ];
+  # services.udev.packages = [ pkgs.android-udev-rules ];
 
   environment = {
     variables = {
@@ -174,6 +182,7 @@ in {
       enable = true;
       libraries = [ ];
     };
+    adb.enable = true;
   };
 
   hardware.bluetooth.enable = true;
