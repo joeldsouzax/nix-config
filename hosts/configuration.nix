@@ -63,7 +63,7 @@ in {
     corefonts
     noto-fonts
     noto-fonts-cjk-sans
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     # (nerdfonts.override { fonts = [ "FiraCode" ]; })
     nerd-fonts.fira-code
   ];
@@ -168,6 +168,7 @@ in {
     gnupg.agent = {
       enable = true;
       enableSSHSupport = true;
+      pinentryPackage = pkgs.pinentry-gnome3;
     };
     nix-ld = {
       enable = true;
