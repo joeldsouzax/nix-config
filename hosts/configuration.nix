@@ -163,11 +163,7 @@ in {
 
         #encryption
         age
-        # gnupg
         libfido2
-        # pinentry
-        # pinentry-curses
-        vesktop
       ] ++ (with stable; [ image-roll ]);
   };
 
