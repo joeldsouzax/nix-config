@@ -42,11 +42,11 @@ with host; {
 
     # Initialize Environment
     environment = {
-      loginShellInit = ''
-        if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
-          exec uwsm start hyprland-uwsm.desktop
-        fi
-      '';
+      # loginShellInit = ''
+      #   if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
+      #     exec uwsm start hyprland-uwsm.desktop
+      #   fi
+      # '';
 
       variables = commonEnv;
 
@@ -72,12 +72,18 @@ with host; {
       fprintAuth = false;
       enableGnomeKeyring = true;
     };
-
     services.greetd = {
       enable = true;
-      settings.default_session = {
-        command = "${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop";
-        user = vars.user;
+      settings = {
+        default_session = {
+          command = "${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop";
+          user = vars.user;
+        };
+
+        initial_session = {
+          command = "${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop";
+          user = vars.user;
+        };
       };
     };
 
@@ -110,6 +116,22 @@ with host; {
             # Fallback
             ",preferred,auto,1"
           ];
+
+          debug = {
+            disable_logs = false;
+            enable_stdout_logs = true;
+          };
+
+          # THIS IS THE FIX
+          # It tells Hyprland "I know what I'm doing, stop checking for the wrapper"
+          misc = {
+            disable_hyprland_logo = true;
+            disable_splash_rendering = true;
+
+            # The "shut up about start-hyprland" switch
+            # (Note: In some versions this might be 'disable_watchdog_warning')
+            disable_hyprland_qtutils_check = true;
+          };
 
           general = {
             border_size = 1;

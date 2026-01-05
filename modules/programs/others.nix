@@ -1,44 +1,87 @@
-# Terminal Emulator
-#
-
 { pkgs, vars, ... }:
 
-{
-  environment = { systemPackages = with pkgs; [ chawan ]; };
+let colors = import ../theming/colors.nix;
+in {
+
+  environment.systemPackages = with pkgs; [ ghostty nushell ];
+
   home-manager.users.${vars.user} = {
     programs = {
-      bat.enable = true;
-      bat.config.theme = "TwoDark";
-      fzf.enable = true;
-      fzf.enableZshIntegration = true;
+
+      nushell = {
+        enable = true;
+        configFile.text = ''
+          $env.config = {
+            show_banner: false,
+            edit_mode: emacs
+            ls: { use_ls_colors: true, clickable_links: true }
+            table: { mode: rounded }
+          }
+          # Aliases
+          alias ll = ls -l
+          alias la = ls -a
+          alias cat = bat
+          alias find = fd
+          alias grep = rg
+          alias rebuild = sudo nixos-rebuild switch --flake .#main
+          alias de = doom env
+          alias ds = doom sync
+        '';
+        environmentVariables = { EDITOR = "emacsclient -t"; };
+      };
+
+      # --- 3. Prompts & Tools ---
+      starship = {
+        enable = true;
+        enableNushellIntegration = true; # <--- Upgrade
+        enableZshIntegration = true;
+      };
+
+      # Replaces 'autojump' (Power User Standard)
+      zoxide = {
+        enable = true;
+        enableNushellIntegration = true;
+        enableZshIntegration = true;
+      };
+
+      # Replaces 'hstr' (Magical History)
+      atuin = {
+        enable = true;
+        enableNushellIntegration = true;
+        enableZshIntegration = true;
+        flags = [ "--disable-up-arrow" ];
+      };
+
+      carapace = {
+        enable = true;
+        enableNushellIntegration = true;
+      };
+
+      fzf = {
+        enable = true;
+        # enableNushellIntegration = true;
+        enableZshIntegration = true;
+      };
+
+      bat = {
+        enable = true;
+        config.theme = "TwoDark";
+      };
 
       eza = {
         enable = true;
-        enableZshIntegration = true;
+        enableNushellIntegration = true;
         colors = "always";
         git = true;
         icons = "always";
       };
+
       dircolors = {
         enable = true;
+        enableNushellIntegration = true;
         enableZshIntegration = true;
       };
-      starship.enable = true;
-      starship.enableZshIntegration = true;
-      autojump = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-      hstr = {
-        enable = true;
-        enableZshIntegration = true;
-      };
-      chawan = {
-        enable = true;
-        settings = {
-          pager."C-k" = "() => pager.load('https://duckduckgo.com/?=')";
-        };
-      };
+
       gallery-dl = {
         enable = true;
         settings = { extractor.base-directory = "~/Downloads"; };
