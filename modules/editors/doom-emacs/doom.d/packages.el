@@ -68,8 +68,7 @@
   (package! lsp-tailwindcss
     :recipe (:host github :repo "merrickluo/lsp-tailwindcss")))
 
-;; Prisma support (often used with NestJS/Next.js)
-(package! prisma-mode)
+(package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 
 ;; Jest testing (optional, but standard for Nest/React)
 (package! jest-test-mode)
