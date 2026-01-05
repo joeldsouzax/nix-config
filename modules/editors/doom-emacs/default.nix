@@ -18,13 +18,6 @@
 
 {
   services.emacs.enable = true;
-
-  # ---------------------------------------------------------------------------
-  # DOOM EMACS INSTALLATION / SYNC
-  # ---------------------------------------------------------------------------
-  # NOTE: 'system.userActivationScripts' is likely a custom option in your flake.
-  # If this runs as root (standard NixOS), $HOME will be /root.
-  # Ensure this script runs as YOUR user.
   system.userActivationScripts = {
     doomEmacs = {
       text = ''
@@ -56,27 +49,21 @@
   # SYSTEM PACKAGES (Power Coder Suite)
   # ---------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
-    # -- 1. Base Tools --
     clang
     coreutils
     fd
     git
     ripgrep
-
-    # -- 2. Emacs 29+ (REQUIRED for Tree-sitter & Performance) --
-    # Use 'emacs-pgtk' if on Wayland, 'emacs-mac' if on macOS, otherwise 'emacs29'
-    ((emacs29.override { withTreeSitter = true; }).overrideAttrs (old:
+    ((emacs-pgtk.override { }).overrideAttrs (old:
       {
-        # Optional: Add specific patches here if needed
+        # Add patches here if needed, otherwise this override block can be removed
       }))
     emacsPackages.treesit-auto
 
-    # -- 3. The "Power Coder" Web Stack (Global) --
-    # Replaces 'npm i -g ...'
-    nodejs_20 # Runtime for most LSPs
-    typescript-language-server # TS/JS Support
-    tailwindcss-language-server # Tailwind Support
-    vscode-langservers-extracted # HTML/CSS/JSON/ESLint
+    nodejs_20
+    typescript-language-server
+    tailwindcss-language-server
+    vscode-langservers-extracted
 
     # Astro support (try pkgs.astro-language-server first, fallback to nodePackages if missing)
     astro-language-server
