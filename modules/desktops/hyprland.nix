@@ -34,11 +34,17 @@ with host; {
   config = mkIf config.hyprland.enable {
     wlwm.enable = true;
 
+    programs.hyprland = {
+      enable = true;
+      withUWSM = true;
+      package = hyprland.packages.${pkgs.system}.hyprland;
+    };
+
     # Initialize Environment
     environment = {
       loginShellInit = ''
         if [ -z $DISPLAY ] && [ "$(tty)" = "/dev/tty1" ]; then
-          exec dbus-launch Hyprland
+          exec uwsm start hyprland-uwsm.desktop
         fi
       '';
 
@@ -56,13 +62,8 @@ with host; {
         wlr-randr
         xwayland
         nwg-look
+        uwsm
       ];
-    };
-
-    # Enable Hyprland System-wide
-    programs.hyprland = {
-      enable = true;
-      package = hyprland.packages.${pkgs.system}.hyprland;
     };
 
     # System Integration
@@ -75,7 +76,7 @@ with host; {
     services.greetd = {
       enable = true;
       settings.default_session = {
-        command = "${config.programs.hyprland.package}/bin/Hyprland";
+        command = "${pkgs.uwsm}/bin/uwsm start hyprland-uwsm.desktop";
         user = vars.user;
       };
     };
@@ -95,7 +96,7 @@ with host; {
         enable = true;
         package = hyprland.packages.${pkgs.system}.hyprland;
         xwayland.enable = true;
-        systemd.enable = true;
+        systemd.enable = false;
 
         settings = {
 
@@ -174,14 +175,14 @@ with host; {
           in [
             "SUPER,Return,exec,${pkgs.${vars.terminal}}/bin/${vars.terminal}"
             "SUPER,Q,killactive,"
-            "SUPER,Escape,exit,"
+            "SUPER,Escape,exec,uwsm stop"
             "SUPER,L,exec,${pkgs.hyprlock}/bin/hyprlock"
             "SUPER,E,exec,${pkgs.pcmanfm}/bin/pcmanfm"
             "SUPER,F,togglefloating,"
             "SUPER,Space,exec, pkill wofi || ${pkgs.wofi}/bin/wofi --show drun"
             "SUPER,P,pseudo,"
             ",F11,fullscreen,"
-            "SUPERSHIFT,R,exec,${config.programs.hyprland.package}/bin/hyprctl reload"
+            "SUPERSHIFT,R,exec,hyprctl reload"
 
             # Focus/Move
             "SUPER,left,movefocus,l"
@@ -202,17 +203,13 @@ with host; {
 
           # Startup
           exec-once = [
-            "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-            "${pkgs.hyprlock}/bin/hyprlock" # Lock on start
+            "${pkgs.hyprlock}/bin/hyprlock"
             "ln -s $XDG_RUNTIME_DIR/hypr /tmp/hypr"
+            "uwsm app -- ${pkgs.waybar}/bin/waybar -c $HOME/.config/waybar/config"
+            "uwsm app -- ${pkgs.swaynotificationcenter}/bin/swaync"
+            "uwsm app -- ${pkgs.blueman}/bin/blueman-applet"
 
-            # Bar and Notification center (Using systemd is preferred, but exec-once works as fallback)
-            "${pkgs.waybar}/bin/waybar -c $HOME/.config/waybar/config"
-            "${pkgs.swaynotificationcenter}/bin/swaync"
-            "${pkgs.blueman}/bin/blueman-applet"
-
-            # Force Start on Workspace 1
-            "${config.programs.hyprland.package}/bin/hyprctl dispatch workspace 1"
+            "hyprctl dispatch workspace 1"
           ];
         };
       };
