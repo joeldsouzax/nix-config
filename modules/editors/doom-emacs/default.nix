@@ -49,28 +49,40 @@
   # SYSTEM PACKAGES (Power Coder Suite)
   # ---------------------------------------------------------------------------
   environment.systemPackages = with pkgs; [
+    # -- Base Tools --
     clang
     coreutils
     fd
     git
     ripgrep
-    ((emacs-pgtk.pkgs.withPackages (epkgs: [
-      epkgs.treesit-grammars.with-all-grammars
-      epkgs.vterm  # Also compiles vterm module for you
-    ])))
-    emacsPackages.treesit-auto
 
+    # -- Emacs with Grammar Injection --
+    ((emacs-pgtk.pkgs.withPackages (epkgs: [
+      epkgs.vterm
+      epkgs.treesit-grammars.with-all-grammars
+
+      # Explicitly add Astro and TSX/Typescript to be absolutely safe
+      epkgs.treesit-grammars.tree-sitter-astro
+      epkgs.treesit-grammars.tree-sitter-tsx
+      epkgs.treesit-grammars.tree-sitter-typescript
+      epkgs.treesit-grammars.tree-sitter-json
+      epkgs.treesit-grammars.tree-sitter-css
+    ])))
+
+    # -- Language Servers --
     nodejs_20
     typescript-language-server
     tailwindcss-language-server
     vscode-langservers-extracted
 
-    # Astro support (try pkgs.astro-language-server first, fallback to nodePackages if missing)
-    astro-language-server
-    # nodePackages."@astrojs/language-server" # Uncomment if the above fails
+    # Use nodePackages for Astro LS if the top-level one is missing
+    nodePackages."@astrojs/language-server"
 
-    # -- 4. Extreme Performance --
-    # The Rust-based JSON parser we configured in config.el
+    # -- Fallback Builder Tools (Power Coder Safety Net) --
+    # If a grammar is EVER missing from Nix, these allow Doom to 
+    # auto-compile it via 'M-x treesit-install-language-grammar'
+    tree-sitter
+    gcc
     emacs-lsp-booster
   ];
 }
