@@ -64,9 +64,7 @@
 (package! astro-ts-mode)
 
 ;; Tailwind CSS support (you already have this, keep it)
-(when (modulep! +lsp)
-  (package! lsp-tailwindcss
-    :recipe (:host github :repo "merrickluo/lsp-tailwindcss")))
+(package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
 
 (package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 
