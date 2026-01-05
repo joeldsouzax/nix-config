@@ -169,18 +169,18 @@
   :config
   (treesit-auto-add-to-auto-mode-alist '(astro)))
 
-(use-package! astro-ts-mode
-  :after lsp-mode
-  :config
-  (setq astro-ts-mode-indent-offset 2)
-  (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
+;; (use-package! astro-ts-mode
+;;   :after lsp-mode
+;;   :config
+;;   (setq astro-ts-mode-indent-offset 2)
+;;   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 
-(after! lsp-mode
-  (add-to-list 'lsp-language-id-configuration '(astro-ts-mode . "astro"))
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("astro-ls" "--stdio"))
-                    :activation-fn (lsp-activate-on "astro")
-                    :server-id 'astro-ls)))
+;; (after! lsp-mode
+;;   (add-to-list 'lsp-language-id-configuration '(astro-ts-mode . "astro"))
+;;   (lsp-register-client
+;;    (make-lsp-client :new-connection (lsp-stdio-connection '("astro-ls" "--stdio"))
+;;                     :activation-fn (lsp-activate-on "astro")
+;;                     :server-id 'astro-ls)))
 
 ;; F. Misc Web Modes
 ;; ---------------------------------------------------------------------
@@ -222,6 +222,12 @@
         orig-result)))
   (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command))
 
+
+
+(use-package! just-mode
+  :config
+  (map! :map just-mode-map
+        "C-c C-c" #'just-command-run-recipe))
 
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an

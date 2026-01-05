@@ -57,17 +57,8 @@
     ripgrep
 
     # -- Emacs with Grammar Injection --
-    ((emacs-pgtk.pkgs.withPackages (epkgs: [
-      epkgs.vterm
-      epkgs.treesit-grammars.with-all-grammars
-
-      # Explicitly add Astro and TSX/Typescript to be absolutely safe
-      epkgs.treesit-grammars.tree-sitter-astro
-      epkgs.treesit-grammars.tree-sitter-tsx
-      epkgs.treesit-grammars.tree-sitter-typescript
-      epkgs.treesit-grammars.tree-sitter-json
-      epkgs.treesit-grammars.tree-sitter-css
-    ])))
+    ((emacs-pgtk.pkgs.withPackages
+      (epkgs: [ epkgs.vterm epkgs.treesit-grammars.with-all-grammars ])))
 
     # -- Language Servers --
     nodejs_20
@@ -77,12 +68,8 @@
 
     # Use nodePackages for Astro LS if the top-level one is missing
     nodePackages."@astrojs/language-server"
-
-    # -- Fallback Builder Tools (Power Coder Safety Net) --
-    # If a grammar is EVER missing from Nix, these allow Doom to 
-    # auto-compile it via 'M-x treesit-install-language-grammar'
     tree-sitter
-    gcc
     emacs-lsp-booster
+    just
   ];
 }

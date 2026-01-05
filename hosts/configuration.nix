@@ -118,7 +118,6 @@ in {
         emacsPackages.treesit-auto
         shellcheck
         graphviz
-        nodejs
         python3
         ispell
         nchat

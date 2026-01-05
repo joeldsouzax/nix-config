@@ -58,10 +58,6 @@
 (package! nginx-mode)
 (package! treesit-auto)
 
-;;; packages.el
-
-;; Astro support
-(package! astro-ts-mode)
 
 ;; Tailwind CSS support (you already have this, keep it)
 (package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
@@ -70,3 +66,5 @@
 
 ;; Jest testing (optional, but standard for Nest/React)
 (package! jest-test-mode)
+
+(package! just-mode)
