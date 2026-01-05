@@ -54,10 +54,10 @@
     fd
     git
     ripgrep
-    ((emacs-pgtk.override { }).overrideAttrs (old:
-      {
-        # Add patches here if needed, otherwise this override block can be removed
-      }))
+    ((emacs-pgtk.pkgs.withPackages (epkgs: [
+      epkgs.treesit-grammars.with-all-grammars
+      epkgs.vterm  # Also compiles vterm module for you
+    ])))
     emacsPackages.treesit-auto
 
     nodejs_20
