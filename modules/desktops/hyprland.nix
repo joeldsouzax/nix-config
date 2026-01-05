@@ -126,9 +126,34 @@ with host; {
             active_opacity = 1.0;
             inactive_opacity = 1.0;
             fullscreen_opacity = 1.0;
+
+            blur = {
+              enabled = true;
+              size = 3;
+              passes = 1;
+              vibrancy = 0.1696;
+            };
           };
 
-          # Generate Workspaces 1-10 programmatically
+          animations = {
+            enabled = true;
+            bezier =
+              [ "fast, 0, 0.55, 0.45, 1" "snappy, 0.05, 0.9, 0.1, 1.05" ];
+
+            animation = [
+              "windows, 1, 3, snappy"
+              "windowsOut, 1, 3, snappy, popin 80%"
+              "border, 1, 2, fast"
+              "fade, 1, 2, fast"
+              "workspaces, 1, 3, snappy"
+            ];
+          };
+
+          misc = {
+            vfr = true;
+            vrr = 1;
+          };
+
           workspace =
             (map (i: "${toString i}, monitor:${toString mainMonitor}") [
               1
