@@ -1,25 +1,47 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-
+;; -------------------- 1. PERSONAL INFORMATION --------------------
 (setq user-full-name "Joel DSouza"
-      user-mail-address "joeldsouzax@gmail.com"
-      doom-theme 'doom-one
+      user-mail-address "joeldsouzax@gmail.com")
+
+;; -------------------- 2. DOOM UI & THEME --------------------
+(setq doom-theme 'doom-one
       display-line-numbers-type t
-      org-directory "~/org"
       doom-themes-padded-modeline t
-      treemacs-project-follow-cleanup t
-      treemacs-project-follow-mode t
-      treemacs-peek-mode t
-      treemacs-fringe-indicator-mode t
-      treemacs-show-cursor t
-      treemacs-space-between-root-nodes nil
       doom-modeline-enable-word-count t
-      doom-modeline-battery t
-      org-ellipsis " ▼ ")
+      doom-modeline-battery t)
 
 (add-to-list 'default-frame-alist '(undecorated-round . t))
 
+;; -------------------- 3. ORG MODE --------------------
+(setq org-directory "~/org"
+      org-ellipsis " ▼ ")
 
+(use-package! mermaid-ts-mode)
+(use-package! ob-mermaid)
+
+;; -------------------- 4. TREEMACS (FILE EXPLORER) --------------------
+(setq treemacs-project-follow-cleanup t
+      treemacs-project-follow-mode t    ; VSCode behavior: auto-scroll to file
+      treemacs-peek-mode t
+      treemacs-fringe-indicator-mode t
+      treemacs-show-cursor t
+      treemacs-space-between-root-nodes nil)
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
+
+(use-package treemacs-nerd-icons
+  :after treemacs
+  :config
+  (treemacs-load-theme "nerd-icons"))
+
+(use-package lsp-treemacs :after treemacs)
+
+(after! (treemacs projectile)
+  (treemacs-indent-guide-mode 1))
+
+;; -------------------- 5. LSP UI (HOVER/DOCS) --------------------
 (after! lsp-ui
   (setq lsp-ui-doc-enable t
         lsp-ui-doc-position 'top-right-corner
@@ -34,89 +56,141 @@
         lsp-ui-sideline-show-code-actions t
         lsp-ui-sideline-show-hover t))
 
-
-(use-package treemacs-projectile
-  :after (treemacs projectile))
-
-(after! (treemacs projectile)
-  (treemacs-indent-guide-mode 1))
-(use-package treemacs-nerd-icons
-  :after treemacs
-  :config
-  (treemacs-load-theme "nerd-icons"))
-
-(use-package lsp-treemacs :after treemacs)
-
+;; -------------------- 6. RUST CONFIGURATION (POWER USER) --------------------
 (after! rust-mode
   (setq rust-format-on-save t))
 
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer)
-  (setq lsp-rust-analyzer-server-display-inlay-hints t)
-  (setq lsp-signature-auto-activate t)
-  (setq lsp-signature-doc-lines 5)  ; Limit hover doc lines
-  (setq lsp-eldoc-enable-hover t)
-  (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-doc-show-with-cursor t)
-  (setq lsp-ui-doc-position 'at-point)
-  (setq lsp-ui-doc-max-height 160)
-  (setq lsp-ui-doc-max-width 80)
   (setq rustic-format-on-save t)
-  (setq lsp-rust-analyzer-display-reborrow-hints t)
+  ;; Check everything on save so you don't miss broken tests/benches
+  (setq rustic-cargo-check-arguments '("--benches" "--tests" "--all-features"))
+
+  ;; --- 1. VISUAL "X-RAY" HINTS (INLAY HINTS) ---
+  ;; These show you what the compiler "sees" invisible to the naked eye.
   (setq lsp-rust-analyzer-server-display-inlay-hints t)
-  (setq lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
+  
+  ;; Show the inferred type of longer chains (e.g. .iter().map().collect())
   (setq lsp-rust-analyzer-display-chaining-hints t)
-  (setq lsp-rust-analyzer-display-lifetime-elision-hints-use-parameter-names t)
+  
+  ;; Show what a closure returns (helps debug "type mismatch" errors in async blocks)
   (setq lsp-rust-analyzer-display-closure-return-type-hints t)
-  (setq lsp-rust-analyzer-display-parameter-hints t))
+  
+  ;; Show names of parameters in function calls (like Python kwargs)
+  (setq lsp-rust-analyzer-display-parameter-hints t)
+  
+  ;; Show if a variable is a Reference (&), Mutable Reference (&mut), or Move
+  (setq lsp-rust-analyzer-binding-mode-hints t)
+  
+  ;; Show implicit reborrows (helps understand borrow checker magic)
+  (setq lsp-rust-analyzer-display-reborrow-hints t)
+  
+  ;; Show lifetimes, but only when they are confusing/non-trivial
+  (setq lsp-rust-analyzer-display-lifetime-elision-hints-enable "skip_trivial")
 
+  ;; --- 2. MEMORY LAYOUT & OPTIMIZATION ---
+  ;; In the hover popup, show Struct Size, Align, and Padding bytes.
+  ;; Essential for making "better decisions" about memory layout.
+  (setq lsp-rust-analyzer-hover-actions-enable t)
 
-(use-package! nginx-mode
-  :defer t)
+  ;; --- 3. INTERACTIVE "CODE LENS" ---
+  ;; This adds "Run | Debug" buttons directly above tests and main()
+  ;; and shows reference counts ("3 refs") above functions.
+  (add-hook 'rustic-mode-hook #'lsp-lens-mode))
 
-;; -------------------- org -------------------- ;
-(use-package! mermaid-ts-mode)
-(use-package! ob-mermaid)
+;; --- 4. HUD (HEADS UP DISPLAY) CONFIGURATION ---
+(after! lsp-ui
+  ;; Make the sidebar info snappy and rich
+  (setq lsp-ui-sideline-show-diagnostics t)  ; Show errors on the right
+  (setq lsp-ui-sideline-show-hover t)        ; Show type info on the right
+  (setq lsp-ui-sideline-show-code-actions t) ; Show "Quick Fix" lightbulbs
+  (setq lsp-ui-sideline-delay 0.1)           ; Update almost instantly
+  
+  ;; Documentation Popup
+  (setq lsp-ui-doc-enable t)
+  (setq lsp-ui-doc-position 'top-right-corner)
+  (setq lsp-ui-doc-max-width 80)
+  (setq lsp-ui-doc-max-height 20)
+  (setq lsp-ui-doc-delay 0.2))
 
-;; -------------------- astrojs --------------------;
-;; https://edmundmiller.dev/posts/emacs-astro/
+;; -------------------- 7. NIX CONFIGURATION --------------------
+(after! nix-mode
+  ;; Format with 'alejandra' (the modern standard) or 'nixfmt'
+  ;; Ensure you have 'alejandra' installed: `nix profile install nixpkgs#alejandra`
+  (set-formatter! 'alejandra
+    '("alejandra" "--quiet" "-")
+    :modes '(nix-mode))
+  
+  ;; Use 'nil' (Nix Language Server) for superior Flake support
+  ;; Ensure installed: `nix profile install nixpkgs#nil`
+  (setq lsp-disabled-clients '(nix-rnix-lsp)) ;; Disable old rnix
+  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("nil"))
+                    :major-modes '(nix-mode)
+                    :priority 1
+                    :server-id 'nix-nil)))
 
+;; -------------------- 8. WEB DEV (VSCODE-LIKE SETUP) --------------------
+
+;; A. General Formatting (Prettier)
+;; ---------------------------------------------------------------------
+(set-formatter! 'prettier-mode
+  '("npx" "prettier" "--stdin-filepath" filepath)
+  :modes '(js2-mode rjsx-mode typescript-mode typescript-tsx-mode web-mode css-mode scss-mode json-mode astro-ts-mode))
+
+;; B. TypeScript / React / Next.js
+;; ---------------------------------------------------------------------
+(after! typescript-mode
+  (setq lsp-clients-typescript-server-args '("--stdio"))
+  (setq lsp-typescript-suggest-auto-imports t)
+  (setq lsp-typescript-surveys-enabled nil))
+
+;; C. Tailwind CSS
+;; ---------------------------------------------------------------------
+(use-package! lsp-tailwindcss
+  :init
+  (setq lsp-tailwindcss-add-on-mode t)
+  :config
+  (add-to-list 'lsp-tailwindcss-major-modes 'rjsx-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'typescript-tsx-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'web-mode))
+
+;; D. NestJS / MikroORM (Decorators)
+;; ---------------------------------------------------------------------
+(setq lsp-javascript-implicit-project-config-experimental-decorators t)
+
+;; E. Astro & Tree-sitter
+;; ---------------------------------------------------------------------
 (use-package treesit-auto
   :custom
   (treesit-auto-install 'prompt)
   :config
   (treesit-auto-add-to-auto-mode-alist '(astro)))
 
-;; (use-package! astro-ts-mode
-;;   :after treesit-auto
-;;   :init
-;;   :config
-;;   (let ((astro-recipe (make-treesit-auto-recipe
-;;                        :lang 'astro
-;;                        :ts-mode 'astro-ts-mode
-;;                        :url "https://github.com/virchau13/tree-sitter-astro"
-;;                        :revision "master"
-;;                        :source-dir "src")))
-;;     (add-to-list 'treesit-auto-recipe-list astro-recipe)))
+(use-package! astro-ts-mode
+  :after lsp-mode
+  :config
+  (setq astro-ts-mode-indent-offset 2)
+  (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 
+(after! lsp-mode
+  (add-to-list 'lsp-language-id-configuration '(astro-ts-mode . "astro"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("astro-ls" "--stdio"))
+                    :activation-fn (lsp-activate-on "astro")
+                    :server-id 'astro-ls)))
 
-;; (set-formatter! 'prettier-astro
-;;   '("npx" "prettier" "--parser=astro"
-;;     (apheleia-formatters-indent "--use-tabs" "--tab-width" 'astro-ts-mode-indent-offset))
-;;   :modes '(astro-ts-mode))
-
-;; (use-package! lsp-tailwindcss
-;;   :when (modulep! +lsp)
-;;   :init
-;;   (setq! lsp-tailwindcss-add-on-mode t)
-;;   :config
-;;   (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode))
+;; F. Misc Web Modes
+;; ---------------------------------------------------------------------
+(use-package! nginx-mode
+  :defer t)
 
 ;; MDX Support
 (add-to-list 'auto-mode-alist '("\\.\\(mdx\\)$" . markdown-mode))
 (when (modulep! +lsp)
   (add-hook 'markdown-mode-local-vars-hook #'lsp! 'append))
-
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.

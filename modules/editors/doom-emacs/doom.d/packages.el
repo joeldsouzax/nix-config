@@ -57,7 +57,19 @@
 (package! ob-mermaid)
 (package! nginx-mode)
 (package! treesit-auto)
+
+;;; packages.el
+
+;; Astro support
 (package! astro-ts-mode)
+
+;; Tailwind CSS support (you already have this, keep it)
 (when (modulep! +lsp)
   (package! lsp-tailwindcss
     :recipe (:host github :repo "merrickluo/lsp-tailwindcss")))
+
+;; Prisma support (often used with NestJS/Next.js)
+(package! prisma-mode)
+
+;; Jest testing (optional, but standard for Nest/React)
+(package! jest-test-mode)
