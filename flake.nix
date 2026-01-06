@@ -15,10 +15,10 @@
 
     nur = { url = "github:nix-community/NUR"; };
 
-    nixgl = {
-      url = "github:guibou/nixGL";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # nixgl = {
+    #   url = "github:guibou/nixGL";
+    #   inputs.nixpkgs.follows = "nixpkgs";
+    # };
 
     #emacs overlay
     emacs-overlay = {

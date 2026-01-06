@@ -3,17 +3,16 @@
 let
   colors = import ../theming/colors.nix;
   lid = "LID";
-  # 1. Define Common Variables separately for cleaner reading
   commonEnv = {
     XDG_CURRENT_DESKTOP = "Hyprland";
     XDG_SESSION_TYPE = "wayland";
     XDG_SESSION_DESKTOP = "Hyprland";
-    XCURSOR = "Catppuccin-Mocha-Dark-Cursors";
-    XCURSOR_SIZE = "24";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    NIXOS_OZONE_WL = "1"; # This fixes the Electron apps
     GDK_BACKEND = "wayland";
     MOZ_ENABLE_WAYLAND = "1";
-    WLR_NO_HARDWARE_CURSORS = "1";
+    XCURSOR = "Catppuccin-Mocha-Dark-Cursors";
+    XCURSOR_SIZE = "24";
   };
 
   # 2. Nvidia specific variables
@@ -127,10 +126,6 @@ with host; {
           misc = {
             disable_hyprland_logo = true;
             disable_splash_rendering = true;
-
-            # The "shut up about start-hyprland" switch
-            # (Note: In some versions this might be 'disable_watchdog_warning')
-            disable_hyprland_qtutils_check = true;
           };
 
           general = {
