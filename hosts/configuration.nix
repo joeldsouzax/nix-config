@@ -236,9 +236,9 @@ in {
       bogus-priv = true;
       no-resolv = true;
       address = [
-        "/questr.me/127.0.0.1"
-        "/questr.me/::1"
-        "/vm.questr.me/192.168.123.100"
+        "/trive.app/127.0.0.1"
+        "/trive.app/::1"
+        "/vm.trive.app/192.168.123.100"
       ];
       interface = "lo";
       bind-interfaces = true;
@@ -248,22 +248,22 @@ in {
   services.nginx = {
     enable = true;
     streamConfig = ''
-      upstream questr_backend {
+      upstream trive_backend {
          server 192.168.123.100:443 max_fails=1 fail_timeout=5s;
-         server questr.me:443 backup;
+         server trive.app:443 backup;
       }
 
       server {
         listen 127.0.0.1:443;
         listen [::1]:443;
-        proxy_pass questr_backend;
+        proxy_pass trive_backend;
         ssl_preread on;
         resolver 8.8.8.8;
       }
 
       server {
           listen 127.0.0.1:80;
-          proxy_pass questr_backend; 
+          proxy_pass trive_backend; 
       }
     '';
   };
