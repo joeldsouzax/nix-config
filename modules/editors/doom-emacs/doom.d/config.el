@@ -181,19 +181,23 @@
 ;; ---------------------------------------------------------------------
 ;; B. TYPESCRIPT / REACT / NEXT.JS (UPDATED FOR TREE-SITTER)
 ;; ---------------------------------------------------------------------
-;; We now target 'typescript-ts-mode' and 'tsx-ts-mode' instead of the legacy modes.
 
 (after! typescript-ts-mode
+  ;; 1. Connect LSP automatically
+  (add-hook 'typescript-ts-mode-hook #'lsp!) 
+  
+  ;; 2. Set specific options
   (setq lsp-clients-typescript-server-args '("--stdio")
         lsp-typescript-suggest-auto-imports t
-        lsp-typescript-surveys-enabled nil))
+        lsp-typescript-surveys-enabled nil
+        typescript-ts-mode-indent-offset 2)) ;; Ensure 2-space indent
 
-;; Apply the same settings to TSX files
 (after! tsx-ts-mode
+  (add-hook 'tsx-ts-mode-hook #'lsp!)
   (setq lsp-clients-typescript-server-args '("--stdio")
         lsp-typescript-suggest-auto-imports t
-        lsp-typescript-surveys-enabled nil))
-
+        lsp-typescript-surveys-enabled nil
+        typescript-ts-mode-indent-offset 2))
 ;; ---------------------------------------------------------------------
 ;; C. TAILWIND CSS
 ;; ---------------------------------------------------------------------
