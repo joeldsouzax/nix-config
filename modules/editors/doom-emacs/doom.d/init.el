@@ -127,7 +127,7 @@
        ;;idris             ; a language you can depend on
        (json +lsp +tree-sitter) ; At least it ain't XML
        (java +lsp +tree-sitter) ; the poster child for carpal tunnel syndrome
-       ;;(javascript +lsp +tree-sitter) ; JS is handled by the typescript module usually, but keep if you do pure JS
+       (javascript +lsp +tree-sitter) ; JS is handled by the typescript module usually, but keep if you do pure JS
        (typescript +lsp +tree-sitter +tsx) ; ACTIVATE THIS for React/Next.js/TS
        (web +lsp +tree-sitter) ; HTML/CSS/SCSS
        ;;julia             ; a better, faster MATLAB

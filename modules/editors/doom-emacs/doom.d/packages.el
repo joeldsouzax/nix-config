@@ -68,3 +68,5 @@
 (package! jest-test-mode)
 
 (package! just-mode)
+
+(package! vitest-mode :recipe (:host github :repo "zwieszok/vitest-mode"))

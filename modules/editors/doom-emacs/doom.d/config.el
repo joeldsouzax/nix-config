@@ -132,55 +132,100 @@
                     :server-id 'nix-nil)))
 
 ;; -------------------- 8. WEB DEV (VSCODE-LIKE SETUP) --------------------
+;;
 
-;; A. General Formatting (Prettier)
 ;; ---------------------------------------------------------------------
+;; 1. FORCE MODE MAPPING (Crucial for Nix setups)
+;; ---------------------------------------------------------------------
+;; Because you injected "with-all-grammars", the libraries are there.
+;; We just need to tell Emacs to use the modern modes for these files.
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.mjs\\'" . js-ts-mode))
+
+;; ---------------------------------------------------------------------
+;; 2. NX MONOREPO FIXES
+;; ---------------------------------------------------------------------
+(after! lsp-mode
+  ;; Nx uses a root tsconfig.base.json. If LSP picks a sub-project root,
+  ;; imports will fail. This forces it to look up the directory tree.
+  (setq lsp-auto-guess-root t)
+  
+  ;; Ignore Nx build artifacts to save CPU
+  (setq lsp-file-watch-ignored-directories
+        (append lsp-file-watch-ignored-directories
+                '("[/\\\\]\\.rx\\'" "[/\\\\]dist\\'" "[/\\\\]coverage\\'" ))))
+
+;; ---------------------------------------------------------------------
+;; 3. VITEST INTEGRATION
+;; ---------------------------------------------------------------------
+;; Map your keybindings for Vitest to the NEW modes
+(map! :map (typescript-ts-mode-map tsx-ts-mode-map)
+      :localleader
+      (:prefix ("t" . "testing")
+               "v" #'vitest-mode
+               "r" #'vitest-run-file
+               "t" #'vitest-run-test-at-point))
+
+;; ---------------------------------------------------------------------
+;; 4. UPDATE PRETTIER
+;; ---------------------------------------------------------------------
+;; Ensure Prettier runs on the new tree-sitter modes
 (set-formatter! 'prettier-mode
   '("npx" "prettier" "--stdin-filepath" filepath)
-  :modes '(js2-mode rjsx-mode typescript-mode typescript-tsx-mode web-mode css-mode scss-mode json-mode astro-ts-mode))
+  :modes '(typescript-ts-mode tsx-ts-mode js-ts-mode))
 
-;; B. TypeScript / React / Next.js
+
+
 ;; ---------------------------------------------------------------------
-(after! typescript-mode
-  (setq lsp-clients-typescript-server-args '("--stdio"))
-  (setq lsp-typescript-suggest-auto-imports t)
-  (setq lsp-typescript-surveys-enabled nil))
+;; B. TYPESCRIPT / REACT / NEXT.JS (UPDATED FOR TREE-SITTER)
+;; ---------------------------------------------------------------------
+;; We now target 'typescript-ts-mode' and 'tsx-ts-mode' instead of the legacy modes.
 
-;; C. Tailwind CSS
+(after! typescript-ts-mode
+  (setq lsp-clients-typescript-server-args '("--stdio")
+        lsp-typescript-suggest-auto-imports t
+        lsp-typescript-surveys-enabled nil))
+
+;; Apply the same settings to TSX files
+(after! tsx-ts-mode
+  (setq lsp-clients-typescript-server-args '("--stdio")
+        lsp-typescript-suggest-auto-imports t
+        lsp-typescript-surveys-enabled nil))
+
+;; ---------------------------------------------------------------------
+;; C. TAILWIND CSS
 ;; ---------------------------------------------------------------------
 (use-package! lsp-tailwindcss
   :init
   (setq lsp-tailwindcss-add-on-mode t)
   :config
-  (add-to-list 'lsp-tailwindcss-major-modes 'rjsx-mode)
-  (add-to-list 'lsp-tailwindcss-major-modes 'typescript-tsx-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'typescript-ts-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'tsx-ts-mode)
+  (add-to-list 'lsp-tailwindcss-major-modes 'js-ts-mode)
+  
+  ;; Keep these if you still open older file types
   (add-to-list 'lsp-tailwindcss-major-modes 'astro-ts-mode)
   (add-to-list 'lsp-tailwindcss-major-modes 'web-mode))
 
-;; D. NestJS / MikroORM (Decorators)
+;; ---------------------------------------------------------------------
+;; D. NESTJS / MIKROORM (DECORATORS)
 ;; ---------------------------------------------------------------------
 (setq lsp-javascript-implicit-project-config-experimental-decorators t)
 
-;; E. Astro & Tree-sitter
 ;; ---------------------------------------------------------------------
-(use-package treesit-auto
-  :custom
-  (treesit-auto-install 'prompt)
+;; E. ASTRO & GRAMMARS (NIX OPTIMIZED)
+;; ---------------------------------------------------------------------
+(use-package! astro-ts-mode
+  :after lsp-mode
   :config
-  (treesit-auto-add-to-auto-mode-alist '(astro)))
+  (setq astro-ts-mode-indent-offset 2)
+  ;; Map .astro files to this mode
+  (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 
-;; (use-package! astro-ts-mode
-;;   :after lsp-mode
-;;   :config
-;;   (setq astro-ts-mode-indent-offset 2)
-;;   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 
-;; (after! lsp-mode
-;;   (add-to-list 'lsp-language-id-configuration '(astro-ts-mode . "astro"))
-;;   (lsp-register-client
-;;    (make-lsp-client :new-connection (lsp-stdio-connection '("astro-ls" "--stdio"))
-;;                     :activation-fn (lsp-activate-on "astro")
-;;                     :server-id 'astro-ls)))
+
 
 ;; F. Misc Web Modes
 ;; ---------------------------------------------------------------------
