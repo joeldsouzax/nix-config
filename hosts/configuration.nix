@@ -128,13 +128,10 @@ in {
         alsa-utils
         feh
         linux-firmware
-        mpv
         pavucontrol
         pipewire
         pulseaudio
         qpwgraph
-        vlc
-        spotify
 
         # apps
         appimage-run
@@ -142,7 +139,6 @@ in {
         google-chrome
         foliate
         remmina
-        auth0-cli
 
         #file manager
         file-roller

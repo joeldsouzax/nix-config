@@ -157,17 +157,30 @@
         (append lsp-file-watch-ignored-directories
                 '("[/\\\\]\\.rx\\'" "[/\\\\]dist\\'" "[/\\\\]coverage\\'" ))))
 
-;; ---------------------------------------------------------------------
-;; 3. VITEST INTEGRATION
-;; ---------------------------------------------------------------------
-;; Map your keybindings for Vitest to the NEW modes
-(map! :map (typescript-ts-mode-map tsx-ts-mode-map)
-      :localleader
-      (:prefix ("t" . "testing")
-               "v" #'vitest-mode
-               "r" #'vitest-run-file
-               "t" #'vitest-run-test-at-point))
+;;; config.el
 
+;; ---------------------------------------------------------------------
+;; 3. VITEST INTEGRATION (Via jest-test-mode)
+;; ---------------------------------------------------------------------
+(use-package! jest-test-mode
+  :commands jest-test-mode
+  :hook (typescript-ts-mode js-ts-mode tsx-ts-mode) 
+  :config
+  ;; CRITICAL: Tell it to run 'vitest' instead of 'jest'
+  (setq jest-test-command-string "npx vitest") 
+  
+  ;; Optional: Add " -- run" if you want it to run once and exit, 
+  ;; or leave as "npx vitest" to open the watch mode.
+  ;; For Emacs integration, running once is usually better for "run at point":
+  ;; (setq jest-test-command-string "npx vitest run") 
+
+  (map! :map (typescript-ts-mode-map tsx-ts-mode-map js-ts-mode-map)
+        :localleader
+        (:prefix ("t" . "testing")
+                 "v" #'jest-test-mode        ; Enable the minor mode manually if needed
+                 "r" #'jest-test-run         ; Run all tests in file
+                 "t" #'jest-test-run-at-point ; Run specific test under cursor
+                 "d" #'jest-test-debug)))
 ;; ---------------------------------------------------------------------
 ;; 4. UPDATE PRETTIER
 ;; ---------------------------------------------------------------------
