@@ -232,17 +232,40 @@
 (setq lsp-javascript-implicit-project-config-experimental-decorators t)
 
 ;; ---------------------------------------------------------------------
-;; E. ASTRO & GRAMMARS (NIX OPTIMIZED)
+;; E. ASTRO & GRAMMARS (The "Edmund Miller" Solution)
 ;; ---------------------------------------------------------------------
+
 (use-package! astro-ts-mode
   :after lsp-mode
   :config
-  (setq astro-ts-mode-indent-offset 2)
-  ;; Map .astro files to this mode
+  ;; 1. Configure formatting (Prettier with Astro plugin)
+  ;;    This matches the blog post's recommendation to force the parser.
+  (set-formatter! 'prettier-astro
+    '("npx" "prettier" "--parser=astro" "--stdin-filepath" filepath)
+    :modes '(astro-ts-mode))
+
+  ;; 2. Attach LSP automatically
+  (add-hook 'astro-ts-mode-hook #'lsp! 'append)
+
+  ;; 3. Register the file extension
   (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 
-
-
+;; ---------------------------------------------------------------------
+;; F. AUTOMATIC GRAMMAR COMPILATION (treesit-auto)
+;; ---------------------------------------------------------------------
+(use-package! treesit-auto
+  :config
+  (global-treesit-auto-mode)
+  
+  ;; The recipe from Edmund Miller's blog
+  ;; This tells Emacs exactly where to download the missing Astro grammar
+  (let ((astro-recipe (make-treesit-auto-recipe
+                       :lang 'astro
+                       :ts-mode 'astro-ts-mode
+                       :url "https://github.com/virchau13/tree-sitter-astro"
+                       :revision "master"
+                       :source-dir "src")))
+    (add-to-list 'treesit-auto-recipe-list astro-recipe)))
 
 ;; F. Misc Web Modes
 ;; ---------------------------------------------------------------------

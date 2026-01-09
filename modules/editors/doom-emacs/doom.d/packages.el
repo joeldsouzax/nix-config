@@ -69,3 +69,4 @@
 
 (package! just-mode)
 (package! astro-ts-mode)
+(package! apheleia)
