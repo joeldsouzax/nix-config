@@ -108,11 +108,21 @@ with host; {
           xwayland = { force_zero_scaling = true; };
           # Monitor Configuration
           monitor = [
-            # Main Monitor: 4K @ 1.5x Scale (Fixes "too low" font size)
-            "${toString mainMonitor},3840x2160@60,0x0,1.5"
-            # Second Monitor: Right of Main, Auto resolution
-            "${toString secondMonitor},preferred,2560x0,auto,transform,1"
-            # Fallback
+            # --- Secondary Monitor (The Vertical "Sidecar") ---
+            # Role: Communication, Logs, Terminal
+            # Resolution: 1080p Native
+            # Transform: 1 (Rotate 90 deg) -> Logic Res becomes 1080x1920
+            # Position: 0x120 (Shifted down 120px to vertically center against the 4K screen)
+            "${toString secondMonitor},1920x1080@60,0x120,1,transform,1"
+
+            # --- Main Monitor (The "Quad-Canvas") ---
+            # Role: Code, Browser, Preview
+            # Resolution: 4K Native
+            # Scale: 1 (CRITICAL: 1.5x here defeats the purpose of a 42" screen)
+            # Position: 1080x0 (Placed immediately to the right of the 1080px wide vertical monitor)
+            "${toString mainMonitor},3840x2160@60,1080x0,1"
+
+            # --- Fallback for hotplugged displays ---
             ",preferred,auto,1"
           ];
 
@@ -171,19 +181,12 @@ with host; {
             vrr = 1;
           };
 
-          workspace =
-            (map (i: "${toString i}, monitor:${toString mainMonitor}") [
-              1
-              2
-              3
-              4
-            ]) ++ (map (i: "${toString i}, monitor:${toString secondMonitor}") [
-              5
-              6
-              7
-              8
-              9
-            ]);
+          workspace = (map (i:
+            "${toString i}, monitor:${toString secondMonitor}"
+            + (if i == 1 then ", default:true" else "")) [ 1 2 3 4 5 ]) ++ (map
+              (i:
+                "${toString i}, monitor:${toString mainMonitor}"
+                + (if i == 6 then ", default:true" else "")) [ 6 7 8 9 10 ]);
 
           input = {
             kb_layout = "us";
