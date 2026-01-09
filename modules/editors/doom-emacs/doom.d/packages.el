@@ -68,5 +68,4 @@
 (package! jest-test-mode)
 
 (package! just-mode)
-(package! astro-ts-mode)
 (package! apheleia)
