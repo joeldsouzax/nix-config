@@ -69,3 +69,5 @@
 
 (package! just-mode)
 (package! apheleia)
+(package! slack)
+(package! alert)

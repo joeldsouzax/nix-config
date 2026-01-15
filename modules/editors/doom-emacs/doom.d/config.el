@@ -318,6 +318,47 @@
         "C-c C-c" #'just-command-run-recipe))
 
 
+;;-------------------- SLACK --------------------;;
+;;
+;;-----------------------------------------------;;
+
+(use-package! slack
+  :commands (slack-start)
+  :init
+  (setq slack-buffer-function #'switch-to-buffer)
+  (setq slack-prefer-current-team t)
+  :config
+  (setq slack-block-function #'slack-block-render)
+
+  ;; Notifications
+  (use-package! alert
+    :config
+    (setq alert-default-style 'notifier))
+
+  ;; --- KEYBINDINGS (Standard Emacs) ---
+  ;; This maps commands to 'C-c s ...'
+  (map! :leader
+        (:prefix ("s" . "slack")
+         :desc "Start Slack"             "s" #'slack-start
+         :desc "Select Team"             "t" #'slack-select-team
+         :desc "Select Room/Channel"     "r" #'slack-select-rooms
+         :desc "Direct Messages"         "i" #'slack-im-select
+         :desc "Threads"                 "d" #'slack-all-threads
+         :desc "Quit Slack"              "q" #'slack-ws-close))
+
+  ;; Register Team (Securely via ~/.authinfo)
+  (slack-register-team
+   :name "Trive"
+   :default t
+   :token (auth-source-pick-first-password
+           :host "triveapp.slack.com"
+           :user "joeldsouzax@gmail.com")
+   :cookie (auth-source-pick-first-password
+            :host "triveapp.slack.com"
+            :user "joeldsouzax@gmail.com^cookie")
+   :subscribed-channels '(general random)))
+
+
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;
