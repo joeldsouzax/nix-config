@@ -4,6 +4,7 @@
 (setq user-full-name "Joel DSouza"
       user-mail-address "joeldsouzax@gmail.com")
 
+(auto-insert-mode 1)
 ;; -------------------- 2. DOOM UI & THEME --------------------
 (setq doom-theme 'doom-one
       display-line-numbers-type t
@@ -211,6 +212,45 @@
         lsp-typescript-suggest-auto-imports t
         lsp-typescript-surveys-enabled nil
         typescript-ts-mode-indent-offset 2))
+
+
+(setq auto-insert-query nil) 
+
+;; 4. Define the TypeScript Header Rule
+(add-to-list 'auto-insert-alist
+             ;; Trigger: Matches any file ending in .ts
+             '("\\.ts\\'" . 
+               (lambda ()
+                 ;; A. Prompt for description
+                 (let ((desc (read-string "Short description: ")))
+                   
+                   ;; B. Insert the Header
+                   (insert "/**\n")
+                   (insert (format " * @file %s\n" (file-name-nondirectory (buffer-file-name))))
+                   (insert (format " * @author %s <%s>\n" user-full-name user-mail-address))
+                   (insert (format " * @date %s\n" (format-time-string "%Y-%m-%d %H:%M:%S")))
+                   (insert (format " * @description %s\n" desc))
+                   (insert " * @license MIT\n")
+                   (insert " */\n\n")
+                   
+                   ;; C. Check if it's React (optional heuristic) to add import
+                   ;; (insert "import React from 'react';\n\n") 
+                   ))))
+
+;; 5. Define the TSX Header Rule (Separate trigger for .tsx)
+(add-to-list 'auto-insert-alist
+             '("\\.tsx\\'" . 
+               (lambda ()
+                 (let ((desc (read-string "Short description: ")))
+                   (insert "/**\n")
+                   (insert (format " * @file %s\n" (file-name-nondirectory (buffer-file-name))))
+                   (insert (format " * @author %s <%s>\n" user-full-name user-mail-address))
+                   (insert (format " * @date %s\n" (format-time-string "%Y-%m-%d %H:%M:%S")))
+                   (insert (format " * @description %s\n" desc))
+                   (insert " * @license MIT\n")
+                   (insert " */\n\n")
+                   (insert "import React from 'react';\n\n")))))
+
 ;; ---------------------------------------------------------------------
 ;; C. TAILWIND CSS
 ;; ---------------------------------------------------------------------
