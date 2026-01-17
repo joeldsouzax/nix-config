@@ -1,4 +1,4 @@
-#  Services
+# Services
 #
 #  flake.nix
 #   ├─ ./hosts
@@ -20,4 +20,5 @@
   ./swaync.nix
   ./sxhkd.nix
   ./udiskie.nix
+  ./securities.nix
 ]
