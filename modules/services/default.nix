@@ -21,4 +21,5 @@
   ./sxhkd.nix
   ./udiskie.nix
   ./securities.nix
+  ./emails.nix
 ]
