@@ -2,11 +2,11 @@
 let
   colors = import ../theming/colors.nix;
   c = colors.scheme.default.hex;
-in {
+in
+{
   environment.systemPackages = with pkgs; [ ghostty ];
 
   home-manager.users.${vars.user} = {
-
     programs = {
       ghostty = {
         enable = true;

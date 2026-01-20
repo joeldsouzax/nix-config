@@ -22,5 +22,4 @@
   ./udiskie.nix
   ./securities.nix
   ./emails.nix
-  ./ai.nix
 ]

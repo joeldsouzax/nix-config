@@ -9,7 +9,6 @@ let
     url = "https://raw.githubusercontent.com/google/gmail-oauth2-tools/master/python/oauth2.py";
     sha256 = "sha256-AHikPTqwpyEU1wnTaZVvq8CsOe/sWuq10/fSbEzlsnA=";
   };
-
   fetchGmailToken = pkgs.writeShellScript "fetch-gmail-token" ''
     ${pkgs.python3}/bin/python3 ${gmailOauth2Tool} \
       --user=$(cat ${config.sops.secrets.gmail_email.path}) \
@@ -18,7 +17,6 @@ let
       --refresh_token=$(cat ${config.sops.secrets.gmail_refresh_token.path}) \
       --quiet
   '';
-
   sasl-xoauth2-custom = pkgs.stdenv.mkDerivation rec {
     pname = "sasl-xoauth2";
     version = "0.24";
@@ -61,9 +59,9 @@ with pkgs;
   home-manager.users.${vars.user} =
     { pkgs, config, ... }:
     {
-      home.packages = [ ];
+      home.packages = [ sasl-xoauth2-custom ];
       home.sessionVariables = {
-        SASL_PATH = "${pkgs.cyrus_sasl}/lib/sasl2:${pkgs.sasl-xoauth2}/lib/sasl2";
+        SASL_PATH = "${pkgs.cyrus_sasl}/lib/sasl2:${sasl-xoauth2-custom}/lib/sasl2";
       };
       home.shellAliases = {
         mbsync = "mbsync -c ~/.config/isyncrc";
