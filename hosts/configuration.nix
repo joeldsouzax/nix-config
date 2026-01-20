@@ -113,7 +113,7 @@ in {
         libtool
 
         #editorss
-        nixfmt-classic
+        nixfmt
         shfmt
         emacsPackages.treesit-auto
         shellcheck
@@ -159,6 +159,9 @@ in {
         #encryption
         age
         libfido2
+
+        #android
+        android-tools
       ] ++ (with stable; [ image-roll ]);
   };
 
@@ -173,7 +176,6 @@ in {
       enable = true;
       libraries = [ ];
     };
-    adb.enable = true;
   };
 
   hardware.bluetooth.enable = true;
@@ -214,6 +216,7 @@ in {
         owner = "joel";
         format = "yaml";
       };
+
     };
   };
 
