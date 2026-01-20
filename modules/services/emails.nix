@@ -74,12 +74,14 @@ with pkgs;
         userName = "joel@trive.ai";
         realName = "Joel";
         flavor = "gmail.com";
-        # imap = { authentication = "xoauth2"; };
+        imap = {
+          authentication = "xoauth2";
+        };
 
-        # smtp = {
-        #   authentication = "xoauth2";
-        #   tls.useStartTls = true;
-        # };
+        smtp = {
+          authentication = "xoauth2";
+          tls.useStartTls = true;
+        };
 
         passwordCommand = "${fetchGmailToken}";
         mbsync.enable = true;
@@ -90,7 +92,7 @@ with pkgs;
           expunge = "both";
           extraConfig.account = {
             AuthMechs = "XOAUTH2";
-            PipelineDepth = 50; # Speeds up gmail sync significantly
+            PipelineDepth = 50;
             Timeout = 120;
           };
           groups.google.channels = {
