@@ -61,9 +61,9 @@ with pkgs;
   home-manager.users.${vars.user} =
     { pkgs, config, ... }:
     {
-      home.packages = [ sasl-xoauth2-custom ];
+      home.packages = [ ];
       home.sessionVariables = {
-        SASL_PATH = "${pkgs.cyrus_sasl}/lib/sasl2:${sasl-xoauth2-custom}/lib/sasl2";
+        SASL_PATH = "${pkgs.cyrus_sasl}/lib/sasl2:${pkgs.sasl-xoauth2}/lib/sasl2";
       };
       home.shellAliases = {
         mbsync = "mbsync -c ~/.config/isyncrc";
@@ -95,7 +95,7 @@ with pkgs;
             PipelineDepth = 50;
             Timeout = 120;
           };
-          groups.google.channels = {
+          groups.trive.channels = {
             inbox = {
               farPattern = "INBOX";
               nearPattern = "INBOX";
