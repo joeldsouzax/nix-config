@@ -2,6 +2,7 @@
 
 (require 'comint)
 (require 'project)
+(require 'transient)
 (require 'json)
 
 (defgroup aider nil

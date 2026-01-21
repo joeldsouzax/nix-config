@@ -71,3 +71,4 @@
 (package! apheleia)
 (package! slack)
 (package! alert)
+(package! transient)
