@@ -44,7 +44,7 @@ in
           alias ds = doom sync
 
           if ("${config.sops.secrets.claude_key.path}" | path exists) {
-              $env.CLAUDE_API_KEY = (open --raw "${config.sops.secrets.claude_key.path}" | str trim)
+              $env.ANTHROPIC_API_KEY = (open --raw "${config.sops.secrets.claude_key.path}" | str trim)
           }
         '';
         environmentVariables = {
