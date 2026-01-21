@@ -362,9 +362,13 @@
 ;;AI STUFF
 ;;
 
-
 (load! "lisp/aider")
-(global-set-key (kbd "C-c a") #'aider-menu)
+
+;; Unbind the default if it exists (safety)
+(global-unset-key (kbd "C-c z"))
+
+;; Bind Aider to C-c z
+(global-set-key (kbd "C-c z") #'aider-menu)
 
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
