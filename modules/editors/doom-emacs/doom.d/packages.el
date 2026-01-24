@@ -72,3 +72,4 @@
 (package! slack)
 (package! alert)
 (package! transient)
+(package! gptel)

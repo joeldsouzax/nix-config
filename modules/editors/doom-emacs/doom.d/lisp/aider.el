@@ -164,6 +164,19 @@
   (aider-send "/clear")
   (message "Context cleared"))
 
+(defun aider-refresh-context ()
+  "Regenerate Effect-TS context via Justfile."
+  (interactive)
+  (start-process "just-context" "*aider-context*" "just" "context")
+  (message "🔮 Aider context refreshed from node_modules"))
+
+;; Hook into your menu or run manually
+(transient-define-prefix aider-menu ()
+  "Aider AI Developer Dashboard"
+  ["Actions"
+   ("c" "Refresh Context (Fix Types)" aider-refresh-context)
+   ;; ... existing commands ...
+   ])
 
 ;; --- 5. Prompts & ADRs ---
 

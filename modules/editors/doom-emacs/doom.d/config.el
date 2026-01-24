@@ -370,6 +370,30 @@
 ;; Bind Aider to C-c z
 (global-set-key (kbd "C-c z") #'aider-menu)
 
+(use-package! gptel
+  :config
+  ;; 1. key: Read directly from the secret file (No hardcoding!)
+  ;; Note: Adjust path if your sops secret maps elsewhere
+  (let ((key-file "/run/secrets/claude_key"))
+    (if (file-exists-p key-file)
+        (setq gptel-api-key (string-trim (with-temp-buffer
+                                           (insert-file-contents key-file)
+                                           (buffer-string))))
+      (message "GPTel: Claude key not found at %s" key-file)))
+
+  ;; 2. Backend: Switch from OpenAI to Anthropic
+  (setq gptel-model 'claude-3-5-sonnet-20240620
+        gptel-backend (gptel-make-anthropic "Claude"
+                                            :stream t
+                                            :key gptel-api-key)))
+
+;; Optional: Bind it to a key (Doom standard is usually under 'o' for open or 'c' for code)
+(map! :leader
+      (:prefix ("o" . "open")
+       :desc "GPTel Menu (Context)" "c" #'gptel-menu
+       :desc "GPTel (Chat)"         "g" #'gptel
+       :desc "GPTel Send"           "G" #'gptel-send))
+
 ;; Whenever you reconfigure a package, make sure to wrap your config in an
 ;; `after!' block, otherwise Doom's defaults may override your settings. E.g.
 ;;

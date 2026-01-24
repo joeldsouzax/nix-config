@@ -12,7 +12,11 @@
       };
       git = {
         enable = true;
-        ignores = [ "*.swp" ];
+        ignores = [
+          "*.swp"
+          ".gconf/"
+          ".direnv/"
+        ];
         settings = {
           user.name = "Joel DSouza";
           user.email = "joeldsouzax@gmail.com";
@@ -24,10 +28,12 @@
           commit.gpgsign = true;
           pull.rebase = true;
           rebase.autoStash = true;
-          extraConfig = { credential.helper = "oauth"; };
+          credential.helper = "oauth";
         };
         signing.key = "2CE4286073195A43";
-        lfs = { enable = true; };
+        lfs = {
+          enable = true;
+        };
 
       };
     };
