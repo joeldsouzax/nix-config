@@ -13,7 +13,9 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    nur = { url = "github:nix-community/NUR"; };
+    nur = {
+      url = "github:nix-community/NUR";
+    };
 
     # nixgl = {
     #   url = "github:guibou/nixGL";
@@ -32,7 +34,9 @@
       inputs.emacs-overlay.follows = "emacs-overlay";
     };
 
-    hyprland = { url = "git+https://github.com/hyprwm/Hyprland?submodules=1"; };
+    hyprland = {
+      url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
+    };
 
     hyprspace = {
       url = "github:KZDKM/Hyprspace";
@@ -47,22 +51,47 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = inputs@{ self, nixpkgs, nixpkgs-stable, home-manager
-    , home-manager-stable, nur, doom-emacs, hyprland, hyprspace, nix-darwin
-    , sops-nix, ... }:
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      nixpkgs-stable,
+      home-manager,
+      home-manager-stable,
+      nur,
+      doom-emacs,
+      hyprland,
+      hyprspace,
+      nix-darwin,
+      sops-nix,
+      ...
+    }:
     let
       vars = {
         user = "joel";
         location = "$HOME/.setup";
         terminal = "ghostty";
-        editor = "emacs";
+        editor = "nano";
       };
-    in {
-      nixosConfigurations = (import ./hosts {
-        inherit (nixpkgs) lib;
-        inherit inputs nixpkgs nixpkgs-stable home-manager nur doom-emacs
-          hyprland hyprspace sops-nix vars;
-      });
+    in
+    {
+      nixosConfigurations = (
+        import ./hosts {
+          inherit (nixpkgs) lib;
+          inherit
+            inputs
+            nixpkgs
+            nixpkgs-stable
+            home-manager
+            nur
+            doom-emacs
+            hyprland
+            hyprspace
+            sops-nix
+            vars
+            ;
+        }
+      );
 
       darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {
         modules = [ ./darwin ];

@@ -1,9 +1,24 @@
-{ lib, config, pkgs, stable, inputs, vars, ... }:
-let terminal = pkgs.${vars.terminal};
-in {
-  imports = (import ../modules/desktops ++ import ../modules/programs
-    ++ import ../modules/services ++ import ../modules/shell
-    ++ import ../modules/editors ++ import ../modules/theming);
+{
+  lib,
+  config,
+  pkgs,
+  stable,
+  inputs,
+  vars,
+  ...
+}:
+let
+  terminal = pkgs.${vars.terminal};
+in
+{
+  imports = (
+    import ../modules/desktops
+    ++ import ../modules/programs
+    ++ import ../modules/services
+    ++ import ../modules/shell
+    ++ import ../modules/editors
+    ++ import ../modules/theming
+  );
 
   boot = {
     tmp = {
@@ -33,7 +48,9 @@ in {
   environment.variables.LIBVA_DRIVER_NAME = "nvidia";
 
   time.timeZone = "Europe/Oslo";
-  i18n = { defaultLocale = "en_US.UTF-8"; };
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+  };
 
   console = {
     font = "Lat2-Terminus16";
@@ -44,22 +61,24 @@ in {
     rtkit.enable = true;
     polkit.enable = true;
     sudo.wheelNeedsPassword = true;
-    pki.certificates = [''
-      -----BEGIN CERTIFICATE-----
-      MIICEjCCAbmgAwIBAgIUCwJufhGCR9vskIj786aC1kr6MmgwCgYIKoZIzj0EAwIw
-      XzELMAkGA1UEBhMCTk8xDTALBgNVBAgMBE9zbG8xDTALBgNVBAcMBE9zbG8xFTAT
-      BgNVBAoMDGRldnJhbmRvbS5jbzEbMBkGA1UEAwwSSm9lbCBKZXJvbWUgRFNvdXph
-      MB4XDTI1MTEyNjEyMDUwM1oXDTM1MTEyNDEyMDUwM1owXzELMAkGA1UEBhMCTk8x
-      DTALBgNVBAgMBE9zbG8xDTALBgNVBAcMBE9zbG8xFTATBgNVBAoMDGRldnJhbmRv
-      bS5jbzEbMBkGA1UEAwwSSm9lbCBKZXJvbWUgRFNvdXphMFkwEwYHKoZIzj0CAQYI
-      KoZIzj0DAQcDQgAEs85bPQY+6CS10BJR8CsUmzx0UPrC1/P66mm5w/2cpkiEwbol
-      bw8Jr1D575GSgz3QfZVOkr/B6Bjc58N9DK8UiaNTMFEwHQYDVR0OBBYEFFkeBcPT
-      169ewp12sWK+VI6ZCW+IMB8GA1UdIwQYMBaAFFkeBcPT169ewp12sWK+VI6ZCW+I
-      MA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDRwAwRAIgK7KlSmRZvtcUaie8
-      D/hSdlgUk6zRf1bhhjUV7IhdhNkCIBB3yUQVjKXApXTCe5dTmq8GJnMFE0OgSMP9
-      +qoUuFSO
-      -----END CERTIFICATE-----
-    ''];
+    pki.certificates = [
+      ''
+        -----BEGIN CERTIFICATE-----
+        MIICEjCCAbmgAwIBAgIUCwJufhGCR9vskIj786aC1kr6MmgwCgYIKoZIzj0EAwIw
+        XzELMAkGA1UEBhMCTk8xDTALBgNVBAgMBE9zbG8xDTALBgNVBAcMBE9zbG8xFTAT
+        BgNVBAoMDGRldnJhbmRvbS5jbzEbMBkGA1UEAwwSSm9lbCBKZXJvbWUgRFNvdXph
+        MB4XDTI1MTEyNjEyMDUwM1oXDTM1MTEyNDEyMDUwM1owXzELMAkGA1UEBhMCTk8x
+        DTALBgNVBAgMBE9zbG8xDTALBgNVBAcMBE9zbG8xFTATBgNVBAoMDGRldnJhbmRv
+        bS5jbzEbMBkGA1UEAwwSSm9lbCBKZXJvbWUgRFNvdXphMFkwEwYHKoZIzj0CAQYI
+        KoZIzj0DAQcDQgAEs85bPQY+6CS10BJR8CsUmzx0UPrC1/P66mm5w/2cpkiEwbol
+        bw8Jr1D575GSgz3QfZVOkr/B6Bjc58N9DK8UiaNTMFEwHQYDVR0OBBYEFFkeBcPT
+        169ewp12sWK+VI6ZCW+IMB8GA1UdIwQYMBaAFFkeBcPT169ewp12sWK+VI6ZCW+I
+        MA8GA1UdEwEB/wQFMAMBAf8wCgYIKoZIzj0EAwIDRwAwRAIgK7KlSmRZvtcUaie8
+        D/hSdlgUk6zRf1bhhjUV7IhdhNkCIBB3yUQVjKXApXTCe5dTmq8GJnMFE0OgSMP9
+        +qoUuFSO
+        -----END CERTIFICATE-----
+      ''
+    ];
   };
 
   fonts.packages = with pkgs; [
@@ -84,8 +103,11 @@ in {
       EDITOR = "${vars.editor}";
       VISUAL = "${vars.editor}";
     };
-    sessionVariables = { NIXOS_OZONE_WL = "1"; };
-    systemPackages = with pkgs;
+    sessionVariables = {
+      NIXOS_OZONE_WL = "1";
+    };
+    systemPackages =
+      with pkgs;
       [
         # terminal
         terminal
@@ -162,7 +184,8 @@ in {
 
         #android
         android-tools
-      ] ++ (with stable; [ image-roll ]);
+      ]
+      ++ (with stable; [ image-roll ]);
   };
 
   programs = {
@@ -183,7 +206,9 @@ in {
   services = {
     blueman.enable = true;
     pulseaudio.enable = false;
-    printing = { enable = true; };
+    printing = {
+      enable = true;
+    };
     pipewire = {
       enable = true;
       alsa = {
@@ -217,6 +242,9 @@ in {
         format = "yaml";
       };
 
+      "upstash_api_key" = {
+        owner = "joel";
+      };
     };
   };
 
@@ -232,12 +260,18 @@ in {
   };
 
   networking.networkmanager.dns = "none";
-  networking.nameservers = [ "127.0.0.1" "::1" ];
+  networking.nameservers = [
+    "127.0.0.1"
+    "::1"
+  ];
 
   services.dnsmasq = {
     enable = true;
     settings = {
-      server = [ "1.1.1.1" "8.8.8.8" ];
+      server = [
+        "1.1.1.1"
+        "8.8.8.8"
+      ];
       domain-needed = true;
       bogus-priv = true;
       no-resolv = true;
@@ -276,7 +310,9 @@ in {
 
   flatpak.enable = true;
   nix = {
-    settings = { auto-optimise-store = true; };
+    settings = {
+      auto-optimise-store = true;
+    };
     gc = {
       automatic = true;
       dates = "weekly";
@@ -303,8 +339,14 @@ in {
       mimeApps = lib.mkIf (config.gnome.enable == false) {
         enable = true;
         defaultApplications = {
-          "image/jpeg" = [ "image-roll.desktop" "feh.desktop" ];
-          "image/png" = [ "image-roll.desktop" "feh.desktop" ];
+          "image/jpeg" = [
+            "image-roll.desktop"
+            "feh.desktop"
+          ];
+          "image/png" = [
+            "image-roll.desktop"
+            "feh.desktop"
+          ];
           "text/plain" = "emacs.desktop";
           "text/html" = "google-chrome.desktop";
           "text/csv" = "emacs.desktop";
@@ -317,14 +359,22 @@ in {
           "application/x-tar" = "org.gnome.FileRoller.desktop";
           "application/x-bzip2" = "org.gnome.FileRoller.desktop";
           "application/x-gzip" = "org.gnome.FileRoller.desktop";
-          "x-scheme-handler/http" =
-            [ "firefox.desktop" "google-chrome.desktop" ];
-          "x-scheme-handler/https" =
-            [ "firefox.desktop" "google-chrome.desktop" ];
-          "x-scheme-handler/about" =
-            [ "firefox.desktop" "google-chrome.desktop" ];
-          "x-scheme-handler/unknown" =
-            [ "firefox.desktop" "google-chrome.desktop" ];
+          "x-scheme-handler/http" = [
+            "firefox.desktop"
+            "google-chrome.desktop"
+          ];
+          "x-scheme-handler/https" = [
+            "firefox.desktop"
+            "google-chrome.desktop"
+          ];
+          "x-scheme-handler/about" = [
+            "firefox.desktop"
+            "google-chrome.desktop"
+          ];
+          "x-scheme-handler/unknown" = [
+            "firefox.desktop"
+            "google-chrome.desktop"
+          ];
           "x-scheme-handler/mailto" = [ "gmail.desktop" ];
           "audio/mp3" = "mpv.desktop";
           "audio/x-matroska" = "mpv.desktop";
