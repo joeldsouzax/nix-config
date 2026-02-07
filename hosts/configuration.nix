@@ -276,9 +276,9 @@ in
       bogus-priv = true;
       no-resolv = true;
       address = [
-        "/trive.app/127.0.0.1"
-        "/trive.app/::1"
-        "/vm.trive.app/192.168.123.100"
+        "/trive.ai/127.0.0.1"
+        "/trive.ai/::1"
+        "/vm.trive.ai/192.168.123.100"
       ];
       interface = "lo";
       bind-interfaces = true;
@@ -290,7 +290,7 @@ in
     streamConfig = ''
       upstream trive_backend {
          server 192.168.123.100:443 max_fails=1 fail_timeout=5s;
-         server trive.app:443 backup;
+         server trive.ai:443 backup;
       }
 
       server {
