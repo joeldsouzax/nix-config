@@ -184,6 +184,9 @@ in
 
         #android
         android-tools
+
+        # figma
+        figma-linux
       ]
       ++ (with stable; [ image-roll ]);
   };
