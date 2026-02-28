@@ -1,5 +1,5 @@
 {
-  description = "nixos configuration";
+  description = "NixOS + nix-darwin configuration";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
@@ -94,8 +94,21 @@
       );
 
       darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {
-        modules = [ ./darwin ];
-        specialArgs = { inherit inputs; };
+        modules = [
+          ./darwin
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+          }
+        ];
+        specialArgs = {
+          inherit inputs vars;
+          stable = import nixpkgs-stable {
+            system = "aarch64-darwin";
+            config.allowUnfree = true;
+          };
+        };
       };
     };
 }

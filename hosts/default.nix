@@ -11,9 +11,10 @@ let
   lib = nixpkgs.lib;
 in {
   main = lib.nixosSystem {
-    inherit system;
+    # Platform is set via nixpkgs.hostPlatform in hardware-configuration.nix
+    # Do NOT pass `system` here — it's deprecated and triggers warnings
     specialArgs = {
-      inherit inputs system stable hyprland hyprspace vars sops-nix;
+      inherit inputs stable hyprland hyprspace vars sops-nix;
       host = {
         hostname = "main";
         mainMonitor = "DP-3";

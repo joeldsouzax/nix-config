@@ -12,7 +12,8 @@ let
 in
 {
   imports = (
-    import ../modules/desktops
+    import ../modules/home
+    ++ import ../modules/desktops
     ++ import ../modules/programs
     ++ import ../modules/services
     ++ import ../modules/shell
@@ -187,6 +188,7 @@ in
 
         # figma
         figma-linux
+        uv
       ]
       ++ (with stable; [ image-roll ]);
   };

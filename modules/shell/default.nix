@@ -13,5 +13,5 @@
 [
   ./git.nix
   ./zsh.nix
-  ./direnv.nix
+  # ./direnv.nix  # moved to modules/home/direnv.nix (shared)
 ]
