@@ -36,8 +36,15 @@
         user = "trive";
       };
 
-      # GitHub
+      # GitHub — personal (joeldsouzax)
       "github.com" = { };
+
+      # GitHub — trive work (trivejoel)
+      "github.com-trive" = {
+        hostname = "github.com";
+        user = "git";
+        identityFile = "~/.ssh/id_ed25519_trive";
+      };
     };
   };
 }
