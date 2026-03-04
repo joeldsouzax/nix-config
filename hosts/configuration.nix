@@ -336,6 +336,8 @@ in
   nixpkgs.config.rocmSupport = true;
   system.stateVersion = "25.05";
 
+  home-manager.backupFileExtension = "bak";
+
   home-manager.users.${vars.user} = {
     home.stateVersion = "25.05";
     programs.home-manager.enable = true;
