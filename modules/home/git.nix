@@ -12,10 +12,8 @@
         email = joel@trive.ai
         signingkey = 670C107333D4DECD
     '';
-  };
 
-  home-manager.users.${vars.user}.programs = {
-    git = {
+    programs.git = {
       enable = true;
       ignores = [ "*.swp" ];
       lfs.enable = true;
@@ -40,6 +38,6 @@
       };
     };
     # Delta (pager for git diffs) — renamed from git.delta to programs.delta
-    delta.enable = true;
+    programs.delta.enable = true;
   };
 }
