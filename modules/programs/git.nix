@@ -35,11 +35,9 @@
             path = "~/.config/git/trive.inc";
           };
         };
-        signing.key = "2CE4286073195A43";
         lfs = {
           enable = true;
         };
-
       };
     };
   };

@@ -1,7 +1,7 @@
 # Git Configuration
 # Shared between NixOS and Darwin via home-manager
 
-{ vars, ... }:
+{ pkgs, vars, ... }:
 
 {
   home-manager.users.${vars.user} = {
@@ -35,6 +35,9 @@
         "includeIf \"gitdir:~/Code/trive.ai/\"" = {
           path = "~/.config/git/trive.inc";
         };
+      };
+      signing = {
+        key = if pkgs.stdenv.isDarwin then "273FCD808A01AF59" else "2CE4286073195A43";
       };
     };
     # Delta (pager for git diffs) — renamed from git.delta to programs.delta

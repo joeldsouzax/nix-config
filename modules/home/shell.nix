@@ -54,7 +54,7 @@ in
         ls = "ls --color=auto";
         search = ''rg -p --glob "!node_modules/*" --glob "!vendor/*" "$@"'';
       } // (if pkgs.stdenv.isDarwin then {
-        nixswitch = "darwin-rebuild switch --flake ~/.setup";
+        nixswitch = "sudo darwin-rebuild switch --flake ~/.setup#joel";
         nixup = "pushd ~/.setup; nix flake update; nixswitch; popd";
       } else {
         rebuild = "sudo nixos-rebuild switch --flake .#main";
@@ -79,9 +79,9 @@ in
         alias de = doom env
         alias ds = doom sync
       '' + (if pkgs.stdenv.isDarwin then ''
-        alias rebuild = darwin-rebuild switch --flake ~/.setup
+        def "nix switch" [] { sudo darwin-rebuild switch --flake ~/.setup#joel }
       '' else ''
-        alias rebuild = sudo nixos-rebuild switch --flake .#main
+        def "nix switch" [] { sudo nixos-rebuild switch --flake /home/${vars.user}/.setup#main }
       '') + lib.optionalString (claudeKeyPath != "") ''
 
         if ("${claudeKeyPath}" | path exists) {

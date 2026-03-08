@@ -31,16 +31,16 @@ in
 
   # ── Nix Configuration ──────────────────────────────────────────────────
   nix = {
-    enable = true;
+    enable = false;
     settings = {
       trusted-users = [ "@admin" vars.user ];
     };
-    optimise.automatic = true;
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 2; Minute = 0; };
-      options = "--delete-older-than 7d";
-    };
+    # optimise.automatic = true;
+    # gc = {
+    #  automatic = true;
+    # interval = { Weekday = 0; Hour = 2; Minute = 0; };
+    # options = "--delete-older-than 7d";
+    # };
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs        = true
@@ -106,6 +106,10 @@ in
 
       # Claude Code (global on macOS)
       claude-code
+
+      # Emacs with treesit + vterm (emacsMacport for native macOS keyboard/UI)
+      ((emacs-macport.pkgs.withPackages
+        (epkgs: [ epkgs.vterm epkgs.treesit-grammars.with-all-grammars ])))
 
       # Doom Emacs LSP support (same as NixOS modules/editors/doom-emacs)
       nodejs_20
@@ -244,10 +248,10 @@ in
         QLPanelAnimationDuration = 0;
       };
       # Reduce Mail.app animations
-      "com.apple.mail" = {
-        DisableReplyAnimations = true;
-        DisableSendAnimations = true;
-      };
+      # "com.apple.mail" = {
+      # DisableReplyAnimations = true;
+      # DisableSendAnimations = true;
+      # };
       # Don't auto-rearrange Spaces based on recent use (already handled by dock.mru-spaces)
       "com.apple.dock" = {
         expose-group-apps = true;            # Group windows by app in Mission Control
@@ -255,9 +259,29 @@ in
     };
   };
 
-  # ── Doom Emacs (via Homebrew emacs-plus) ────────────────────────────────
-  # Emacs-plus comes from Homebrew (see homebrew.nix).
-  # LSP tools and base Doom tools are included in environment.systemPackages above.
+  # ── Nix Apps → /Applications (Spotlight-indexable) ──────────────────────
+  # macOS Spotlight doesn't follow symlinks, so we use mkalias to create
+  # real Finder aliases that Spotlight can index.
+  system.activationScripts.applications.text = let
+    env = pkgs.buildEnv {
+      name = "system-applications";
+      paths = config.environment.systemPackages;
+      pathsToLink = [ "/Applications" ];
+    };
+  in
+    pkgs.lib.mkForce ''
+      echo "setting up Nix apps in /Applications..." >&2
+      find ${env}/Applications -maxdepth 1 -type l -exec readlink '{}' + |
+      while read -r src; do
+        app_name=$(basename "$src")
+        echo "linking $src → /Applications/$app_name" >&2
+        ${pkgs.mkalias}/bin/mkalias "$src" "/Applications/$app_name"
+      done
+    '';
+
+  # ── Doom Emacs ─────────────────────────────────────────────────────────
+  # Emacs is now installed via Nix (environment.systemPackages above).
+  # LSP tools and base Doom tools are also in systemPackages.
 
   # Clone + sync Doom Emacs on activation (runs as root, uses sudo -u for user ops)
   system.activationScripts.postActivation.text = ''
@@ -265,15 +289,16 @@ in
     USER_HOME="/Users/${vars.user}"
     EMACS="$USER_HOME/.emacs.d"
     DOOM="$USER_HOME/.doom.d"
+    DOOM_SRC="$USER_HOME/.setup/modules/editors/doom-emacs/doom.d"
 
     if [ ! -d "$EMACS" ]; then
       sudo -u ${vars.user} ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs.git "$EMACS"
       sudo -u ${vars.user} yes | sudo -u ${vars.user} "$EMACS/bin/doom" install
     fi
 
-    if [ -d "${vars.location}/modules/editors/doom-emacs/doom.d" ]; then
+    if [ -d "$DOOM_SRC" ]; then
       sudo -u ${vars.user} rm -rf "$DOOM"
-      sudo -u ${vars.user} ln -s "${vars.location}/modules/editors/doom-emacs/doom.d" "$DOOM"
+      sudo -u ${vars.user} ln -s "$DOOM_SRC" "$DOOM"
     fi
 
     sudo -u ${vars.user} "$EMACS/bin/doom" sync 2>/dev/null || true

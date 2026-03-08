@@ -5,12 +5,12 @@
 
 with pkgs;
 let
-  version = "2.1.62";
+  version = "2.1.69";
   pname = "claude-code";
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    hash = "sha512-IzslR/dbIlQj0W1bqd9opLaSsSknhwLZVZ3i03LlanWbe1MczBskQn6Veg5CgzmZeWEwKJR1kR3+5t4bCUmLmg==";
+    hash = "sha256-RbQCHPNBdLrMT0DSIAZyRIovSkDf8JBPJbpbIVD5EK0=";
   };
 
   npmBin = "${bun}/bin/bun";

@@ -11,6 +11,10 @@
   homebrew = {
     enable = true;
 
+    taps = [
+      "nikitabobko/tap"       # Required for aerospace WM
+    ];
+
     onActivation = {
       cleanup = "uninstall";
       autoUpdate = true;
@@ -55,17 +59,7 @@
 
     # ── CLI Tools (Brews) ───────────────────────────────────────────────
     brews = [
-      # Emacs (mirrors NixOS: emacs-pgtk via nixpkgs)
-      {
-        name = "emacs-plus@31";
-        args = [ "with-dbus" "with-imagemagick" "with-mailutils" "with-native-comp" ];
-      }
       "pinentry-mac"
-
-      # Build deps for emacs native-comp
-      "gcc"
-      "libgccjit"
-      "libtool"
 
       # Virtualization (for libvirt + QEMU backend)
       # `just up` uses terraform + libvirt provider → needs these
