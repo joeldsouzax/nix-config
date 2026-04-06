@@ -84,6 +84,8 @@ let
       STARTED_PG=1
     fi
     ${pkgs.postgresql}/bin/createdb -h localhost -p ${pgPort} paperclip 2>/dev/null || true
+    ${pkgs.postgresql}/bin/createdb -h localhost -p ${pgPort} knowledge 2>/dev/null || true
+    ${pkgs.postgresql}/bin/psql -h localhost -p ${pgPort} -d knowledge -c "CREATE EXTENSION IF NOT EXISTS vector" 2>/dev/null || true
     if [ "''${STARTED_PG:-}" = "1" ]; then
       ${pkgs.postgresql}/bin/pg_ctl -D "${pgDataDir}" stop -m fast 2>/dev/null || true
     fi
