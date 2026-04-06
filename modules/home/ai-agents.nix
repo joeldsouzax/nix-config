@@ -26,6 +26,11 @@ let
   mlxModel = "mlx-community/Qwen3-14B-4bit";
   mlxPort = "8800";
 
+  embeddingServerDir = "${dataDir}/embedding-server";
+  embeddingServerVenv = "${embeddingServerDir}/venv";
+  embeddingModel = "Snowflake/snowflake-arctic-embed-m-v2.0";
+  embeddingPort = "8801";
+
   # SOPS secret paths (populated by sops-nix at activation)
   claudeKeyPath = lib.attrByPath [ "sops" "secrets" "claude_key" "path" ] "" config;
 
@@ -44,7 +49,7 @@ let
   paperclipWrapper = pkgs.writeShellScript "paperclip-wrapper" ''
     set -euo pipefail
     export HOME="${homeDir}"
-    export PATH="${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
+    export PATH="${hermesVenv}/bin:${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
     export DATABASE_URL="postgres://localhost:${pgPort}/paperclip"
     export PORT="3100"
     export SERVE_UI="true"
@@ -52,7 +57,7 @@ let
   '';
 
   hermesWrapper = mkServiceWrapper "hermes"
-    "${hermesVenv}/bin/hermes --headless"
+    "${hermesVenv}/bin/hermes chat"
     { ANTHROPIC_API_KEY = claudeKeyPath; };
 
   mlxServerWrapper = pkgs.writeShellScript "mlx-server-wrapper" ''
@@ -61,6 +66,13 @@ let
     exec ${mlxServerVenv}/bin/python -m mlx_lm server \
       --model ${mlxModel} \
       --port ${mlxPort}
+  '';
+
+  embeddingServerWrapper = pkgs.writeShellScript "embedding-server-wrapper" ''
+    set -euo pipefail
+    export PATH="${embeddingServerVenv}/bin:$PATH"
+    cd "${embeddingServerDir}"
+    exec ${embeddingServerVenv}/bin/python server.py
   '';
 
   # Clone/install script as a derivation (runs as user via sudo -u)
@@ -124,6 +136,16 @@ let
 
       echo "Pre-downloading model ${mlxModel} (this may take a while on first run)..."
       ${mlxServerVenv}/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('${mlxModel}')" 2>/dev/null || true
+
+      echo "Setting up embedding server..."
+      mkdir -p "${embeddingServerDir}"
+      if [ ! -d "${embeddingServerVenv}" ]; then
+        ${pkgs.python311}/bin/python3.11 -m venv "${embeddingServerVenv}"
+      fi
+      ${pkgs.uv}/bin/uv pip install --python "${embeddingServerVenv}/bin/python" \
+        sentence-transformers fastapi "uvicorn[standard]" 2>/dev/null || true
+      echo "Pre-downloading embedding model ${embeddingModel}..."
+      ${embeddingServerVenv}/bin/python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${embeddingModel}')" 2>/dev/null || true
     fi
 
     echo "AI agents setup complete."
@@ -172,9 +194,8 @@ in
         default: ${mlxModel}
         provider: custom
         base_url: http://localhost:${mlxPort}/v1
-        reasoning_effort: xhigh
       ui:
-        show_reasoning: true
+        show_reasoning: false
     '';
 
     # ── Services (NixOS — systemd user) ────────────────────────────────
@@ -242,8 +263,8 @@ in
           Label = "com.paperclip.agent";
           ProgramArguments = [ "${paperclipWrapper}" ];
           WorkingDirectory = paperclipDir;
-          KeepAlive = true;
-          RunAtLoad = true;
+          KeepAlive = false;
+          RunAtLoad = false;
           StandardOutPath = "${homeDir}/Library/Logs/paperclip.log";
           StandardErrorPath = "${homeDir}/Library/Logs/paperclip.error.log";
         };
@@ -277,10 +298,28 @@ in
           StandardErrorPath = "${homeDir}/Library/Logs/mlx-server.error.log";
         };
       };
+
+      embedding-server = {
+        enable = true;
+        config = {
+          Label = "com.embedding-server.agent";
+          ProgramArguments = [ "${embeddingServerWrapper}" ];
+          WorkingDirectory = embeddingServerDir;
+          KeepAlive = true;
+          RunAtLoad = true;
+          EnvironmentVariables = {
+            EMBEDDING_MODEL = embeddingModel;
+            PORT = embeddingPort;
+          };
+          StandardOutPath = "${homeDir}/Library/Logs/embedding-server.log";
+          StandardErrorPath = "${homeDir}/Library/Logs/embedding-server.error.log";
+        };
+      };
     };
 
     # ── Shell Aliases ──────────────────────────────────────────────────
     programs.zsh.shellAliases = {
+      hermes = "${hermesVenv}/bin/hermes";
       paperclip-logs =
         if isDarwin
         then "tail -f ~/Library/Logs/paperclip.log"
@@ -309,6 +348,14 @@ in
         if isDarwin
         then ''launchctl kickstart -k gui/"$(id -u)"/com.mlx-server.agent''
         else "echo 'MLX server is Darwin-only'";
+      embedding-logs =
+        if isDarwin
+        then "tail -f ~/Library/Logs/embedding-server.log"
+        else "echo 'Embedding server is Darwin-only'";
+      embedding-restart =
+        if isDarwin
+        then ''launchctl kickstart -k gui/"$(id -u)"/com.embedding-server.agent''
+        else "echo 'Embedding server is Darwin-only'";
     };
   };
 }
