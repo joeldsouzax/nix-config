@@ -20,6 +20,7 @@ let
 
   pgDataDir = "${dataDir}/paperclip/pgdata";
   pgPort = "5433"; # avoid conflict with any system postgres
+  pg = pkgs.postgresql.withPackages (ps: [ ps.pgvector ]);
 
   mlxServerDir = "${dataDir}/mlx-server";
   mlxServerVenv = "${mlxServerDir}/venv";
@@ -28,7 +29,7 @@ let
 
   embeddingServerDir = "${dataDir}/embedding-server";
   embeddingServerVenv = "${embeddingServerDir}/venv";
-  embeddingModel = "Snowflake/snowflake-arctic-embed-m-v2.0";
+  embeddingModel = "BAAI/bge-base-en-v1.5";
   embeddingPort = "8801";
 
   knowledgeDir = "${dataDir}/knowledge-mcp";
@@ -88,21 +89,21 @@ let
 
     echo "Setting up PostgreSQL for Paperclip..."
     if [ ! -d "${pgDataDir}" ]; then
-      ${pkgs.postgresql}/bin/initdb -D "${pgDataDir}" --no-locale --encoding=UTF8
+      ${pg}/bin/initdb -D "${pgDataDir}" --no-locale --encoding=UTF8
       # Configure to listen on custom port
       echo "port = ${pgPort}" >> "${pgDataDir}/postgresql.conf"
       echo "unix_socket_directories = '/tmp'" >> "${pgDataDir}/postgresql.conf"
     fi
     # Start postgres temporarily to create the database if needed
-    if ! ${pkgs.postgresql}/bin/pg_isready -h localhost -p ${pgPort} -q 2>/dev/null; then
-      ${pkgs.postgresql}/bin/pg_ctl -D "${pgDataDir}" -l "${pgDataDir}/setup.log" start -w -t 10 2>/dev/null || true
+    if ! ${pg}/bin/pg_isready -h localhost -p ${pgPort} -q 2>/dev/null; then
+      ${pg}/bin/pg_ctl -D "${pgDataDir}" -l "${pgDataDir}/setup.log" start -w -t 10 2>/dev/null || true
       STARTED_PG=1
     fi
-    ${pkgs.postgresql}/bin/createdb -h localhost -p ${pgPort} paperclip 2>/dev/null || true
-    ${pkgs.postgresql}/bin/createdb -h localhost -p ${pgPort} knowledge 2>/dev/null || true
-    ${pkgs.postgresql}/bin/psql -h localhost -p ${pgPort} -d knowledge -c "CREATE EXTENSION IF NOT EXISTS vector" 2>/dev/null || true
+    ${pg}/bin/createdb -h localhost -p ${pgPort} paperclip 2>/dev/null || true
+    ${pg}/bin/createdb -h localhost -p ${pgPort} knowledge 2>/dev/null || true
+    ${pg}/bin/psql -h localhost -p ${pgPort} -d knowledge -c "CREATE EXTENSION IF NOT EXISTS vector" 2>/dev/null || true
     if [ "''${STARTED_PG:-}" = "1" ]; then
-      ${pkgs.postgresql}/bin/pg_ctl -D "${pgDataDir}" stop -m fast 2>/dev/null || true
+      ${pg}/bin/pg_ctl -D "${pgDataDir}" stop -m fast 2>/dev/null || true
     fi
 
     echo "Setting up Paperclip..."
@@ -183,11 +184,10 @@ in
     # ── Runtime Dependencies ───────────────────────────────────────────
     home.packages = with pkgs; [
       pnpm
-      postgresql
       python311
       uv
       ffmpeg
-    ];
+    ] ++ [ pg ];
 
     # ── Paperclip Config ────────────────────────────────────────────────
     home.file."${paperclipDir}/.env" = {
@@ -265,7 +265,7 @@ in
         config = {
           Label = "com.paperclip.postgres";
           ProgramArguments = [
-            "${pkgs.postgresql}/bin/postgres"
+            "${pg}/bin/postgres"
             "-D" pgDataDir
             "-p" pgPort
             "-k" "/tmp"
