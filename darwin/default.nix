@@ -125,6 +125,9 @@ in
       clang
       fd
       ripgrep
+
+      vscode
+      ripgrep
     ];
   };
 

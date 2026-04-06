@@ -1,5 +1,6 @@
 keys:
   - &admin_joel age1przc5apvvpwlhkn7xryxhueydeue06ckqgnv3waxnqqvw0ngpd9qj528fr
+  - &admin_trive age1qpmwdqqdl23pd9m7xmyz8yhal5yxepgklml3eejjmt5u5436jd9s58rv7y
   - &host_main age1a09s8rj4vvxcrjdveeup4xk5pv69d4rul7qhxc9ynwq93d60ha2qh5pe7u
 
 creation_rules:
@@ -7,4 +8,5 @@ creation_rules:
     key_groups:
       - age:
           - *admin_joel
+          - *admin_trive
           - *host_main

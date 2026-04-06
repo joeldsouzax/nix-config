@@ -40,6 +40,8 @@ in
           # Homebrew paths (Darwin only)
           export PATH="/opt/homebrew/bin:$PATH"
           export PATH="/opt/homebrew/sbin:$PATH"
+          # SOPS age key location (Darwin — on NixOS, sops-nix manages this)
+          export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
         ''))
 
         # Main init (default order)

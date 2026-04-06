@@ -40,10 +40,17 @@
       "github.com" = { };
 
       # GitHub — trive work (trivejoel)
+      # IdentityAgent /dev/null disables the SSH agent for this host,
+      # forcing SSH to read the key file from disk. Prevents the agent
+      # from offering the personal key (id_ed25519) before the trive key.
       "github.com-trive" = {
         hostname = "github.com";
         user = "git";
-        identityFile = "~/.ssh/id_ed25519_trive";
+        identityFile = if pkgs.stdenv.isDarwin then "~/.ssh/trive" else "~/.ssh/id_ed25519_trive";
+        identitiesOnly = true;
+        extraOptions = {
+          IdentityAgent = "/dev/null";
+        };
       };
     };
   };

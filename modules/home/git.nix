@@ -10,7 +10,19 @@
       [user]
         name = trivejoel
         email = joel@trive.ai
+    '' + (if pkgs.stdenv.isLinux then ''
+      [user]
         signingkey = 670C107333D4DECD
+      [commit]
+        gpgsign = true
+    '' else ''
+      [user]
+        signingkey = 78A9307CC53445F1
+      [commit]
+        gpgsign = true
+    '') + ''
+      [url "git@github.com-trive:"]
+        insteadOf = git@github.com:
     '';
 
     programs.git = {
@@ -31,8 +43,8 @@
         pull.rebase = true;
         rebase.autoStash = true;
 
-        # Trive work account — repos under ~/Code/trive.ai/
-        "includeIf \"gitdir:~/Code/trive.ai/\"" = {
+        # Trive work account — repos under ~/Code/trive/
+        "includeIf \"gitdir:~/Code/trive/\"" = {
           path = "~/.config/git/trive.inc";
         };
       };

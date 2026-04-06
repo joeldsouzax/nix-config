@@ -28,6 +28,7 @@
       # Browsers (mirrors NixOS: firefox + google-chrome)
       "google-chrome"
       "firefox"
+      
 
       # Communication (mirrors NixOS: slack from systemPackages)
       "discord"
@@ -54,22 +55,16 @@
       "1password-cli"
 
       # Virtualization (for `just up` VM management)
-      "utm"                  # QEMU frontend with native macOS UI
+      "utm"
+      "spotify"
     ];
 
     # ── CLI Tools (Brews) ───────────────────────────────────────────────
     brews = [
       "pinentry-mac"
-
-      # Virtualization (for libvirt + QEMU backend)
-      # `just up` uses terraform + libvirt provider → needs these
       "qemu"
       "libvirt"
-
-      # DNS resolution for *.trive.ai (see networking.nix)
       "dnsmasq"
-
-      # TLS passthrough proxy (mirrors NixOS nginx stream config)
       "nginx"
     ];
 

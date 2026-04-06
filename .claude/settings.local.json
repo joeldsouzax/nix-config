@@ -8,7 +8,12 @@
       "Bash(rm:*)",
       "Bash(~/.emacs.d/bin/doom sync:*)",
       "Bash(emacs:*)",
-      "Bash(/nix/store/4grbvcf9nwjhym0mav1rdap4sndsmzfd-emacs-30.2/Applications/Emacs.app/Contents/MacOS/Emacs:*)"
+      "Bash(/nix/store/4grbvcf9nwjhym0mav1rdap4sndsmzfd-emacs-30.2/Applications/Emacs.app/Contents/MacOS/Emacs:*)",
+      "Bash(gpg:*)",
+      "Bash(ssh-add:*)",
+      "Bash(ssh:*)",
+      "Bash(GIT_SSH_COMMAND='ssh -o IdentitiesOnly=yes -i ~/.ssh/trive -o IdentityAgent=/dev/null' git clone:*)",
+      "Bash(ssh-to-age:*)"
     ]
   }
 }
