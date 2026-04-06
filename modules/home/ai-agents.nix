@@ -31,6 +31,9 @@ let
   embeddingModel = "Snowflake/snowflake-arctic-embed-m-v2.0";
   embeddingPort = "8801";
 
+  knowledgeDir = "${dataDir}/knowledge-mcp";
+  knowledgeVenv = "${knowledgeDir}/venv";
+
   # SOPS secret paths (populated by sops-nix at activation)
   claudeKeyPath = lib.attrByPath [ "sops" "secrets" "claude_key" "path" ] "" config;
 
@@ -148,6 +151,14 @@ let
       ${embeddingServerVenv}/bin/python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('${embeddingModel}')" 2>/dev/null || true
     fi
 
+    echo "Setting up knowledge MCP server..."
+    mkdir -p "${knowledgeDir}"
+    if [ ! -d "${knowledgeVenv}" ]; then
+      ${pkgs.python311}/bin/python3.11 -m venv "${knowledgeVenv}"
+    fi
+    ${pkgs.uv}/bin/uv pip install --python "${knowledgeVenv}/bin/python" \
+      "psycopg[binary]" httpx pymupdf "mcp>=1.2.0,<2" 2>/dev/null || true
+
     echo "AI agents setup complete."
   '';
 in
@@ -196,6 +207,15 @@ in
         base_url: http://localhost:${mlxPort}/v1
       ui:
         show_reasoning: false
+      mcp_servers:
+        knowledge:
+          command: "${knowledgeVenv}/bin/python"
+          args: ["-m", "server"]
+          env:
+            DATABASE_URL: "postgres://localhost:${pgPort}/knowledge"
+            EMBEDDING_URL: "http://localhost:${embeddingPort}/v1"
+      memory:
+        provider: knowledge
     '';
 
     # ── Services (NixOS — systemd user) ────────────────────────────────
@@ -356,6 +376,7 @@ in
         if isDarwin
         then ''launchctl kickstart -k gui/"$(id -u)"/com.embedding-server.agent''
         else "echo 'Embedding server is Darwin-only'";
+      knowledge-db = "psql -h localhost -p ${pgPort} -d knowledge";
     };
   };
 }
