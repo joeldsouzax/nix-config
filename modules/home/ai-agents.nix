@@ -48,7 +48,7 @@ let
   mlxServerWrapper = pkgs.writeShellScript "mlx-server-wrapper" ''
     set -euo pipefail
     export PATH="${mlxServerVenv}/bin:$PATH"
-    exec ${mlxServerVenv}/bin/python -m mlx_lm.server \
+    exec ${mlxServerVenv}/bin/python -m mlx_lm server \
       --model ${mlxModel} \
       --port ${mlxPort}
   '';
@@ -91,7 +91,7 @@ let
       ${pkgs.uv}/bin/uv pip install --python "${mlxServerVenv}/bin/python" mlx-lm 2>/dev/null || true
 
       echo "Pre-downloading model ${mlxModel} (this may take a while on first run)..."
-      ${mlxServerVenv}/bin/python -m mlx_lm.download --model ${mlxModel} 2>/dev/null || true
+      ${mlxServerVenv}/bin/python -c "from huggingface_hub import snapshot_download; snapshot_download('${mlxModel}')" 2>/dev/null || true
     fi
 
     echo "AI agents setup complete."
@@ -99,8 +99,10 @@ let
 in
 {
   # ── Clone & Install on Activation ──────────────────────────────────
+  # nix-darwin only runs hardcoded script names (postActivation, etc.)
+  # so we append to postActivation on Darwin, custom name on NixOS.
   system.activationScripts = if isDarwin then {
-    setupAiAgents.text = ''
+    postActivation.text = lib.mkAfter ''
       echo "Setting up AI agents for ${vars.user}..."
       sudo -u ${vars.user} ${setupScript}
     '';

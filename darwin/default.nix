@@ -48,6 +48,21 @@ in
     '';
   };
 
+  # ── SOPS Secrets (disabled — using local Qwen via MLX, no API keys needed)
+  # sops = {
+  #   defaultSopsFile = ../secrets/secrets.yaml;
+  #   defaultSopsFormat = "yaml";
+  #   age.keyFile = "/Users/${vars.user}/.config/sops/age/keys.txt";
+  #   age.sshKeyPaths = [];
+  #   gnupg.sshKeyPaths = [];
+  #
+  #   secrets = {
+  #     claude_key = {
+  #       owner = vars.user;
+  #     };
+  #   };
+  # };
+
   # ── Shells ──────────────────────────────────────────────────────────────
   programs.zsh.enable = true;
   environment = {

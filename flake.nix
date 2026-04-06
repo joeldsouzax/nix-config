@@ -96,6 +96,7 @@
       darwinConfigurations."joel" = nix-darwin.lib.darwinSystem {
         modules = [
           ./darwin
+          # sops-nix.darwinModules.sops  # disabled — using local Qwen via MLX
           home-manager.darwinModules.home-manager
           {
             home-manager.useGlobalPkgs = true;

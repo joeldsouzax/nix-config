@@ -5,12 +5,12 @@
 
 with pkgs;
 let
-  version = "2.1.69";
+  version = "2.1.87";
   pname = "claude-code";
 
   src = pkgs.fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-${version}.tgz";
-    hash = "sha256-RbQCHPNBdLrMT0DSIAZyRIovSkDf8JBPJbpbIVD5EK0=";
+    hash = "sha256-XVXIJNIjt+QUw6BeW6FYmbHgNNdu+KnObpLHSyzFlqI=";
   };
 
   npmBin = "${bun}/bin/bun";
@@ -67,7 +67,9 @@ stdenv.mkDerivation rec {
     if [ -d "$PLUGIN_DIR" ]; then
         find "$PLUGIN_DIR" -type f -name "*.sh" 2>/dev/null | while read -r script; do
             if grep -q "^#!/bin/bash" "$script"; then
-                sed -i${if pkgs.stdenv.isDarwin then " ''" else ""} 's|^#!/bin/bash|#!/usr/bin/env bash|' "$script"
+                sed -i${
+                  if pkgs.stdenv.isDarwin then " ''" else ""
+                } 's|^#!/bin/bash|#!/usr/bin/env bash|' "$script"
             fi
             if [ ! -x "$script" ]; then
                 chmod +x "$script"
