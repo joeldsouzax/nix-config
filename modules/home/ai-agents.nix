@@ -18,6 +18,9 @@ let
   hermesDir = "${dataDir}/hermes";
   hermesVenv = "${hermesDir}/venv";
 
+  pgDataDir = "${dataDir}/paperclip/pgdata";
+  pgPort = "5433"; # avoid conflict with any system postgres
+
   mlxServerDir = "${dataDir}/mlx-server";
   mlxServerVenv = "${mlxServerDir}/venv";
   mlxModel = "mlx-community/Qwen3-14B-4bit";
@@ -37,9 +40,16 @@ let
     exec ${execCmd}
   '';
 
-  paperclipWrapper = mkServiceWrapper "paperclip"
-    "${pkgs.pnpm}/bin/pnpm dev"
-    { ANTHROPIC_API_KEY = claudeKeyPath; };
+  # Paperclip wrapper — sets HOME and PATH so launchd can find node/pnpm
+  paperclipWrapper = pkgs.writeShellScript "paperclip-wrapper" ''
+    set -euo pipefail
+    export HOME="${homeDir}"
+    export PATH="${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
+    export DATABASE_URL="postgres://localhost:${pgPort}/paperclip"
+    export PORT="3100"
+    export SERVE_UI="true"
+    exec ${pkgs.pnpm}/bin/pnpm dev
+  '';
 
   hermesWrapper = mkServiceWrapper "hermes"
     "${hermesVenv}/bin/hermes --headless"
@@ -57,6 +67,26 @@ let
   setupScript = pkgs.writeShellScript "setup-ai-agents" ''
     set -euo pipefail
     USER_HOME="${homeDir}"
+
+    export HOME="${homeDir}"
+    export PATH="${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
+
+    echo "Setting up PostgreSQL for Paperclip..."
+    if [ ! -d "${pgDataDir}" ]; then
+      ${pkgs.postgresql}/bin/initdb -D "${pgDataDir}" --no-locale --encoding=UTF8
+      # Configure to listen on custom port
+      echo "port = ${pgPort}" >> "${pgDataDir}/postgresql.conf"
+      echo "unix_socket_directories = '/tmp'" >> "${pgDataDir}/postgresql.conf"
+    fi
+    # Start postgres temporarily to create the database if needed
+    if ! ${pkgs.postgresql}/bin/pg_isready -h localhost -p ${pgPort} -q 2>/dev/null; then
+      ${pkgs.postgresql}/bin/pg_ctl -D "${pgDataDir}" -l "${pgDataDir}/setup.log" start -w -t 10 2>/dev/null || true
+      STARTED_PG=1
+    fi
+    ${pkgs.postgresql}/bin/createdb -h localhost -p ${pgPort} paperclip 2>/dev/null || true
+    if [ "''${STARTED_PG:-}" = "1" ]; then
+      ${pkgs.postgresql}/bin/pg_ctl -D "${pgDataDir}" stop -m fast 2>/dev/null || true
+    fi
 
     echo "Setting up Paperclip..."
     if [ ! -d "${paperclipDir}" ]; then
@@ -124,11 +154,25 @@ in
       ffmpeg
     ];
 
+    # ── Paperclip Config ────────────────────────────────────────────────
+    home.file."${paperclipDir}/.env" = {
+      text = ''
+        DATABASE_URL=postgres://localhost:${pgPort}/paperclip
+        PORT=3100
+        SERVE_UI=true
+      '';
+      force = true;
+    };
+
     # ── Hermes Config ──────────────────────────────────────────────────
     home.file.".hermes/config.yaml".text = ''
-      default_model: ${mlxModel}
-      provider: openai
-      api_base: http://localhost:${mlxPort}/v1
+      model:
+        default: ${mlxModel}
+        provider: custom
+        base_url: http://localhost:${mlxPort}/v1
+        reasoning_effort: xhigh
+      ui:
+        show_reasoning: true
     '';
 
     # ── Services (NixOS — systemd user) ────────────────────────────────
@@ -173,6 +217,23 @@ in
 
     # ── Services (Darwin — launchd) ────────────────────────────────────
     launchd.agents = lib.mkIf isDarwin {
+      paperclip-postgres = {
+        enable = true;
+        config = {
+          Label = "com.paperclip.postgres";
+          ProgramArguments = [
+            "${pkgs.postgresql}/bin/postgres"
+            "-D" pgDataDir
+            "-p" pgPort
+            "-k" "/tmp"
+          ];
+          KeepAlive = true;
+          RunAtLoad = true;
+          StandardOutPath = "${homeDir}/Library/Logs/paperclip-postgres.log";
+          StandardErrorPath = "${homeDir}/Library/Logs/paperclip-postgres.error.log";
+        };
+      };
+
       paperclip = {
         enable = true;
         config = {
@@ -183,10 +244,6 @@ in
           RunAtLoad = true;
           StandardOutPath = "${homeDir}/Library/Logs/paperclip.log";
           StandardErrorPath = "${homeDir}/Library/Logs/paperclip.error.log";
-          EnvironmentVariables = {
-            OPENAI_BASE_URL = "http://localhost:${mlxPort}/v1";
-            OPENAI_API_KEY = "local";
-          };
         };
       };
 
@@ -238,6 +295,10 @@ in
         if isDarwin
         then ''launchctl kickstart -k gui/"$(id -u)"/com.hermes.agent''
         else "systemctl --user restart hermes";
+      paperclip-db-logs =
+        if isDarwin
+        then "tail -f ~/Library/Logs/paperclip-postgres.log"
+        else "journalctl --user -u paperclip-postgres -f";
       mlx-logs =
         if isDarwin
         then "tail -f ~/Library/Logs/mlx-server.log"
