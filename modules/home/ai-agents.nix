@@ -187,6 +187,7 @@ in
       python311
       uv
       ffmpeg
+      llm
     ] ++ [ pg ];
 
     # ── Paperclip Config ────────────────────────────────────────────────
@@ -378,5 +379,83 @@ in
         else "echo 'Embedding server is Darwin-only'";
       knowledge-db = "psql -h localhost -p ${pgPort} -d knowledge";
     };
+
+    programs.nushell.configFile.text = lib.mkAfter ''
+      # ── qwen: chat with local Qwen model via MLX server ──
+      def qwen [...prompt: string] {
+        let url = "http://localhost:${mlxPort}/v1/chat/completions"
+        let model = "${mlxModel}"
+        if ($prompt | is-empty) {
+          print "Qwen Chat (Ctrl-C to quit)"
+          print "──────────────────────────"
+          mut messages = []
+          loop {
+            let line = (input $"\n(ansi blue_bold)you>(ansi reset) ")
+            if ($line | is-empty) { continue }
+            $messages = ($messages | append {role: "user", content: $line})
+            let body = ({model: $model, messages: $messages} | to json -r)
+            let reply = (^curl -sN $url -H "Content-Type: application/json" -d $body
+              | lines
+              | where {|l| ($l | str starts-with "data: ") and ($l != "data: [DONE]")}
+              | each {|l| $l | str substring 6.. | from json | get choices.0.delta.content? | default ""}
+              | str join "")
+            print $reply
+            $messages = ($messages | append {role: "assistant", content: $reply})
+          }
+        } else {
+          let prompt_text = ($prompt | str join " ")
+          let body = ({model: $model, messages: [{role: "user", content: $prompt_text}]} | to json -r)
+          let reply = (^curl -sN $url -H "Content-Type: application/json" -d $body
+            | lines
+            | where {|l| ($l | str starts-with "data: ") and ($l != "data: [DONE]")}
+            | each {|l| $l | str substring 6.. | from json | get choices.0.delta.content? | default ""}
+            | str join "")
+          print $reply
+        }
+      }
+    '';
+
+    programs.zsh.initContent = lib.mkAfter ''
+      # ── qwen: chat with local Qwen model via MLX server ──
+      qwen() {
+        local model="${mlxModel}"
+        local url="http://localhost:${mlxPort}/v1/chat/completions"
+
+        if [[ $# -eq 0 ]]; then
+          # Interactive REPL mode
+          echo "Qwen Chat (Ctrl-D to quit)"
+          echo "──────────────────────────"
+          local messages='[]'
+          while printf "\n\033[1;34myou>\033[0m " && IFS= read -r line; do
+            [[ -z "$line" ]] && continue
+            messages=$(printf '%s' "$messages" | ${pkgs.jq}/bin/jq -c --arg m "$line" '. + [{"role":"user","content":$m}]')
+            local reply=""
+            reply=$(curl -sN "$url" \
+              -H "Content-Type: application/json" \
+              -d "$(${pkgs.jq}/bin/jq -nc --arg model "$model" --argjson msgs "$messages" \
+                '{model:$model,messages:$msgs,stream:true}')" \
+              | while IFS= read -r chunk; do
+                  chunk="''${chunk#data: }"
+                  [[ "$chunk" == "[DONE]" || -z "$chunk" ]] && continue
+                  printf '%s' "$chunk" | ${pkgs.jq}/bin/jq -rj '.choices[0].delta.content // empty' 2>/dev/null
+                done)
+            printf '\n'
+            messages=$(printf '%s' "$messages" | ${pkgs.jq}/bin/jq -c --arg m "$reply" '. + [{"role":"assistant","content":$m}]')
+          done
+        else
+          # One-shot mode: qwen "your question here"
+          curl -sN "$url" \
+            -H "Content-Type: application/json" \
+            -d "$(${pkgs.jq}/bin/jq -nc --arg model "$model" --arg prompt "$*" \
+              '{model:$model,messages:[{role:"user",content:$prompt}],stream:true}')" \
+            | while IFS= read -r chunk; do
+                chunk="''${chunk#data: }"
+                [[ "$chunk" == "[DONE]" || -z "$chunk" ]] && continue
+                printf '%s' "$chunk" | ${pkgs.jq}/bin/jq -rj '.choices[0].delta.content // empty' 2>/dev/null
+              done
+          printf '\n'
+        fi
+      }
+    '';
   };
 }

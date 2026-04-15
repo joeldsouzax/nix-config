@@ -81,14 +81,25 @@ in
         alias de = doom env
         alias ds = doom sync
       '' + (if pkgs.stdenv.isDarwin then ''
-        def "nix switch" [] { sudo darwin-rebuild switch --flake ~/.setup#joel }
+        def nixswitch [] { sudo darwin-rebuild switch --flake ~/.setup#joel }
       '' else ''
-        def "nix switch" [] { sudo nixos-rebuild switch --flake /home/${vars.user}/.setup#main }
+        def nixswitch [] { sudo nixos-rebuild switch --flake /home/${vars.user}/.setup#main }
       '') + lib.optionalString (claudeKeyPath != "") ''
 
         if ("${claudeKeyPath}" | path exists) {
             $env.ANTHROPIC_API_KEY = (open --raw "${claudeKeyPath}" | str trim)
         }
+      '';
+      envFile.text = let
+        homeDir = if pkgs.stdenv.isDarwin then "/Users/${vars.user}" else "/home/${vars.user}";
+      in ''
+        $env.PATH = ($env.PATH | split row (char esep)
+          | prepend "${homeDir}/.local/share/hermes/venv/bin"
+          | prepend "/etc/profiles/per-user/${vars.user}/bin"
+          | prepend "/run/current-system/sw/bin"
+          | prepend "/nix/var/nix/profiles/default/bin"
+        ${if pkgs.stdenv.isDarwin then ''| prepend "/opt/homebrew/bin"'' else ""}
+          | uniq)
       '';
       environmentVariables = {
         EDITOR = "emacsclient -t";
