@@ -123,13 +123,16 @@ with host; {
           debug = {
             disable_logs = true;        # logging adds overhead — off for fluidity
             enable_stdout_logs = false;
+            # vfr moved misc: -> debug: in Hyprland 0.55. Skips rendering idle
+            # frames (big power/perf win when nothing's animating).
+            vfr = true;
           };
 
           misc = {
             disable_hyprland_logo = true;
             disable_splash_rendering = true;
-            vfr = true;                 # variable frame rate: skip rendering idle frames
-            vrr = 1;                    # variable refresh rate where the panel supports it
+            # (vrr removed: it became a per-monitor monitorv2 setting in 0.55 and
+            # does nothing on a fixed 60Hz panel — was misc:vrr.)
           };
 
           general = {
