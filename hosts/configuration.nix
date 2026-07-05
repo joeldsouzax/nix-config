@@ -45,9 +45,6 @@ in
   };
   security.chromiumSuidSandbox.enable = true;
 
-  environment.variables.VDPAU_DRIVER = "va_gl";
-  environment.variables.LIBVA_DRIVER_NAME = "nvidia";
-
   time.timeZone = "Europe/Oslo";
   i18n = {
     defaultLocale = "en_US.UTF-8";
@@ -103,6 +100,9 @@ in
       TERMINAL = "${vars.terminal}";
       EDITOR = "${vars.editor}";
       VISUAL = "${vars.editor}";
+      # VA-API / VDPAU (NVIDIA) — merged here to keep one environment.variables.
+      VDPAU_DRIVER = "va_gl";
+      LIBVA_DRIVER_NAME = "nvidia";
     };
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
