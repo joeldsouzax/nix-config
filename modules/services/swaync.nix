@@ -59,8 +59,7 @@ in
                 "text": "Notification Center"
               },
               "mpris": {
-                "image-size": 96,
-                "image-radius": 7
+                "image-size": 96
               },
               "volume": {
                 "label": "󰕾"

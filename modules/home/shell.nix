@@ -106,6 +106,13 @@ in
             ''| prepend "/run/wrappers/bin"''
         }
           | uniq)
+
+        # 1Password SSH agent. securities.nix only exports SSH_AUTH_SOCK via
+        # environment.extraInit (/etc/profile) — which POSIX login shells read
+        # but Nushell does NOT. Without mirroring it here, ssh / `git fetch`
+        # over the 1Password agent works in zsh but fails in Nushell.
+        let op_sock = ($env.HOME | path join ".1password/agent.sock")
+        if ($op_sock | path exists) { $env.SSH_AUTH_SOCK = $op_sock }
       '';
       environmentVariables = {
         EDITOR = "vim";

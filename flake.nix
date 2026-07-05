@@ -143,13 +143,24 @@
         };
 
       # ── Packages ───────────────────────────────────────────────────────────
-      # The morrownr rtw89 WiFi driver, built against the Zen kernel — exposed
-      # so CI can prove it *compiles* against Zen before the desktop rebuilds:
-      #   nix build .#packages.x86_64-linux.rtw89-morrownr -L
-      packages.x86_64-linux.rtw89-morrownr =
-        (import nixpkgs {
-          system = "x86_64-linux";
-          config.allowUnfree = true;
-        }).linuxPackages_zen.callPackage ./pkgs/rtw89-morrownr.nix { };
+      # Kernel modules built against the Zen kernel, exposed so CI can prove they
+      # actually COMPILE against Zen before the desktop rebuilds (the toplevel
+      # eval/CI does NOT build kernel modules, so a kmod build failure would
+      # otherwise only surface at `nixos-rebuild`):
+      #   nix build .#packages.x86_64-linux.rtw89-morrownr -L      # WiFi
+      #   nix build .#packages.x86_64-linux.nvidia-zen-stable -L   # NVIDIA 595
+      #   nix build .#packages.x86_64-linux.nvidia-zen-latest -L   # NVIDIA 610
+      packages.x86_64-linux =
+        let
+          linuxPkgs = (import nixpkgs {
+            system = "x86_64-linux";
+            config.allowUnfree = true;
+          }).linuxPackages_zen;
+        in
+        {
+          rtw89-morrownr = linuxPkgs.callPackage ./pkgs/rtw89-morrownr.nix { };
+          nvidia-zen-stable = linuxPkgs.nvidiaPackages.stable;
+          nvidia-zen-latest = linuxPkgs.nvidiaPackages.latest;
+        };
     };
 }

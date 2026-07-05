@@ -106,7 +106,9 @@
       "Bash(darwin-rebuild build *)",
       "Bash(sudo -n true)",
       "Bash(brew trust *)",
-      "Bash([ -s \"$f\" ])"
+      "Bash([ -s \"$f\" ])",
+      "Bash(awk '{print $1/1024 \"KB\"}')",
+      "WebFetch(domain:wiki.hyprland.org)"
     ]
   }
 }

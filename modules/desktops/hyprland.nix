@@ -131,8 +131,8 @@ with host; {
           misc = {
             disable_hyprland_logo = true;
             disable_splash_rendering = true;
-            # (vrr removed: it became a per-monitor monitorv2 setting in 0.55 and
-            # does nothing on a fixed 60Hz panel — was misc:vrr.)
+            # (misc:vrr omitted: it does nothing on a fixed 60Hz panel. It still
+            # exists globally, and is also settable per-monitor via monitorv2.)
           };
 
           general = {
