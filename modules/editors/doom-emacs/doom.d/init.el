@@ -51,7 +51,7 @@
        word-wrap           ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +icons +ranger)  ; making dired pretty [functional]
+       (dired +icons +dirvish)  ; making dired pretty [functional] (dirvish replaced ranger)
        electric            ; smarter, keyword-based electric-indent
        (ibuffer +icons)    ; interactive buffer management
        (undo +tree)        ; persistent, smarter undo for your inevitable mistakes

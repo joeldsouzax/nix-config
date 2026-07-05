@@ -64,13 +64,9 @@
 (package! treesit-auto)
 
 
-;; Tailwind CSS support. NOTE: lsp-tailwindcss is NOT in the emacs-overlay
-;; snapshot unstraightened uses, so it must be built from its github :recipe
-;; with a :pin. (The package is upstream-deprecated in favour of lsp-mode's
-;; built-in Tailwind client, but still works pinned.)
-(package! lsp-tailwindcss
-  :recipe (:host github :repo "merrickluo/lsp-tailwindcss")
-  :pin "c90c3fece5eaf8725fa957ada8aafae9c461ad2b")
+;; Tailwind CSS: the external lsp-tailwindcss package is deprecated — lsp-mode
+;; now ships a built-in tailwindcss client. Nothing to declare here; configured
+;; in config.el under `after! lsp-tailwindcss`.
 
 (package! prisma-mode
   :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main")

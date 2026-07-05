@@ -252,16 +252,15 @@
                    (insert "import React from 'react';\n\n")))))
 
 ;; ---------------------------------------------------------------------
-;; C. TAILWIND CSS
+;; C. TAILWIND CSS (lsp-mode built-in client — external package deprecated)
 ;; ---------------------------------------------------------------------
-(use-package! lsp-tailwindcss
-  :init
-  (setq lsp-tailwindcss-add-on-mode t)
-  :config
+;; The tailwindcss-language-server itself comes from each project's flake
+;; (direnv). add-on-mode defaults to t and tsx-ts-mode/web-mode are already in
+;; the client's default major-mode list; we just extend it to our other
+;; tree-sitter modes.
+(after! lsp-tailwindcss
   (add-to-list 'lsp-tailwindcss-major-modes 'typescript-ts-mode)
-  (add-to-list 'lsp-tailwindcss-major-modes 'tsx-ts-mode)
-  (add-to-list 'lsp-tailwindcss-major-modes 'js-ts-mode)
-  (add-to-list 'lsp-tailwindcss-major-modes 'web-mode))
+  (add-to-list 'lsp-tailwindcss-major-modes 'js-ts-mode))
 
 ;; ---------------------------------------------------------------------
 ;; D. NESTJS / MIKROORM (DECORATORS)
@@ -333,7 +332,7 @@
   ;; Notifications
   (use-package! alert
     :config
-    (setq alert-default-style 'notifier))
+    (setq alert-default-style 'notifications)) ;; native D-Bus (Linux), no external binary
 
   ;; --- KEYBINDINGS (Standard Emacs) ---
   ;; This maps commands to 'C-c s ...'
@@ -382,7 +381,7 @@
       (message "GPTel: Claude key not found at %s" key-file)))
 
   ;; 2. Backend: Switch from OpenAI to Anthropic
-  (setq gptel-model 'claude-3-5-sonnet-20240620
+  (setq gptel-model 'claude-sonnet-5
         gptel-backend (gptel-make-anthropic "Claude"
                                             :stream t
                                             :key gptel-api-key)))
