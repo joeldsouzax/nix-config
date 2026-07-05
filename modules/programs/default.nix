@@ -21,6 +21,6 @@
   ./wofi.nix
   ./git.nix
   # ./direnv.nix  # moved to modules/home/direnv.nix (shared)
-  ./ghostty.nix
+  # ./ghostty.nix  # removed — terminal is foot (Linux) via home-manager; see modules/home/foot.nix
   # ./games.nix
 ]
