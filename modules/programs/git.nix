@@ -29,11 +29,6 @@
           pull.rebase = true;
           rebase.autoStash = true;
           credential.helper = "oauth";
-
-          # Trive work account — repos under ~/Code/trive.ai/
-          "includeIf \"gitdir:~/Code/trive.ai/\"" = {
-            path = "~/.config/git/trive.inc";
-          };
         };
         lfs = {
           enable = true;

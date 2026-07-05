@@ -281,38 +281,11 @@ in
       domain-needed = true;
       bogus-priv = true;
       no-resolv = true;
-      address = [
-        "/trive.ai/127.0.0.1"
-        "/trive.ai/::1"
-        "/vm.trive.ai/192.168.123.100"
-      ];
       interface = "lo";
       bind-interfaces = true;
     };
   };
   services.resolved.enable = false;
-  services.nginx = {
-    enable = true;
-    streamConfig = ''
-      upstream trive_backend {
-         server 192.168.123.100:443 max_fails=1 fail_timeout=5s;
-         server trive.ai:443 backup;
-      }
-
-      server {
-        listen 127.0.0.1:443;
-        listen [::1]:443;
-        proxy_pass trive_backend;
-        ssl_preread on;
-        resolver 8.8.8.8;
-      }
-
-      server {
-          listen 127.0.0.1:80;
-          proxy_pass trive_backend; 
-      }
-    '';
-  };
 
   flatpak.enable = true;
   nix = {

@@ -345,17 +345,10 @@
          :desc "Threads"                 "d" #'slack-all-threads
          :desc "Quit Slack"              "q" #'slack-ws-close))
 
-  ;; Register Team (Securely via ~/.authinfo)
-  (slack-register-team
-   :name "Trive"
-   :default t
-   :token (auth-source-pick-first-password
-           :host "triveapp.slack.com"
-           :user "joeldsouzax@gmail.com")
-   :cookie (auth-source-pick-first-password
-            :host "triveapp.slack.com"
-            :user "joeldsouzax@gmail.com^cookie")
-   :subscribed-channels '(general random)))
+  ;; No Slack team registered on the desktop (devrandom-only). Add one with
+  ;; (slack-register-team :name "..." :token (auth-source-pick-first-password
+  ;;   :host "your.slack.com" :user "joeldsouzax@gmail.com") ...)
+  )
 
 
 ;;AI STUFF

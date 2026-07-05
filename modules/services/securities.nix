@@ -11,7 +11,7 @@
 
   programs._1password-gui = {
     enable = true;
-    polkitPolicyOwners = [ "joel@trive.ai" ];
+    polkitPolicyOwners = [ "joeldsouzax@gmail.com" ];
   };
 
   environment.extraInit = ''

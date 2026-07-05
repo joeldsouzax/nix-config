@@ -12,10 +12,10 @@ import GLib from "gi://GLib"
 // ── What to monitor ────────────────────────────────────────────────────────
 // systemd user/system units and HTTP endpoints. Edit freely.
 const SERVICES: Array<{ name: string; check: string }> = [
-  { name: "nginx", check: "systemctl is-active nginx" },
   { name: "dnsmasq", check: "systemctl is-active dnsmasq" },
-  // HTTP health example (exit 0 = up):
-  { name: "trive.ai", check: "curl -sf -o /dev/null --max-time 2 https://trive.ai" },
+  { name: "sshd", check: "systemctl is-active sshd" },
+  // HTTP health example (exit 0 = up) — point at your own services:
+  // { name: "devrandom.co", check: "curl -sf -o /dev/null --max-time 2 https://devrandom.co" },
 ]
 
 // ── Helpers (pure GLib) ─────────────────────────────────────────────────────
