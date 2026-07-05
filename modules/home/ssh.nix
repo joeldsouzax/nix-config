@@ -9,19 +9,19 @@
 {
   home-manager.users.${vars.user}.programs.ssh = {
     enable = true;
-    enableDefaultConfig = false;  # We manage all defaults via matchBlocks."*"
+    enableDefaultConfig = false;  # We manage all defaults via settings."*"
 
-    # Modern HM uses matchBlocks."*" for global SSH defaults
-    matchBlocks = {
+    # Modern HM: `settings` replaces the deprecated `matchBlocks`; raw OpenSSH
+    # directives (UseKeychain, IdentityAgent, …) go inline using their upstream names.
+    settings = {
       # Global defaults for all hosts
       "*" = {
         identityFile = "~/.ssh/id_ed25519";
         addKeysToAgent = "yes";
         forwardAgent = true;
-        extraOptions = lib.optionalAttrs pkgs.stdenv.isDarwin {
-          # macOS Keychain integration (keeps passphrase across reboots)
-          UseKeychain = "yes";
-        };
+      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+        # macOS Keychain integration (keeps passphrase across reboots)
+        UseKeychain = "yes";
       };
 
       # NixOS desktop — accessible from Mac via mDNS
@@ -48,9 +48,7 @@
         user = "git";
         identityFile = if pkgs.stdenv.isDarwin then "~/.ssh/trive" else "~/.ssh/id_ed25519_trive";
         identitiesOnly = true;
-        extraOptions = {
-          IdentityAgent = "/dev/null";
-        };
+        IdentityAgent = "/dev/null";
       };
     };
   };

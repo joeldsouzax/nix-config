@@ -37,9 +37,13 @@
   };
 
   hyprland.enable = true;
-  programs.light.enable = true;
 
-  environment = { systemPackages = with pkgs; [ rclone simple-scan slack ]; };
+  # `programs.light`/`pkgs.light` were removed from nixpkgs (unmaintained).
+  # brightnessctl is the maintained replacement; its udev rules grant the
+  # video group backlight access (used by the WM brightness keybinds).
+  services.udev.packages = [ pkgs.brightnessctl ];
+
+  environment = { systemPackages = with pkgs; [ brightnessctl rclone simple-scan slack ]; };
   flatpak = {
     extraPackages = [ "com.github.tchx84.Flatseal" "com.stremio.Stremio" ];
   };

@@ -90,11 +90,8 @@ in
             $env.ANTHROPIC_API_KEY = (open --raw "${claudeKeyPath}" | str trim)
         }
       '';
-      envFile.text = let
-        homeDir = if pkgs.stdenv.isDarwin then "/Users/${vars.user}" else "/home/${vars.user}";
-      in ''
+      envFile.text = ''
         $env.PATH = ($env.PATH | split row (char esep)
-          | prepend "${homeDir}/.local/share/hermes/venv/bin"
           | prepend "/etc/profiles/per-user/${vars.user}/bin"
           | prepend "/run/current-system/sw/bin"
           | prepend "/nix/var/nix/profiles/default/bin"
@@ -102,7 +99,7 @@ in
           | uniq)
       '';
       environmentVariables = {
-        EDITOR = "emacsclient -t";
+        EDITOR = "vim";
       };
     };
   };

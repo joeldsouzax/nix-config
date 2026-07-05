@@ -36,7 +36,7 @@ with host; {
     programs.hyprland = {
       enable = true;
       withUWSM = true;
-      package = hyprland.packages.${pkgs.system}.hyprland;
+      package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
     };
 
     # Initialize Environment
@@ -99,7 +99,9 @@ with host; {
 
       wayland.windowManager.hyprland = with colors.scheme.default.hex; {
         enable = true;
-        package = hyprland.packages.${pkgs.system}.hyprland;
+        package = hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+        # HM flipped the default to "lua"; our `settings` below are hyprlang — pin it.
+        configType = "hyprlang";
         xwayland.enable = true;
         systemd.enable = false;
 

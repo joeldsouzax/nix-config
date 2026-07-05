@@ -61,13 +61,12 @@
       (epkgs: [ epkgs.vterm epkgs.treesit-grammars.with-all-grammars ])))
 
     # -- Language Servers --
-    nodejs_20
+    nodejs_22
     typescript-language-server
     tailwindcss-language-server
     vscode-langservers-extracted
 
-    # Use nodePackages for Astro LS if the top-level one is missing
-    nodePackages."@astrojs/language-server"
+    astro-language-server
     tree-sitter
     emacs-lsp-booster
     just

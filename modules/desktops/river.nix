@@ -153,8 +153,8 @@ with host; {
                 riverctl map $mode None XF86AudioNext  spawn 'playerctl next'
 
                 # Brightness
-                riverctl map $mode None XF86MonBrightnessUp   spawn 'light -A 5'
-                riverctl map $mode None XF86MonBrightnessDown spawn 'light -U 5'
+                riverctl map $mode None XF86MonBrightnessUp   spawn 'brightnessctl set 5%+'
+                riverctl map $mode None XF86MonBrightnessDown spawn 'brightnessctl set 5%-'
             done
 
             # Background and Color

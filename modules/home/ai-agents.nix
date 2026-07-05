@@ -53,7 +53,7 @@ let
   paperclipWrapper = pkgs.writeShellScript "paperclip-wrapper" ''
     set -euo pipefail
     export HOME="${homeDir}"
-    export PATH="${hermesVenv}/bin:${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
+    export PATH="${hermesVenv}/bin:${pkgs.nodejs_22}/bin:${pkgs.pnpm}/bin:$PATH"
     export DATABASE_URL="postgres://localhost:${pgPort}/paperclip"
     export PORT="3100"
     export SERVE_UI="true"
@@ -85,7 +85,7 @@ let
     USER_HOME="${homeDir}"
 
     export HOME="${homeDir}"
-    export PATH="${pkgs.nodejs_20}/bin:${pkgs.pnpm}/bin:$PATH"
+    export PATH="${pkgs.nodejs_22}/bin:${pkgs.pnpm}/bin:$PATH"
 
     echo "Setting up PostgreSQL for Paperclip..."
     if [ ! -d "${pgDataDir}" ]; then
@@ -126,7 +126,7 @@ let
     fi
     export VIRTUAL_ENV="${hermesVenv}"
     ${pkgs.uv}/bin/uv pip install -e ".[all]" 2>/dev/null || true
-    ${pkgs.nodejs_20}/bin/npm install 2>/dev/null || true
+    ${pkgs.nodejs_22}/bin/npm install 2>/dev/null || true
 
     mkdir -p "$USER_HOME/.hermes"/{sessions,logs,memories,skills,cron,hooks,pairing,image_cache,audio_cache}
 

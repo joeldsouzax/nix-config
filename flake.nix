@@ -111,5 +111,20 @@
           };
         };
       };
+
+      # ── Integration tests (nixosTest) ──────────────────────────────────────
+      # Full NixOS guest VMs. These are Linux derivations, so on the Mac they
+      # offload to a Linux builder (see darwin/linux-builder.nix):
+      #   nix build .#checks.x86_64-linux.integration -L   # → desktop (KVM)
+      #   nix build .#checks.aarch64-linux.integration -L  # → local builder VM
+      checks =
+        let
+          mkTest = system:
+            (import nixpkgs { inherit system; }).testers.runNixOSTest ./tests/integration.nix;
+        in
+        {
+          x86_64-linux.integration = mkTest "x86_64-linux";
+          aarch64-linux.integration = mkTest "aarch64-linux";
+        };
     };
 }

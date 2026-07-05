@@ -20,5 +20,4 @@
   ./direnv.nix
   ./ghostty.nix
   ./ssh.nix
-  ./ai-agents.nix
 ]

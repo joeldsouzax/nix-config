@@ -46,8 +46,8 @@
             "XF86AudioRaiseVolume" = "pactl -- set-sink-volume 0 +10%";
             "XF86AudioLowerVolume" = "pactl -- set-sink-volume 0 -10%";
             "XF86AudioMicMute" = "pactl set-source-mute 1 toggle";
-            "XF86MonBrightnessDown" = "light -U  5";
-            "XF86MonBrightnessUp" = "light -A 5";
+            "XF86MonBrightnessDown" = "brightnessctl set 5%-";
+            "XF86MonBrightnessUp" = "brightnessctl set 5%+";
           };
         };
       };

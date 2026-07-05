@@ -20,6 +20,7 @@ in
   imports = (import ../modules/home) ++ [
     ./homebrew.nix
     ./networking.nix
+    ./linux-builder.nix
   ];
 
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -30,22 +31,38 @@ in
   system.primaryUser = vars.user;
 
   # ── Nix Configuration ──────────────────────────────────────────────────
-  nix = {
-    enable = false;
-    settings = {
-      trusted-users = [ "@admin" vars.user ];
+  # Determinate Nix owns the daemon and /etc/nix/nix.conf ("do not modify!"),
+  # so nix-darwin's nix module stays disabled. Determinate's nix.conf ends with
+  # `!include nix.custom.conf`, which we manage here. (With nix.enable = false,
+  # nix-darwin's `nix.settings`/`nix.extraOptions` are NOT written — hence these
+  # settings live in nix.custom.conf instead, where the daemon actually reads them.)
+  nix.enable = false;
+
+  environment.etc."nix/nix.custom.conf".text = ''
+    # Managed by nix-darwin (darwin/default.nix); included by Determinate's nix.conf.
+    trusted-users = root @admin ${vars.user}
+    keep-outputs = true
+    keep-derivations = true
+    auto-optimise-store = true
+    # Distributed builds for nixosTest / Linux derivations (see linux-builder.nix).
+    builders = @/etc/nix/machines
+    builders-use-substitutes = true
+  '';
+
+  # Determinate Nix ships no GC on macOS. Weekly collect-garbage + hardlink
+  # optimise keeps the store lean. Runs as root so it can prune system paths.
+  launchd.daemons.nix-gc = {
+    serviceConfig = {
+      ProgramArguments = [
+        "/bin/sh"
+        "-c"
+        "/nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-older-than 14d && /nix/var/nix/profiles/default/bin/nix store optimise"
+      ];
+      StartCalendarInterval = [{ Weekday = 0; Hour = 3; Minute = 0; }];
+      StandardOutPath = "/var/log/nix-gc.log";
+      StandardErrorPath = "/var/log/nix-gc.log";
+      RunAtLoad = false;
     };
-    # optimise.automatic = true;
-    # gc = {
-    #  automatic = true;
-    # interval = { Weekday = 0; Hour = 2; Minute = 0; };
-    # options = "--delete-older-than 7d";
-    # };
-    extraOptions = ''
-      experimental-features = nix-command flakes
-      keep-outputs        = true
-      keep-derivations     = true
-    '';
   };
 
   # ── SOPS Secrets (disabled — using local Qwen via MLX, no API keys needed)
@@ -127,11 +144,11 @@ in
         (epkgs: [ epkgs.vterm epkgs.treesit-grammars.with-all-grammars ])))
 
       # Doom Emacs LSP support (same as NixOS modules/editors/doom-emacs)
-      nodejs_20
+      nodejs_22
       typescript-language-server
       tailwindcss-language-server
       vscode-langservers-extracted
-      nodePackages."@astrojs/language-server"
+      astro-language-server
       tree-sitter
       emacs-lsp-booster
       just
@@ -142,7 +159,15 @@ in
       ripgrep
 
       vscode
-      ripgrep
+
+      # ── Claude Code / agent workflow toolkit ──
+      gh          # GitHub CLI — Claude Code drives this for PR/issue operations
+      jq          # JSON processing (also used by the claude-code wrapper)
+      delta       # Rich, syntax-highlighted git diffs
+      git-lfs     # Large-file support for git
+      lazygit     # Fast terminal git UI
+      sd          # Simpler, faster sed replacement
+      jujutsu     # Modern git-compatible VCS
     ];
   };
 
@@ -323,6 +348,10 @@ in
   '';
 
   # ── Home Manager ────────────────────────────────────────────────────────
+  # Back up (don't abort on) any pre-existing dotfiles HM wants to manage,
+  # e.g. a hand-written ~/.zprofile → ~/.zprofile.backup.
+  home-manager.backupFileExtension = "backup";
+
   home-manager.users.${vars.user} = {
     home.stateVersion = "25.05";
     programs.home-manager.enable = true;
