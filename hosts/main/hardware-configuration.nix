@@ -13,9 +13,13 @@
   hardware.enableRedistributableFirmware = true;
 
   boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ config.boot.kernelPackages.rtl8852au ];
-  # boot.kernelPackages is set in ./default.nix (linuxPackages_zen) — keep it in
-  # one place. rtl8852au + nvidia stable both build against Zen (verified).
+  # WiFi: RTL8852AU (TP-Link Archer TX20U Plus) via the actively-maintained
+  # morrownr/rtw89 out-of-tree driver, built against the current kernel. The old
+  # in-tree/lwfinger paths don't drive this adapter on Zen. kernelPackages is set
+  # in ./default.nix (linuxPackages_zen).
+  boot.extraModulePackages = [
+    (config.boot.kernelPackages.callPackage ../../pkgs/rtw89-morrownr.nix { })
+  ];
 
   # Add the udev rule to trigger usb_modeswitch for the storage mode ID
   services.udev.extraRules = ''

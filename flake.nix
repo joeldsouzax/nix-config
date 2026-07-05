@@ -141,5 +141,15 @@
           x86_64-linux.integration = mkTest "x86_64-linux";
           aarch64-linux.integration = mkTest "aarch64-linux";
         };
+
+      # ── Packages ───────────────────────────────────────────────────────────
+      # The morrownr rtw89 WiFi driver, built against the Zen kernel — exposed
+      # so CI can prove it *compiles* against Zen before the desktop rebuilds:
+      #   nix build .#packages.x86_64-linux.rtw89-morrownr -L
+      packages.x86_64-linux.rtw89-morrownr =
+        (import nixpkgs {
+          system = "x86_64-linux";
+          config.allowUnfree = true;
+        }).linuxPackages_zen.callPackage ./pkgs/rtw89-morrownr.nix { };
     };
 }
