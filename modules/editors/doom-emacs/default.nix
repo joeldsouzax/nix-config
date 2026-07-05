@@ -64,6 +64,6 @@
     # Nix tooling — global on purpose (Nix editing happens outside devshells)
     nil              # Nix language server (configured in doom.d/config.el)
     alejandra        # Nix formatter (configured in doom.d/config.el)
-    nixfmt-rfc-style # alternative Nix formatter
+    nixfmt           # alternative Nix formatter (RFC style)
   ];
 }
