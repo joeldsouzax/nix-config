@@ -49,24 +49,32 @@
 ;; ...Or *all* packages (NOT RECOMMENDED; will likely break things)
 ;; (unpin! t)
 
+;; github-only packages: nix-doom-emacs-unstraightened builds each from its
+;; :recipe, but it needs an explicit :pin (a commit) to derive a reproducible
+;; revision — without one it errors "not in nixpkgs or emacs-overlay, not
+;; pinned". So every custom-recipe package below carries a :pin.
 (package! mermaid-ts-mode
   :recipe (:host github
            :repo "JonathanHope/mermaid-ts-mode"
            :branch "main"
-           :files ("mermaid-ts-mode.el")))
+           :files ("mermaid-ts-mode.el"))
+  :pin "973e442cbed980cf51afc256c90ef133c4d02141")
 (package! ob-mermaid)
 (package! nginx-mode)
 (package! treesit-auto)
 
 
-;; Tailwind CSS support.
-;; NOTE: lsp-tailwindcss IS on MELPA, so declare it *without* a :recipe.
-;; nix-doom-emacs-unstraightened pins packages from the emacs-overlay snapshot;
-;; an explicit github :recipe with no :pin can't be resolved to a revision and
-;; fails with "not in nixpkgs or emacs-overlay, not pinned".
-(package! lsp-tailwindcss)
+;; Tailwind CSS support. NOTE: lsp-tailwindcss is NOT in the emacs-overlay
+;; snapshot unstraightened uses, so it must be built from its github :recipe
+;; with a :pin. (The package is upstream-deprecated in favour of lsp-mode's
+;; built-in Tailwind client, but still works pinned.)
+(package! lsp-tailwindcss
+  :recipe (:host github :repo "merrickluo/lsp-tailwindcss")
+  :pin "c90c3fece5eaf8725fa957ada8aafae9c461ad2b")
 
-(package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
+(package! prisma-mode
+  :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main")
+  :pin "f7744a995e84b8cf51265930ce18f6a6b26dade7")
 
 ;; Jest/Vitest testing
 (package! jest-test-mode)
