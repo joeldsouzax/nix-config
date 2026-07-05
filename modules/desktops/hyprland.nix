@@ -108,23 +108,15 @@ with host; {
         settings = {
 
           xwayland = { force_zero_scaling = true; };
-          # Monitor Configuration
+          # Monitor Configuration — single 4K panel (3840x2160@60).
+          # Scale 1: maximum real estate on the large screen (1.5x would defeat
+          # the point). If the panel enumerates on a port other than
+          # `mainMonitor`, update it in hosts/default.nix — the wildcard below
+          # still drives the display in the meantime.
           monitor = [
-            # --- Secondary Monitor (The Vertical "Sidecar") ---
-            # Role: Communication, Logs, Terminal
-            # Resolution: 1080p Native
-            # Transform: 1 (Rotate 90 deg) -> Logic Res becomes 1080x1920
-            # Position: 0x120 (Shifted down 120px to vertically center against the 4K screen)
-            "${toString secondMonitor},1920x1080@60,0x120,1,transform,1"
+            "${toString mainMonitor},3840x2160@60,0x0,1"
 
-            # --- Main Monitor (The "Quad-Canvas") ---
-            # Role: Code, Browser, Preview
-            # Resolution: 4K Native
-            # Scale: 1 (CRITICAL: 1.5x here defeats the purpose of a 42" screen)
-            # Position: 1080x0 (Placed immediately to the right of the 1080px wide vertical monitor)
-            "${toString mainMonitor},3840x2160@60,1080x0,1"
-
-            # --- Fallback for hotplugged displays ---
+            # Fallback for a differently-named / hotplugged output.
             ",preferred,auto,1"
           ];
 
@@ -183,12 +175,10 @@ with host; {
             vrr = 1;
           };
 
-          workspace = (map (i:
-            "${toString i}, monitor:${toString secondMonitor}"
-            + (if i == 1 then ", default:true" else "")) [ 1 2 3 4 5 ]) ++ (map
-              (i:
-                "${toString i}, monitor:${toString mainMonitor}"
-                + (if i == 6 then ", default:true" else "")) [ 6 7 8 9 10 ]);
+          # Single monitor: all workspaces live on the one output.
+          workspace = map (i:
+            "${toString i}, monitor:${toString mainMonitor}"
+            + (if i == 1 then ", default:true" else "")) [ 1 2 3 4 5 6 7 8 9 10 ];
 
           input = {
             kb_layout = "us";
