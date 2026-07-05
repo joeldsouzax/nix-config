@@ -95,7 +95,16 @@ in
           | prepend "/etc/profiles/per-user/${vars.user}/bin"
           | prepend "/run/current-system/sw/bin"
           | prepend "/nix/var/nix/profiles/default/bin"
-        ${if pkgs.stdenv.isDarwin then ''| prepend "/opt/homebrew/bin"'' else ""}
+        ${
+          if pkgs.stdenv.isDarwin then
+            ''| prepend "/opt/homebrew/bin"''
+          else
+            # NixOS setuid wrappers (sudo, mount, ...) MUST win over the
+            # non-setuid copies in /run/current-system/sw/bin — prepend last so
+            # it lands at the front of PATH. Without this, `sudo` errors with
+            # "must be owned by uid 0 and have the setuid bit set".
+            ''| prepend "/run/wrappers/bin"''
+        }
           | uniq)
       '';
       environmentVariables = {
