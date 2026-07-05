@@ -13,13 +13,10 @@
   hardware.enableRedistributableFirmware = true;
 
   boot.kernelModules = [ "kvm-intel" ];
-  # WiFi: RTL8852AU (TP-Link Archer TX20U Plus) via the actively-maintained
-  # morrownr/rtw89 out-of-tree driver, built against the current kernel. The old
-  # in-tree/lwfinger paths don't drive this adapter on Zen. kernelPackages is set
-  # in ./default.nix (linuxPackages_zen).
-  boot.extraModulePackages = [
-    (config.boot.kernelPackages.callPackage ../../pkgs/rtw89-morrownr.nix { })
-  ];
+  # WiFi: RTL8852AU (TP-Link Archer TX20U Plus) via lwfinger/rtl8852au, which is
+  # NOT broken on kernel 6.12 (only on newer kernels). This is the proven-working
+  # driver for this adapter. kernelPackages = linuxPackages_6_12 (./default.nix).
+  boot.extraModulePackages = [ config.boot.kernelPackages.rtl8852au ];
 
   # Add the udev rule to trigger usb_modeswitch for the storage mode ID
   services.udev.extraRules = ''

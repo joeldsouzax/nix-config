@@ -2,11 +2,12 @@
   imports = [ ./hardware-configuration.nix ]
     ++ (import ../../modules/desktops/virtualisation);
   boot = {
-    # Zen kernel: desktop-tuned scheduler/timers for interactivity & low latency.
-    # WiFi (RTL8852AU) works via the morrownr/rtw89 out-of-tree module built
-    # against Zen — see boot.extraModulePackages in hardware-configuration.nix.
-    # (The old lwfinger rtl8852au driver is dead and broken on Zen.)
-    kernelPackages = pkgs.linuxPackages_zen;
+    # Kernel 6.12 — proven-working with BOTH the NVIDIA proprietary driver and
+    # the RTL8852AU WiFi (Archer TX20U Plus, via rtl8852au). Zen 7.0 COMPILED
+    # both modules (CI-verified) but neither initialises/binds at runtime on
+    # this hardware — 7.0 is too new for the 595 NVIDIA driver and the adapter.
+    # Desktop fluidity comes from the Hyprland tuning instead, not the kernel.
+    kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     loader = {
       systemd-boot = {
