@@ -18,7 +18,6 @@ in {
       host = {
         hostname = "main";
         mainMonitor = "DP-3";
-        secondMonitor = "HDMI-A-1";
       };
     };
     modules = [

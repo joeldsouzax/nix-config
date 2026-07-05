@@ -27,7 +27,7 @@ in {
       size = cursorSize;
     };
 
-    gtk = lib.mkIf (!config.gnome.enable) {
+    gtk = {
       enable = true;
 
       theme = {
