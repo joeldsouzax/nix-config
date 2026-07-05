@@ -56,5 +56,3 @@
     extraPackages = [ "com.github.tchx84.Flatseal" "com.stremio.Stremio" ];
   };
 }
-
-#TODO: fix the nvidia drive

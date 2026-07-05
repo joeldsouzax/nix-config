@@ -146,6 +146,7 @@ in
         nchat
         sqlite
         nil
+        claude-code # Claude Code CLI (nixpkgs) — declarative, no imperative install
 
         #audio/video
         alsa-utils

@@ -15,15 +15,16 @@ let
     XCURSOR_SIZE = "24";
   };
 
-  # 2. Nvidia specific variables
+  # 2. Nvidia variables — SINGLE-GPU DESKTOP (not a hybrid/Optimus laptop).
+  # Per the official Hyprland Nvidia wiki, only these three are needed. The
+  # previous config also set PRIME render-offload vars
+  # (__NV_PRIME_RENDER_OFFLOAD, __NV_PRIME_RENDER_OFFLOAD_PROVIDER,
+  # __VK_LAYER_NV_optimus) and GBM_BACKEND — those are for Optimus LAPTOPS
+  # (iGPU→dGPU offload) and break a single-GPU desktop. Removed.
   nvidiaEnv = {
     LIBVA_DRIVER_NAME = "nvidia";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    NVD_BACKEND = "direct";
-    __NV_PRIME_RENDER_OFFLOAD = "1";
-    __NV_PRIME_RENDER_OFFLOAD_PROVIDER = "NVIDIA-G0";
-    __VK_LAYER_NV_optimus = "NVIDIA_only";
-    GBM_BACKEND = "nvidia";
+    NVD_BACKEND = "direct"; # HW video accel (via nvidia-vaapi-driver)
   };
 
 in with lib;
