@@ -1,72 +1,67 @@
-# Doom Emacs: Personally not a fan of github:nix-community/nix-doom-emacs due to performance issues
-#  This is an ideal way to install on a vanilla NixOS installion.
-#  You will need to import this from somewhere in the flake (Obviously not in a home-manager nix file)
+# Doom Emacs — fully declarative via nix-doom-emacs-unstraightened.
 #
-#  flake.nix
-#   ├─ ./hosts
-#   │   └─ configuration.nix
-#   └─ ./modules
-#       └─ ./editors
-#           ├─ default.nix
-#           └─ ./emacs
-#               └─ ./doom-emacs
-#                   └─ default.nix *
+# Nix builds Doom + our ./doom.d config straight into the Emacs package, so
+# `nixos-rebuild` yields a ready Emacs with every package compiled. There is
+# NO git clone, NO `doom install`, and NO `doom sync` — ever. Doom itself is
+# pinned by the flake input (bump it with `nix flake update`).
 #
+# The Emacs daemon (services.emacs) is wired to this Doom build automatically
+# by the module (provideEmacs = true). To change your config, edit the elisp
+# under doom.d/ and rebuild.
+#
+#  flake.nix → hosts/configuration.nix → modules/editors → this file
+#
+# NixOS-only (modules/editors isn't imported on Darwin), so emacs-pgtk is safe.
 
-# modules/editors/emacs/doom-emacs/default.nix
-{ config, pkgs, vars, ... }:
+{ pkgs, vars, inputs, ... }:
 
 {
-  services.emacs.enable = true;
-  system.userActivationScripts = {
-    doomEmacs = {
-      text = ''
-        source ${config.system.build.setEnvironment}
-        EMACS="$HOME/.emacs.d"
-        DOOM="$HOME/.doom.d"
+  home-manager.users.${vars.user} = {
+    imports = [ inputs.nix-doom-emacs-unstraightened.homeModule ];
 
-        # 1. Clone Doom if missing
-        if [ ! -d "$EMACS" ]; then
-          ${pkgs.git}/bin/git clone https://github.com/hlissner/doom-emacs.git $EMACS
-          yes | $EMACS/bin/doom install
-        fi
+    programs.doom-emacs = {
+      enable = true;
 
-        # 2. Force link your config (Delete old symlink/dir first)
-        #    Safeguard: verify vars.location exists before nuking
-        if [ -d "${vars.location}/modules/editors/doom-emacs/doom.d" ]; then
-           rm -rf $DOOM
-           ln -s ${vars.location}/modules/editors/doom-emacs/doom.d $DOOM
-        fi
+      # Our private Doom config (init.el / packages.el / config.el / lisp/*).
+      doomDir = ./doom.d;
 
-        # 3. Sync: This ensures Doom recognizes the new binaries (LSPs) and 
-        #    compiles your init.el changes.
-        $EMACS/bin/doom sync
-      '';
+      # pgtk build → native Wayland, matches the Hyprland desktop.
+      emacs = pkgs.emacs-pgtk;
+
+      # Packages Doom won't pull on its own:
+      #   vterm — the :term vterm module's compiled backend
+      #   treesit-grammars — all grammars for treesit-based major modes
+      extraPackages = epkgs: [
+        epkgs.vterm
+        epkgs.treesit-grammars.with-all-grammars
+      ];
     };
+
+    # Emacs daemon as a systemd user service. The unstraightened module sets
+    # services.emacs.package to the Doom build above automatically.
+    services.emacs.enable = true;
   };
 
-  # ---------------------------------------------------------------------------
-  # SYSTEM PACKAGES (Power Coder Suite)
-  # ---------------------------------------------------------------------------
+  # ── System tooling Doom expects on PATH ───────────────────────────────
+  # LSP servers, formatters, tree-sitter CLI and build tools, kept at system
+  # level so the daemon and shells both find them. (Emacs itself now comes
+  # from programs.doom-emacs above — no separate emacs package here.)
   environment.systemPackages = with pkgs; [
-    # -- Base Tools --
+    # Base tools (doom doctor checks for these)
     clang
     coreutils
     fd
     git
     ripgrep
 
-    # -- Emacs with Grammar Injection --
-    ((emacs-pgtk.pkgs.withPackages
-      (epkgs: [ epkgs.vterm epkgs.treesit-grammars.with-all-grammars ])))
-
-    # -- Language Servers --
+    # Language servers
     nodejs_22
     typescript-language-server
     tailwindcss-language-server
     vscode-langservers-extracted
-
     astro-language-server
+
+    # Tree-sitter + perf helpers
     tree-sitter
     emacs-lsp-booster
     just

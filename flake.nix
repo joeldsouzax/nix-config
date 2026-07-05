@@ -50,6 +50,15 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Declarative Doom Emacs — builds Doom + our doom.d fully in Nix (no
+    # `doom sync`). Successor to nix-doom-emacs; uses Doom's real package
+    # manager, so no straight.el performance penalty. follows="" = don't
+    # fetch a second nixpkgs (the module/overlay don't use it).
+    nix-doom-emacs-unstraightened = {
+      url = "github:marienz/nix-doom-emacs-unstraightened";
+      inputs.nixpkgs.follows = "";
+    };
   };
   outputs =
     inputs@{
