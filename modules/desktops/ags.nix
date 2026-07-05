@@ -24,9 +24,11 @@ in
         enable = true;
         configDir = ./ags;
 
-        # Autostart as a user service. If the widget code is broken the service
-        # fails, but the system rebuild still succeeds — safe by construction.
-        systemd.enable = true;
+        # Launched from Hyprland's exec-once via UWSM (see hyprland.nix), the
+        # same way waybar/swaync start — so it comes up on every session start
+        # with no graphical-session.target / re-login caveat. Hence NOT the
+        # module's systemd service (which would double-start it).
+        systemd.enable = false;
 
         # Astal libraries available to the GJS runtime (import as "gi://Astal…").
         extraPackages = with agsPkgs; [

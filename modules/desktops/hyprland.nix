@@ -244,6 +244,7 @@ with host; {
             "uwsm app -- ${pkgs.waybar}/bin/waybar -c $HOME/.config/waybar/config"
             "uwsm app -- ${pkgs.swaynotificationcenter}/bin/swaync"
             "uwsm app -- ${pkgs.blueman}/bin/blueman-applet"
+            "uwsm app -- ${config.home-manager.users.${vars.user}.programs.ags.finalPackage}/bin/ags run"
 
             "hyprctl dispatch workspace 1"
           ];
