@@ -84,5 +84,11 @@
     enableUserSlices = true;
   };
 
+  # ── CPU frequency governor ────────────────────────────────────────────
+  # This is a desktop (always on AC): pin the governor to "performance" so the
+  # CPU stays at max clocks instead of ramping — snappier UI and faster builds.
+  # mkDefault so a laptop profile could override to "powersave".
+  powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
+
   # NOTE: boot.tmp is already configured in hosts/configuration.nix (5GB tmpfs)
 }

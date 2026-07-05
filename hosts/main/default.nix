@@ -28,6 +28,9 @@
       powerManagement.finegrained = false;
       open = false;
       nvidiaSettings = true;
+      # Keep the driver resident so GPU init latency doesn't hit every process
+      # (helps app/terminal launch and Wayland compositor responsiveness).
+      nvidiaPersistenced = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
     sane = {
