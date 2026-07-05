@@ -121,15 +121,15 @@ with host; {
           ];
 
           debug = {
-            disable_logs = false;
-            enable_stdout_logs = true;
+            disable_logs = true;        # logging adds overhead — off for fluidity
+            enable_stdout_logs = false;
           };
 
-          # THIS IS THE FIX
-          # It tells Hyprland "I know what I'm doing, stop checking for the wrapper"
           misc = {
             disable_hyprland_logo = true;
             disable_splash_rendering = true;
+            vfr = true;                 # variable frame rate: skip rendering idle frames
+            vrr = 1;                    # variable refresh rate where the panel supports it
           };
 
           general = {
@@ -140,6 +140,7 @@ with host; {
             "col.inactive_border" = "0x66${inactive}";
             resize_on_border = true;
             layout = "dwindle";
+            allow_tearing = true;       # lets games bypass vsync (with immediate windowrule) — lower latency
           };
 
           decoration = {
@@ -150,8 +151,10 @@ with host; {
 
             blur = {
               enabled = true;
-              size = 3;
+              size = 2;                 # smaller radius — cheaper on a 4K panel
               passes = 1;
+              new_optimizations = true; # cache blur regions — big GPU win
+              xray = true;              # skip blurring content hidden behind windows
               vibrancy = 0.1696;
             };
           };
@@ -168,11 +171,6 @@ with host; {
               "fade, 1, 2, fast"
               "workspaces, 1, 3, snappy"
             ];
-          };
-
-          misc = {
-            vfr = true;
-            vrr = 1;
           };
 
           # Single monitor: all workspaces live on the one output.

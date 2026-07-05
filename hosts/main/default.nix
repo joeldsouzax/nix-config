@@ -2,7 +2,9 @@
   imports = [ ./hardware-configuration.nix ]
     ++ (import ../../modules/desktops/virtualisation);
   boot = {
-    # kernelPackages = pkgs.linuxPackages_6_10;
+    # Zen kernel: tuned scheduler/timers for desktop interactivity & low latency.
+    # NVIDIA module is built against it automatically by nixpkgs.
+    kernelPackages = pkgs.linuxPackages_zen;
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     loader = {
       systemd-boot = {
