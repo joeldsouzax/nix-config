@@ -1,0 +1,46 @@
+// Catppuccin Mocha — matches the rest of the desktop.
+$bg: #1e1e2e;
+$fg: #cdd6f4;
+$muted: #a6adc8;
+$accent: #cba6f7;
+$card: #313244;
+
+.Dashboard {
+  background: transparent;
+
+  .clock {
+    color: $fg;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: "FiraCode Nerd Font Mono", monospace;
+  }
+
+  .card {
+    background: rgba(30, 30, 46, 0.85);
+    border: 1px solid $card;
+    border-radius: 12px;
+    padding: 12px 14px;
+
+    .card-title {
+      color: $accent;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  }
+
+  .stat {
+    .stat-label {
+      color: $muted;
+      font-weight: 600;
+    }
+    .stat-value {
+      color: $fg;
+      font-family: "FiraCode Nerd Font Mono", monospace;
+    }
+  }
+
+  .service {
+    .dot { font-size: 12px; }
+    .service-name { color: $fg; }
+  }
+}

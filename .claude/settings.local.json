@@ -105,7 +105,8 @@
       "Read(//private/etc/nix/**)",
       "Bash(darwin-rebuild build *)",
       "Bash(sudo -n true)",
-      "Bash(brew trust *)"
+      "Bash(brew trust *)",
+      "Bash([ -s \"$f\" ])"
     ]
   }
 }

@@ -12,5 +12,6 @@
 
 [
   ./hyprland.nix
+  ./ags.nix
   ./options.nix
 ]
