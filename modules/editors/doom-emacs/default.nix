@@ -42,28 +42,28 @@
     services.emacs.enable = true;
   };
 
-  # ── System tooling Doom expects on PATH ───────────────────────────────
-  # LSP servers, formatters, tree-sitter CLI and build tools, kept at system
-  # level so the daemon and shells both find them. (Emacs itself now comes
-  # from programs.doom-emacs above — no separate emacs package here.)
+  # ── Editor tooling on PATH (global) ───────────────────────────────────
+  # Philosophy: every project is a flake + direnv, so per-project language
+  # servers (rust-analyzer, cargo, tsserver, gopls, …) come from the project's
+  # devshell — NOT from here. Only truly global things live at system level:
+  #   1. editor infrastructure Doom needs everywhere
+  #   2. Nix tooling — you edit Nix files (this repo!) outside any project
+  #      flake, so nil + formatters must be globally available.
+  # Emacs itself comes from programs.doom-emacs above.
   environment.systemPackages = with pkgs; [
-    # Base tools (doom doctor checks for these)
-    clang
+    # Editor infrastructure (doom doctor checks for these)
+    clang            # native-comp / cc
     coreutils
     fd
     git
     ripgrep
-
-    # Language servers
-    nodejs_22
-    typescript-language-server
-    tailwindcss-language-server
-    vscode-langservers-extracted
-    astro-language-server
-
-    # Tree-sitter + perf helpers
     tree-sitter
     emacs-lsp-booster
-    just
+    just             # generic task runner
+
+    # Nix tooling — global on purpose (Nix editing happens outside devshells)
+    nil              # Nix language server (configured in doom.d/config.el)
+    alejandra        # Nix formatter (configured in doom.d/config.el)
+    nixfmt-rfc-style # alternative Nix formatter
   ];
 }

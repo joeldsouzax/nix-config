@@ -59,17 +59,22 @@
 (package! treesit-auto)
 
 
-;; Tailwind CSS support (you already have this, keep it)
-(package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss"))
+;; Tailwind CSS support.
+;; NOTE: lsp-tailwindcss IS on MELPA, so declare it *without* a :recipe.
+;; nix-doom-emacs-unstraightened pins packages from the emacs-overlay snapshot;
+;; an explicit github :recipe with no :pin can't be resolved to a revision and
+;; fails with "not in nixpkgs or emacs-overlay, not pinned".
+(package! lsp-tailwindcss)
 
 (package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 
-;; Jest testing (optional, but standard for Nest/React)
+;; Jest/Vitest testing
 (package! jest-test-mode)
 
 (package! just-mode)
-(package! apheleia)
+;; apheleia and transient are already provided by Doom (:editor format +onsave
+;; and :tools magit respectively). Declaring them again pulls unpinned MELPA
+;; versions that can desync from Doom's pins — so we rely on Doom's.
 (package! slack)
 (package! alert)
-(package! transient)
 (package! gptel)
