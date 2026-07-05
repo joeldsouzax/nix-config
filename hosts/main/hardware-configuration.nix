@@ -14,7 +14,8 @@
 
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ config.boot.kernelPackages.rtl8852au ];
-  boot.kernelPackages = pkgs.linuxPackages_6_12;
+  # boot.kernelPackages is set in ./default.nix (linuxPackages_zen) — keep it in
+  # one place. rtl8852au + nvidia stable both build against Zen (verified).
 
   # Add the udev rule to trigger usb_modeswitch for the storage mode ID
   services.udev.extraRules = ''
