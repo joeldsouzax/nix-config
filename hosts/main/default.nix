@@ -2,9 +2,11 @@
   imports = [ ./hardware-configuration.nix ]
     ++ (import ../../modules/desktops/virtualisation);
   boot = {
-    # Zen kernel: tuned scheduler/timers for desktop interactivity & low latency.
-    # NVIDIA module is built against it automatically by nixpkgs.
-    kernelPackages = pkgs.linuxPackages_zen;
+    # Pinned to 6.12: the RTL8852AU (USB WiFi) out-of-tree module (rtl8852au)
+    # ONLY builds on this kernel — it's marked `broken` on Zen / latest / xanmod
+    # (all newer). WiFi wins over the marginal Zen scheduler gain; desktop
+    # fluidity is handled by the Hyprland tuning (blur xray, tearing, vfr) instead.
+    kernelPackages = pkgs.linuxPackages_6_12;
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     loader = {
       systemd-boot = {
