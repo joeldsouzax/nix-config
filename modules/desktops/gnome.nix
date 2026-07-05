@@ -151,13 +151,13 @@ with lib; {
         "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0" =
           {
             binding = "<super>return";
-            command = "ghostty";
+            command = "foot";
             name = "open-terminal";
           };
         "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1" =
           {
             binding = "<super>t";
-            command = "ghostty nvim";
+            command = "foot nvim";
             name = "open-editor";
           };
         "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2" =

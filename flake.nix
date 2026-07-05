@@ -70,7 +70,7 @@
       vars = {
         user = "joel";
         location = "$HOME/.setup";
-        terminal = "ghostty";
+        terminal = "foot";
         editor = "nano";
       };
     in

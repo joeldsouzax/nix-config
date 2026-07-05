@@ -87,7 +87,7 @@ in
     pathsToLink = [ "/Applications" ];
 
     variables = {
-      TERMINAL = vars.terminal;
+      TERMINAL = "ghostty"; # macOS uses Ghostty (brew); vars.terminal=foot is Linux-only
       EDITOR = vars.editor;
       VISUAL = vars.editor;
     };
