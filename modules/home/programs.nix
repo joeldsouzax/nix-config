@@ -34,6 +34,11 @@
     fzf = {
       enable = true;
       enableZshIntegration = true;
+      # Ctrl-R belongs to Atuin everywhere (richer history: fuzzy, full-text,
+      # per-dir). An empty command is home-manager's supported way to yield
+      # fzf's Ctrl-R to a history manager. fzf keeps Ctrl-T (files) / Alt-C.
+      historyWidget.command = "";         # zsh / bash
+      historyWidget.nushell.command = ""; # nushell
     };
 
     bat = {
