@@ -103,9 +103,11 @@ jobs:
       - name: Build & run integration test
         run: nix build --print-build-logs .#checks.x86_64-linux.integration
 
-  # ── Prove the WiFi driver compiles against the Zen kernel ─────────────────
-  wifi-driver:
-    name: WiFi driver builds (rtw89 vs Zen)
+  # ── Prove the runtime kernel modules compile against 6.12 ─────────────────
+  # eval/CI toplevel never builds kmods, so these jobs are the only pre-rebuild
+  # guard that the WiFi + GPU drivers actually build against the desktop kernel.
+  kernel-modules:
+    name: Kernel modules build (6.12)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -117,42 +119,8 @@ jobs:
             extra-substituters = https://nix-community.cachix.org
             extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
 
-      - name: Build morrownr/rtw89 against linuxPackages_zen
-        run: nix build --print-build-logs .#packages.x86_64-linux.rtw89-morrownr
+      - name: WiFi — rtl8852au (Archer TX20U Plus)
+        run: nix build --print-build-logs .#packages.x86_64-linux.rtl8852au
 
-  # ── Prove the NVIDIA kernel module compiles against Zen 7.0 ───────────────
-  # eval/CI toplevel never builds kmods, so this is the only pre-rebuild check
-  # that the proprietary driver survives the Zen kernel. Both branches attempt
-  # (continue-on-error) so one run tells us which to use.
-  nvidia-driver:
-    name: NVIDIA builds against Zen
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
-        with:
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            accept-flake-config = true
-            extra-substituters = https://nix-community.cachix.org
-            extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
-
-      - name: NVIDIA stable (595) vs Zen 7.0
-        id: stable
-        continue-on-error: true
-        run: nix build --print-build-logs .#packages.x86_64-linux.nvidia-zen-stable
-
-      - name: NVIDIA latest (610) vs Zen 7.0
-        id: latest
-        continue-on-error: true
-        run: nix build --print-build-logs .#packages.x86_64-linux.nvidia-zen-latest
-
-      - name: Verdict
-        run: |
-          echo "stable 595: ${{ steps.stable.outcome }}"
-          echo "latest 610: ${{ steps.latest.outcome }}"
-          # Fail the job only if NEITHER builds (then Zen isn't viable with NVIDIA).
-          if [ "${{ steps.stable.outcome }}" != "success" ] && [ "${{ steps.latest.outcome }}" != "success" ]; then
-            echo "::error::No NVIDIA branch builds against Zen 7.0 — Zen not viable with this GPU."
-            exit 1
-          fi
+      - name: GPU — NVIDIA legacy_580 (GTX 1070 / Pascal)
+        run: nix build --print-build-logs .#packages.x86_64-linux.nvidia-legacy580

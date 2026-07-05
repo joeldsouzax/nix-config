@@ -143,24 +143,21 @@
         };
 
       # ── Packages ───────────────────────────────────────────────────────────
-      # Kernel modules built against the Zen kernel, exposed so CI can prove they
-      # actually COMPILE against Zen before the desktop rebuilds (the toplevel
-      # eval/CI does NOT build kernel modules, so a kmod build failure would
-      # otherwise only surface at `nixos-rebuild`):
-      #   nix build .#packages.x86_64-linux.rtw89-morrownr -L      # WiFi
-      #   nix build .#packages.x86_64-linux.nvidia-zen-stable -L   # NVIDIA 595
-      #   nix build .#packages.x86_64-linux.nvidia-zen-latest -L   # NVIDIA 610
+      # The runtime-critical kernel modules the desktop ACTUALLY uses, built
+      # against its kernel (6.12), exposed so CI can prove they COMPILE (the
+      # toplevel eval/CI does NOT build kernel modules):
+      #   nix build .#packages.x86_64-linux.rtl8852au -L         # WiFi (Archer TX20U Plus)
+      #   nix build .#packages.x86_64-linux.nvidia-legacy580 -L  # GTX 1070 (Pascal)
       packages.x86_64-linux =
         let
           linuxPkgs = (import nixpkgs {
             system = "x86_64-linux";
             config.allowUnfree = true;
-          }).linuxPackages_zen;
+          }).linuxPackages_6_12;
         in
         {
-          rtw89-morrownr = linuxPkgs.callPackage ./pkgs/rtw89-morrownr.nix { };
-          nvidia-zen-stable = linuxPkgs.nvidiaPackages.stable;
-          nvidia-zen-latest = linuxPkgs.nvidiaPackages.latest;
+          rtl8852au = linuxPkgs.rtl8852au;
+          nvidia-legacy580 = linuxPkgs.nvidiaPackages.legacy_580;
         };
     };
 }

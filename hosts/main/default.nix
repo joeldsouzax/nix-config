@@ -36,7 +36,11 @@
       # Keep the driver resident so GPU init latency doesn't hit every process
       # (helps app/terminal launch and Wayland compositor responsiveness).
       nvidiaPersistenced = true;
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      # GTX 1070 is Pascal — NVIDIA moved Pascal to the 580 LEGACY branch; the
+      # mainstream 595 (stable/production) driver IGNORES this GPU ("595.84 will
+      # ignore this GPU" in dmesg). legacy_580 (580.159.04) supports it.
+      # Pascal has no open kernel module, so `open = false` above is required.
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
     sane = {
       enable = true;
