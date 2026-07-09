@@ -108,7 +108,25 @@
       "Bash(brew trust *)",
       "Bash([ -s \"$f\" ])",
       "Bash(awk '{print $1/1024 \"KB\"}')",
-      "WebFetch(domain:wiki.hyprland.org)"
+      "WebFetch(domain:wiki.hyprland.org)",
+      "Bash(/usr/bin/wc -c /tmp/nvwiki.md)",
+      "Bash(/usr/bin/grep -ioE '\"[^\"]*[Nn]vidia[^\"]*\\\\.md\"')",
+      "Bash(/usr/bin/head -5)",
+      "Bash(/usr/bin/wc -l /tmp/nvwiki.md)",
+      "Bash(/usr/bin/grep -nE \"GBM_BACKEND|__GLX_VENDOR|LIBVA_DRIVER|__NV_PRIME|AQ_DRM|NVD_BACKEND|nvidia_drm|nvidia-drm|modeset|no_hardware_cursors|__VK_LAYER|fbdev\" /tmp/nvwiki.md)",
+      "Bash(/usr/bin/sed -n '118,135p' /tmp/nvwiki.md)",
+      "Bash(/usr/bin/sed -n '200,215p' /tmp/nvwiki.md)",
+      "Bash(cd *)",
+      "Bash(/usr/bin/grep -rniE \"trive|trivejoel\" .)",
+      "Bash(/usr/bin/grep -v '\\\\.git/')",
+      "Bash(/usr/bin/grep -viE \"\\\\.md:\")",
+      "Bash(/usr/bin/grep -rniE \"trive\" .)",
+      "Bash(/usr/bin/grep -viE \"darwin/|\\\\.sops\\\\.yaml|\\\\.claude/|\\\\.md:|isDarwin|macOS only|mkIf isDarwin|optionalAttrs isDarwin\")",
+      "Bash(/usr/bin/grep -E \"OVERALL|success|failure\")",
+      "Bash(/usr/bin/head -1)",
+      "Bash(direnv allow *)",
+      "Bash(direnv status *)",
+      "Bash(brew list *)"
     ]
   }
 }

@@ -160,14 +160,8 @@ in
 
       vscode
 
-      # ── Claude Code / agent workflow toolkit ──
-      gh          # GitHub CLI — Claude Code drives this for PR/issue operations
-      jq          # JSON processing (also used by the claude-code wrapper)
-      delta       # Rich, syntax-highlighted git diffs
-      git-lfs     # Large-file support for git
-      lazygit     # Fast terminal git UI
-      sd          # Simpler, faster sed replacement
-      jujutsu     # Modern git-compatible VCS
+      # Claude Code / agent workflow toolkit moved to
+      # modules/home/agent-tools.nix (shared with NixOS).
     ];
   };
 

@@ -16,6 +16,7 @@
 [
   ./shell.nix
   ./programs.nix
+  ./agent-tools.nix
   ./git.nix
   ./direnv.nix
   ./foot.nix # Linux/Wayland terminal (primary on the Hyprland desktop)
