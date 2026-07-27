@@ -36,6 +36,15 @@ in
           export LANG=en_US.UTF-8
           bindkey '^ ' autosuggest-accept
           export HISTIGNORE="pwd:ls:cd"
+          # User-level shims (e.g. oh-my-pi's `hypa` CLI) install here; omp's
+          # bash tool inherits this PATH, so pi-hypa's command rewriting works.
+          export PATH="$HOME/.local/bin:$PATH"
+
+          # Moonshot/Kimi API key for omp's built-in moonshot provider
+          # (plain file, chmod 600 — SOPS is not decryptable on Darwin yet)
+          if [[ -f "$HOME/.secrets/moonshot-api-key" ]]; then
+            export MOONSHOT_API_KEY="$(<"$HOME/.secrets/moonshot-api-key")"
+          fi
         '' + lib.optionalString pkgs.stdenv.isDarwin ''
           # Homebrew paths (Darwin only)
           export PATH="/opt/homebrew/bin:$PATH"
@@ -55,6 +64,10 @@ in
       shellAliases = {
         ls = "ls --color=auto";
         search = ''rg -p --glob "!node_modules/*" --glob "!vendor/*" "$@"'';
+        ec = "emacsclient -nc"; # instant frame from the Emacs daemon
+        # Kimi K3 harness = omp default profile (see ~/.omp/agent/HARNESS.md)
+        kimi-check = ''omp -p "CHECK: review the working-tree diff (git diff HEAD, plus untracked files) against the engineering rules. Findings table only."'';
+        omp-design = "omp --profile design"; # preserved design-partner persona
       } // (if pkgs.stdenv.isDarwin then {
         nixswitch = "sudo darwin-rebuild switch --flake ~/.setup#joel";
         nixup = "pushd ~/.setup; nix flake update; nixswitch; popd";
@@ -78,8 +91,16 @@ in
         alias cat = bat
         alias find = fd
         alias grep = rg
-        alias de = doom env
-        alias ds = doom sync
+        # `doom env`/`doom sync` aliases removed — Doom is built by Nix now
+        # (nix-doom-emacs-unstraightened); syncing is a rebuild.
+        alias ec = emacsclient -nc
+        # Kimi K3 harness = omp default profile (see ~/.omp/agent/HARNESS.md)
+        def kimi-check [] { omp -p "CHECK: review the working-tree diff (git diff HEAD, plus untracked files) against the engineering rules. Findings table only." }
+        def --wrapped omp-design [...args] { omp --profile design ...$args } # design-partner persona
+        let moonshot_key = ($nu.home-dir | path join ".secrets/moonshot-api-key")
+        if ($moonshot_key | path exists) {
+          $env.MOONSHOT_API_KEY = (open --raw $moonshot_key | str trim)
+        }
       '' + (if pkgs.stdenv.isDarwin then ''
         def nixswitch [] { sudo darwin-rebuild switch --flake ~/.setup#joel }
       '' else ''
@@ -92,6 +113,7 @@ in
       '';
       envFile.text = ''
         $env.PATH = ($env.PATH | split row (char esep)
+          | prepend ($nu.home-dir | path join ".local/bin")  # user shims (omp's hypa CLI)
           | prepend "/etc/profiles/per-user/${vars.user}/bin"
           | prepend "/run/current-system/sw/bin"
           | prepend "/nix/var/nix/profiles/default/bin"
