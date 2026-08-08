@@ -1,0 +1,4 @@
+interface:
+  display_name: "OMP Autoresearch"
+  short_description: "Run OMP autonomous research loops"
+  default_prompt: "Use $omp-autoresearch to run an autonomous research experiment."

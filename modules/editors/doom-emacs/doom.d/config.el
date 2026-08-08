@@ -5,6 +5,23 @@
       user-mail-address "joeldsouzax@gmail.com")
 
 (auto-insert-mode 1)
+
+;; -------------------- 1b. macOS PATH (launchd) --------------------
+;; Emacs.app from Dock/Spotlight — and the launchd daemon — get launchd's
+;; minimal PATH (/usr/bin:/bin:/usr/sbin:/sbin); no login shell is ever
+;; sourced. Linux inherits the session PATH from Hyprland, so this whole
+;; problem is Darwin-only.
+;;
+;; `direnv` itself is baked into the Emacs wrapper (see ../default.nix), but
+;; direnv's `use flake` then execs `nix`, which must also be findable. That
+;; `nix` must be Determinate's (nix.enable = false in darwin/default.nix) —
+;; hence this stable multi-user profile dir rather than a nixpkgs `nix`.
+(when (eq system-type 'darwin)
+  (let ((nix-profile "/nix/var/nix/profiles/default/bin"))
+    (when (file-directory-p nix-profile)
+      (add-to-list 'exec-path nix-profile)
+      (setenv "PATH" (concat nix-profile ":" (getenv "PATH"))))))
+
 ;; -------------------- 2. DOOM UI & THEME --------------------
 (setq doom-theme 'doom-one
       display-line-numbers-type t
@@ -22,12 +39,20 @@
 (use-package! ob-mermaid)
 
 ;; -------------------- 4. TREEMACS (FILE EXPLORER) --------------------
-(setq treemacs-project-follow-cleanup t
-      treemacs-project-follow-mode t    ; VSCode behavior: auto-scroll to file
-      treemacs-peek-mode t
-      treemacs-fringe-indicator-mode t
+;; Only defcustoms belong in `setq'. treemacs-{project-follow,peek,fringe-
+;; indicator}-mode are define-minor-mode — setq sets the variable without ever
+;; running the mode function, so they must be called (see `after!' below).
+;;
+;; project-follow-cleanup stays nil (upstream default): non-nil makes
+;; treemacs-follow-mode collapse every project except the one you just moved
+;; into, and its own docstring warns of slowdowns under treemacs-git-mode.
+(setq treemacs-project-follow-cleanup nil
       treemacs-show-cursor t
       treemacs-space-between-root-nodes nil)
+
+(after! treemacs
+  (treemacs-follow-mode 1)                    ; auto-reveal the current file
+  (treemacs-fringe-indicator-mode 'always))
 
 (use-package treemacs-projectile
   :after (treemacs projectile))

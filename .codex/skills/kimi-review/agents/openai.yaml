@@ -1,0 +1,4 @@
+interface:
+  display_name: "Kimi Review"
+  short_description: "Run an independent Kimi code review"
+  default_prompt: "Use $kimi-review to review the current working-tree changes."

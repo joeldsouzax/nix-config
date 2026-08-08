@@ -91,6 +91,9 @@ in
     noto-fonts-color-emoji
     # (nerdfonts.override { fonts = [ "FiraCode" ]; })
     nerd-fonts.fira-code
+    nerd-fonts.symbols-only # "Symbols Nerd Font Mono" — the exact family
+                            # nerd-icons.el renders from; explicit beats
+                            # relying on fontconfig glyph fallback
   ];
 
   # services.udev.packages = [ pkgs.android-udev-rules ];

@@ -17,6 +17,7 @@
   ./shell.nix
   ./programs.nix
   ./agent-tools.nix
+  ./local-llm.nix # llama.cpp + Qwen3-Coder-Rust for omp autoresearch (rust-llm)
   ./git.nix
   ./direnv.nix
   ./foot.nix # Linux/Wayland terminal (primary on the Hyprland desktop)

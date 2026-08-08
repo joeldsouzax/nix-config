@@ -126,7 +126,18 @@
       "Bash(/usr/bin/head -1)",
       "Bash(direnv allow *)",
       "Bash(direnv status *)",
-      "Bash(brew list *)"
+      "Bash(brew list *)",
+      "Bash(system_profiler SPFontsDataType)",
+      "Bash(~/.emacs.d/bin/doom doctor *)",
+      "Bash(xxd /Applications/Emacs.app)",
+      "Bash(/run/current-system/sw/bin/emacs --batch --eval '\\(princ \\(format \"native-comp: %s\\\\n\" \\(native-comp-available-p\\)\\)\\)')",
+      "Bash(direnv export *)",
+      "Bash(command -v brew)",
+      "Bash(brew --version)",
+      "Bash(command -v omp pi)",
+      "Bash(command -v bun)",
+      "Bash(bun --version)",
+      "Bash(brew search *)"
     ]
   }
 }
