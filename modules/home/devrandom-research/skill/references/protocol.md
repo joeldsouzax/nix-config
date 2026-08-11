@@ -1,4 +1,4 @@
-# Research protocol
+# Rust and Nix research protocol
 
 ## Durable evidence
 
@@ -27,6 +27,9 @@ Rotate through:
 8. dependency value, transitive cost, supply chain, licenses, advisories, and maintenance;
 9. correctness coverage: unit, property, exhaustive, stress, model checking, sanitizers, fuzzing, and mutation tests as applicable;
 10. documentation claims not connected to executable behavior or measurements.
+11. Rust API surface: every `pub` item, required type annotation, trait bound, conversion, and construction seam.
+12. Rust state modeling: boolean protocols, sentinel values, invalid products, identity confusion, and dynamic ownership that types could enforce.
+13. Nix reproducibility: flake purity, locked inputs, derivation coverage, platform evaluation, package metadata, development shells, and host-tool leakage.
 
 ## Measurement discipline
 
@@ -41,6 +44,8 @@ Rotate through:
 
 Require exact semantic and ownership fit, supported toolchains/platforms, acceptable transitive and supply-chain cost, healthy maintenance, compatible licensing, benchmark parity or improvement, and a smaller total correctness/maintenance burden. Popularity alone is not evidence.
 
+Audit current standard-library facilities first. Then compare maintained crates for collections, concurrency, futures, errors, generational identities, state machines, property testing, fuzzing, model checking, benchmarking, and build/audit integration. Include `thiserror` as the default error candidate, but measure and document exceptions.
+
 ## Fixed-point falsification
 
 Start a fresh pass that attempts to find at least:
@@ -52,5 +57,7 @@ Start a fresh pass that attempts to find at least:
 - one credible maintained replacement for custom machinery;
 - one workload capable of reversing an earlier decision;
 - one public surface item without a demonstrated consumer.
+- one Rust or Nix feature that can replace custom machinery;
+- one boolean or sentinel protocol better represented by a sum or product type;
 
 Any credible untested finding prevents completion.

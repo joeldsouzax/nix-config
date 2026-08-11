@@ -9,3 +9,7 @@
 ## Invariants and risk boundaries
 
 ## Existing verification and gaps
+
+## Nix gates and platform coverage
+
+## Rust state modeling and public API
