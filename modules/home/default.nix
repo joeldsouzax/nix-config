@@ -17,6 +17,7 @@
   ./shell.nix
   ./programs.nix
   ./agent-tools.nix
+  ./devrandom-research.nix # reusable OMP/Codex research-convergence workflow
   ./local-llm.nix # llama.cpp + Qwen3-Coder-Rust for omp autoresearch (rust-llm)
   ./git.nix
   ./direnv.nix
