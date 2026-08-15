@@ -46,6 +46,11 @@ in
           recursive = true;
         };
         ".omp/profiles/kimi/agent/prompts/devrandom-research.md".source = prompt;
+        ".omp/profiles/autoresearch/agent/skills/devrandom-research" = {
+          source = skill;
+          recursive = true;
+        };
+        ".omp/profiles/autoresearch/agent/prompts/devrandom-research.md".source = prompt;
         ".codex/skills/devrandom-research" = {
           source = skill;
           recursive = true;

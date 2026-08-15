@@ -412,15 +412,17 @@ in
               echo "note: 'omp install $ext' failed (offline?); retry manually" >&2
             fi
           done
-          # Architecture-review loops run under the isolated Kimi profile.
-          # Seed only pi-loop-mode there; do not implicitly copy every plugin
-          # from the default profile into Kimi's independent plugin store.
-          kimi_loop_dir="$HOME/.omp/profiles/kimi/plugins/node_modules/pi-loop-mode"
-          if [ ! -d "$kimi_loop_dir" ]; then
-            $DRY_RUN_CMD env PATH="${pkgs.bun}/bin:$PATH" \
-              "$omp_bin" --profile kimi plugin install pi-loop-mode >/dev/null 2>&1 || \
-              echo "note: 'omp --profile kimi plugin install pi-loop-mode' failed (offline?); retry manually" >&2
-          fi
+          # Architecture-review and autoresearch loops run under isolated
+          # profiles. Seed only pi-loop-mode there; do not implicitly copy
+          # every default-profile plugin into either independent plugin store.
+          for profile in kimi autoresearch; do
+            loop_dir="$HOME/.omp/profiles/$profile/plugins/node_modules/pi-loop-mode"
+            if [ ! -d "$loop_dir" ]; then
+              $DRY_RUN_CMD env PATH="${pkgs.bun}/bin:$PATH" \
+                "$omp_bin" --profile "$profile" plugin install pi-loop-mode >/dev/null 2>&1 || \
+                echo "note: 'omp --profile $profile plugin install pi-loop-mode' failed (offline?); retry manually" >&2
+            fi
+          done
           # pi-hypa rewrites omp's shell commands through a `hypa` CLI shim it
           # drops at ~/.local/bin via a postinstall that bun skips on install —
           # without it every omp bash command dies with "command not found:
