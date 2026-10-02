@@ -1,4 +1,10 @@
-{ config, lib, pkgs, vars, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  vars,
+  ...
+}:
 
 let
   cfg = config.devrandom.research;
@@ -7,7 +13,10 @@ let
   template = ./devrandom-research/template;
   init = pkgs.writeShellApplication {
     name = "devrandom-research-init";
-    runtimeInputs = [ pkgs.coreutils pkgs.git ];
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.git
+    ];
     text = ''
       root="$(git rev-parse --show-toplevel)"
       destination="$root/.research"
@@ -27,34 +36,26 @@ let
   };
 in
 {
-  options.devrandom.research.enable = lib.mkEnableOption "the reusable devrandom research-convergence workflow" // {
-    default = true;
-  };
+  options.devrandom.research.enable =
+    lib.mkEnableOption "the reusable devrandom research-convergence workflow"
+    // {
+      default = true;
+    };
 
   config = lib.mkIf cfg.enable {
     home-manager.users.${vars.user} = {
       home.packages = [ init ];
 
       home.file = {
-        ".omp/agent/skills/devrandom-research" = {
-          source = skill;
-          recursive = true;
-        };
+        # Link the directory as a unit so an existing link into this checkout
+        # cannot make activation replace tracked source files in place.
+        ".omp/agent/skills/devrandom-research".source = skill;
         ".omp/agent/prompts/devrandom-research.md".source = prompt;
-        ".omp/profiles/kimi/agent/skills/devrandom-research" = {
-          source = skill;
-          recursive = true;
-        };
+        ".omp/profiles/kimi/agent/skills/devrandom-research".source = skill;
         ".omp/profiles/kimi/agent/prompts/devrandom-research.md".source = prompt;
-        ".omp/profiles/autoresearch/agent/skills/devrandom-research" = {
-          source = skill;
-          recursive = true;
-        };
+        ".omp/profiles/autoresearch/agent/skills/devrandom-research".source = skill;
         ".omp/profiles/autoresearch/agent/prompts/devrandom-research.md".source = prompt;
-        ".codex/skills/devrandom-research" = {
-          source = skill;
-          recursive = true;
-        };
+        ".codex/skills/devrandom-research".source = skill;
         ".config/devrandom/research-template" = {
           source = template;
           recursive = true;

@@ -1,21 +1,4 @@
 # Repository-local Codex configuration. Codex loads this only for trusted repos.
 
-[features]
-hooks = true
-
-[[hooks.PreToolUse]]
-matcher = "Bash|shell|unified_exec"
-
-[[hooks.PreToolUse.hooks]]
-type = "command"
-command = "graphify hook-guard search"
-
-[[hooks.PreToolUse]]
-matcher = "Read|Glob"
-
-[[hooks.PreToolUse.hooks]]
-type = "command"
-command = "graphify hook-guard read"
-
 [mcp_servers.openaiDeveloperDocs]
 url = "https://developers.openai.com/mcp"

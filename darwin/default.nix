@@ -9,7 +9,8 @@
 #       └─ ./darwin/default.nix *
 #           ├─ ../modules/home (shared HM modules)
 #           ├─ ./homebrew.nix
-#           └─ ./networking.nix
+#           ├─ ./networking.nix
+#           └─ ./network-audit.nix
 
 { config, lib, pkgs, inputs, vars, ... }:
 
@@ -23,6 +24,7 @@ in
   imports = (import ../modules/home) ++ [
     ./homebrew.nix
     ./networking.nix
+    ./network-audit.nix
     ./linux-builder.nix
     ../modules/editors/doom-emacs # declarative Doom Emacs (shared with NixOS)
   ];
@@ -45,7 +47,8 @@ in
   environment.etc."nix/nix.custom.conf".text = ''
     # Managed by nix-darwin (darwin/default.nix); included by Determinate's nix.conf.
     trusted-users = root @admin ${vars.user}
-    keep-outputs = true
+    # Let Determinate's GC discard build-only outputs when space is needed.
+    keep-outputs = false
     keep-derivations = true
     auto-optimise-store = true
     # Distributed builds for nixosTest / Linux derivations (see linux-builder.nix).
@@ -70,8 +73,8 @@ in
   launchd.user.envVariables.PATH =
     "/etc/profiles/per-user/${vars.user}/bin:/run/current-system/sw/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin";
 
-  # Determinate Nix ships no GC on macOS. Weekly collect-garbage + hardlink
-  # optimise keeps the store lean. Runs as root so it can prune system paths.
+  # Determinate Nixd handles disk-pressure GC. This weekly job also expires
+  # profile generations older than 14 days, including root-owned system paths.
   launchd.daemons.nix-gc = {
     serviceConfig = {
       ProgramArguments = [

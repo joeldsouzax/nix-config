@@ -3,7 +3,7 @@
 
 with pkgs;
 let
-  version = "0.146.0";
+  version = "0.160.0";
   pname = "codex";
 
   # Platform tarballs are published as aliases of @openai/codex at
@@ -11,7 +11,7 @@ let
   # its vendored helpers (rg, zsh, code-mode host) under vendor/<triple>/.
   src = fetchurl {
     url = "https://registry.npmjs.org/@openai/codex/-/codex-${version}-darwin-arm64.tgz";
-    hash = "sha256-J57DRgxbgGjaqypPW88FdIMwOzWV9KJK3mzrTQJnSTU=";
+    hash = "sha256-/HibzWVdkD+S4aI8jcUxW6OPQ7NYbq+3vTsZWXC1dGY=";
   };
 
 in
