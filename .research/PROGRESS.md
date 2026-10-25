@@ -512,3 +512,15 @@ session yet. After connection, register the prepared remote path with Orca's
 existing Labcast project and verify a remote terminal and Codex session.
 Mac Darwin activation is still pending; direct Orca SSH does not require the
 separate Mac root-daemon builder key. Cold boot and off-LAN tests remain open.
+
+H14 follow-up: the owner reports an Orca connection error. Ordinary Mac SSH
+initially fails host verification because its known_hosts lacks the desktop;
+earlier commands used a temporary file with the independently verified key.
+Saved that same committed desktop public key for nixos.local, labcast-desktop
+and its current Tailscale address in the Mac user's known_hosts. No existing
+key was replaced and strict checking remains enabled. Ordinary key-authenticated
+SSH now passes on both LAN and Tailscale, and SFTP reads the remote flake.nix
+using the specified identity. Orca still lists only the old desktop target;
+the new Tailscale target is not saved. Its window became unavailable during
+inspection, and logs did not expose the reported error. The exact Orca error
+is requested; SSH/SFTP success does not yet prove Orca runtime startup.
