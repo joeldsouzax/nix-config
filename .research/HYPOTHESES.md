@@ -329,3 +329,14 @@ Budget: shared host runner module, imports, shared Nix trust, runner docs and
 research evidence; separate minimal workflow change only for real qualification
 and supported Linux routing. Keep remote-development advice grounded in actual
 disk use and supported tools. No project migrations or local data removal yet.
+
+H13 qualification, 2026-10-25: activation is observed, GitHub reports the runner
+online and idle, and the persisted system matches the built output. Qualify
+through the existing Labcast Checks workflow on a topic branch in the clean root
+checkout; leave the three existing feature/maintenance worktrees untouched. The
+first candidate routes only manually dispatched Linux jobs to the desktop and
+skips the installer when runner.environment is self-hosted. Keep the macOS job,
+all existing test commands, timeouts and always-run Compose cleanup. A successful
+checkout, flake gate, telemetry integration and artifact upload must precede
+normal Linux routing. Reject or repair actual service incompatibilities without
+weakening tests. Do not merge around a failed macOS gate or billing failure.

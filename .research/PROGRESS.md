@@ -419,3 +419,22 @@ worktrees remain separate and maintenance has unrelated uncommitted changes;
 leave all of them intact. Existing workflows still target GitHub-hosted Linux
 and macOS. Runner registration, real job qualification and Linux job routing
 are not yet complete; do not report the runner as operational from a Nix build.
+
+H13 activation is verified after the owner's sudo handoff. Both the active
+system and persistent system profile resolve to fhrnhwvij907g8ksmyz3zdj1qn91q5vg.
+The runner service is enabled, active as github-runner, and has zero restarts.
+GitHub reports labcast-desktop online and idle with self-hosted/Linux/X64/nixos
+labels. Docker, Tailscale and the user graphical session are active. Actual
+Tailscale preferences now match the declaration: labcast-desktop, DNS acceptance
+off, Tailscale SSH off, operator joel. Ordinary key-authenticated SSH through
+100.106.80.23 succeeds. Nix trusts root and joel, not the runner account.
+Codex reports 0.163.0. Persistent activation also includes the retained H12
+Wi-Fi driver. Cold boot and off-LAN access remain untested.
+
+Linux job qualification is underway through existing Checks/workflow_dispatch
+on ci/desktop-runner, based on Labcast main 057130e. The root checkout hosts this
+small routing branch; existing Server, Studio and Maintenance worktrees remain
+untouched. The first commit 10a2b2f changes manual Linux routing only. Nix's
+existing workflow derivation passes, including actionlint. Normal Linux routing
+must wait for actual checkout, build, telemetry and artifact evidence. Hosted
+macOS billing limits remain a separate gate; do not remove or bypass it.

@@ -200,3 +200,11 @@ Hyprland recovery, 2026-10-25:
   patch. Keep the independent input and verify real registration before claiming
   compatibility. GitHub's branch-protection/ruleset APIs return a plan-required
   403 for this private repository; no protection setting was changed.
+- https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/use-in-a-workflow
+  documents conjunctive default/custom labels for selecting a runner.
+- https://docs.github.com/en/actions/reference/workflows-and-actions/contexts
+  defines runner.environment as github-hosted or self-hosted; the Nix installer
+  can use it to avoid reinstalling Nix on the managed desktop.
+- https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow
+  supports dispatching an existing default-branch workflow against a topic ref.
+  This allows real qualification before changing normal Linux job routing.
