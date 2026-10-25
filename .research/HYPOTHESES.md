@@ -88,11 +88,36 @@ package ownership, one Codex package entry and this evidence. Verify exact
 configured derivations, patch application and the kernel boundary. Build on
 Linux when SSH access is available; a Mac cannot validate this module's runtime.
 
-Retained pending full Linux build: the patch applies after nixpkgs' existing
+Retained: the patch applies after nixpkgs' existing
 patch with no fuzz or offset. A native compiler checks the extracted callback
 signature against the actual published kernel declarations at 6.12.100,
 6.12.101, 6.12.113, 6.12.114 and 6.13. The original source fails for all three
 affected 6.12 versions; the patched signature passes all five. CI outputs match
 the installed module derivations in each profile, and the runner check passes.
-This verifies the reported type mismatch, not compilation of the whole module
-or hardware behavior. The desktop still rejects SSH; that remains a prerequisite.
+After the owner installed the committed public key, both complete modules built
+on the desktop at a93a1e5. `modinfo` reports the correct 6.12.113 and 6.12.114
+kernel versions. Both builds preserve the upstream compiler warnings; no warning
+or type check was disabled. This verifies compilation, not hardware behavior
+after booting either new kernel. The running host remains on 6.12.94.
+
+## H07: install Wi-Fi modules with the kernel's supported target
+
+Baseline: at a93a1e5 both Wi-Fi packages and NVIDIA compile, but the full runner
+build fails in module aggregation because `8852au.ko.cer` is absent. The driver
+copies its `.ko` directly and omits Nixpkgs' standard signing and compression.
+The upstream maintainer describes this packaging defect in nixpkgs#575192.
+
+Hypothesis: use `kernelModuleMakeFlags` and Kbuild's `modules_install` target in
+the existing package override. Preserve the module location and sleep helper.
+Remove store references before signing, and let Kbuild strip before signing.
+Reject missing certificates, broken signatures, lost helpers, wrong kernel
+metadata or a failing module-tree/system build. Never bypass certificate checks.
+Budget: shared package override, existing kernel CI step and research evidence.
+Build both actual module trees as the regression check: the baseline fails that
+check despite standalone package builds passing. Then rebuild the full runner.
+
+Retained: both complete module trees and the full runner system now build on
+Linux. Both installed Wi-Fi modules contain PKCS#7 signatures, nonempty adjacent
+certificates, the expected kernel versions and the executable sleep helper.
+NVIDIA modules also compile for both kernels. Runtime loading remains untested
+until activation and boot. CI now builds both configured module trees directly.

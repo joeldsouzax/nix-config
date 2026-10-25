@@ -113,9 +113,8 @@ jobs:
       - name: Build & run integration test
         run: nix build --print-build-logs .#checks.x86_64-linux.integration
 
-  # ── Prove the runtime kernel modules compile against 6.12 ─────────────────
-  # eval/CI toplevel never builds kmods, so these jobs are the only pre-rebuild
-  # guard that the WiFi + GPU drivers actually build against the desktop kernel.
+  # Build and assemble the actual WiFi + GPU modules for both profiles.
+  # Standalone module builds do not detect missing installation certificates.
   kernel-modules:
     name: Kernel modules build (6.12)
     runs-on: ubuntu-latest
@@ -129,8 +128,5 @@ jobs:
             extra-substituters = https://nix-community.cachix.org
             extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
 
-      - name: WiFi — rtl8852au (Archer TX20U Plus)
-        run: nix build --no-link --print-build-logs .#packages.x86_64-linux.rtl8852au .#packages.x86_64-linux.rtl8852au-runner
-
-      - name: GPU — NVIDIA legacy_580 (GTX 1070 / Pascal)
-        run: nix build --print-build-logs .#packages.x86_64-linux.nvidia-legacy580
+      - name: WiFi and NVIDIA — desktop and runner module trees
+        run: nix build --no-link --print-build-logs .#nixosConfigurations.main.config.system.modulesTree .#nixosConfigurations.runner.config.system.modulesTree

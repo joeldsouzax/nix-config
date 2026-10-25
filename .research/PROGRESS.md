@@ -137,7 +137,31 @@ Checks passed:
 - The runner configuration check, touched formatted Nix files, configuration
   parsing, Actionlint and whitespace checks pass. Graphify refresh succeeds.
 
-Full module compilation and hardware checks remain unrun: SSH still rejects the
-Mac key. A pending user request gives the Bash key-bootstrap command, which does
-not require a rebuild. No host activation was attempted. Build the two exposed
-Wi-Fi packages on Linux before claiming the repair is fully validated.
+The owner completed the public-key bootstrap. SSH now succeeds with strict host
+key checking. At a93a1e5, both full Wi-Fi builds pass on the desktop; `modinfo`
+confirms the corresponding 6.12.113 and 6.12.114 versions. The Linux runner
+configuration check passes and the configured desktop Codex starts successfully
+(`codex-cli 0.163.0`) through `nix shell`.
+
+The desktop toplevel evaluation passed on Linux. The full runner system first
+exposed a second failure: missing Wi-Fi module certificates. H07 fixes the
+installer with Kbuild's standard `modules_install` target and shared Nixpkgs
+flags. Both full module trees and the complete runner system now build. The
+installed modules have PKCS#7 signatures, nonempty certificates, matching kernel
+versions and executable sleep helpers. Existing CI now assembles both profiles'
+module trees, which rejects the original packaging failure.
+
+Raw logs are `/tmp/nix-desktop-driver-build.log`,
+`/tmp/nix-desktop-codex-runner-check.log`, `/tmp/nix-desktop-runner-build.log`
+and `/tmp/nix-desktop-toplevel-eval.log` on the Mac. The successful follow-up logs
+are `/tmp/nix-desktop-module-trees.log` and `/tmp/nix-desktop-runner-rebuild.log`.
+The isolated Linux test checkout is `/tmp/nix-config-wifi-check`.
+The desktop checkout is
+`/home/joel/nix-config`. No activation or reboot has run. The current 6.12.94
+kernel still supplies the Wi-Fi connection carrying SSH. Hardware checks with
+the new kernel, runner registration and Codex sign-in remain separate steps.
+
+The owner now requests performance tuning and access while travelling, and
+selected Tailscale. Prepare shared host settings and the Mac client, validate
+both profiles and preserve the working SSH route. The desktop requires a sudo
+password; activation and Tailscale account sign-in need the owner at the machine.

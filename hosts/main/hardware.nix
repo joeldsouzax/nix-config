@@ -9,6 +9,29 @@
         rtl8852au = previous.rtl8852au.overrideAttrs (old: {
           # Linux 6.12.101 backported the monitor-channel callback change.
           patches = old.patches ++ [ ../../pkgs/rtl8852au-monitor.patch ];
+          # Kbuild supplies the certificates required by module aggregation.
+          # The upstream install target only copies the unsigned module.
+          makeFlags =
+            old.makeFlags
+            ++ previous.kernelModuleMakeFlags
+            ++ [
+              "INSTALL_MOD_PATH=${placeholder "out"}"
+              "INSTALL_MOD_DIR=kernel/net/wireless/realtek/rtw89"
+            ];
+          installTargets = [ "modules_install" ];
+          installFlags = [
+            "-C"
+            "${previous.kernel.dev}/lib/modules/${previous.kernel.modDirVersion}/build"
+            "M=$(PWD)"
+          ];
+          # Mutate the module before Kbuild strips, signs and compresses it.
+          preInstall = ''
+            nuke-refs 8852au.ko
+          '';
+          postInstall = ''
+            install -Dm755 suspend_rtw8852au "$out/usr/lib/systemd/system-sleep/suspend_rtw8852au"
+          '';
+          dontStrip = true;
         });
       }
     );

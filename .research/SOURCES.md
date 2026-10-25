@@ -69,3 +69,16 @@ Accessed 2026-10-25 for RTL8852AU:
 - Both locked inputs supply Codex 0.163.0. The regular desktop's Linux output
   `/nix/store/03h8zqzsxqrvlr143r5h2vzzx8mhqp95-codex-0.163.0` is present in the
   signed NixOS binary cache. No custom Linux Codex builder is needed.
+# Kernel module installation follow-up, 2026-10-25
+
+- https://github.com/NixOS/nixpkgs/issues/575192: maintainer confirms that direct
+  `.ko` copying bypasses signing/compression. Use `kernelModuleMakeFlags` and
+  Kbuild `modules_install`; this applies to the locked RTL8852AU installer.
+- https://github.com/NixOS/nixpkgs/pull/571181: deterministic module certificates
+  landed on 2026-10-14. The aggregator requires certificates for external modules.
+- Locked runner nixpkgs 3ec636362e1816bc2f0888fa0fa2c69f1bc9e504:
+  `pkgs/os-specific/linux/zenpower/default.nix` demonstrates supported installation;
+  `pkgs/top-level/linux-kernels.nix` owns stripping, depmod and signing flags.
+  `pkgs/os-specific/linux/kmod/aggregator.nix` supplies the failing integration
+  check. RTL8852AU's current upstream nixpkgs expression still copies the module
+  directly, so a lock update does not supply this fix.
