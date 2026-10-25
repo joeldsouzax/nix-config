@@ -1,5 +1,10 @@
 { pkgs, ... }: {
-  imports = [ ./hardware.nix ] ++ (import ../../modules/desktops/virtualisation);
+  imports = [
+    ./hardware.nix
+    ./performance.nix
+    ./access.nix
+  ]
+  ++ (import ../../modules/desktops/virtualisation);
   services.xserver.enable = true;
   services.pcscd.enable = true;
   hardware = {

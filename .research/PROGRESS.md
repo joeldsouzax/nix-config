@@ -165,3 +165,40 @@ The owner now requests performance tuning and access while travelling, and
 selected Tailscale. Prepare shared host settings and the Mac client, validate
 both profiles and preserve the working SSH route. The desktop requires a sudo
 password; activation and Tailscale account sign-in need the owner at the machine.
+
+H09 passes full Linux build validation. Both profiles share one
+Nix build/four cores, Cargo's job count, SSD scratch space, zram, the performance
+governor, disabled sleep/Wi-Fi power saving and a standard Tailscale service.
+The private hostname lives in `vars.desktopHost`. The Darwin configuration owns
+the official `tailscale-app` cask, a remote SSH alias, the verified desktop host
+key and one remote Nix build slot. The local SSH alias remains available.
+Both profiles' evaluated settings match. The updated runner check and Linux
+`nix flake check --no-build --no-update-lock-file` pass. Darwin evaluates.
+
+The owner installed and signed into Tailscale on the Mac; CLI reports Running
+and online, with no peers yet. The desktop daemon is still inactive. Both hosts
+require a password for sudo. The owner prefers installation through Darwin Nix;
+do not ask for a separate Homebrew installation again.
+
+Both complete Linux systems built, followed by a successful build of the final
+operator/hostname changes and runner check in `/tmp/nix-config-wifi-check`:
+
+- Desktop: `/nix/store/b0n9i9x3j2hf2rmvwk4rqmh8x6ad5y1b-nixos-system-nixos-26.11.20261020.02c087f`.
+- Runner: `/nix/store/3n97fkaiiirvy59jlgzzqirb9ilbhpq8-nixos-system-nixos-26.11.20261023.3ec6363`.
+- Logs on the Mac: `/tmp/nix-desktop-travel-build.log` and
+  `/tmp/nix-desktop-travel-final-build.log`.
+
+The final Mac runner check passes. A separate negative check rejects zero cores
+(Nix's unlimited value). Generated SSH configuration selects the correct host,
+key and agent-forwarding policy; the system known-host file contains the verified
+desktop key. Touched Nix files parse, targeted formatting and whitespace checks
+pass, and Graphify refreshes successfully with its existing extraction warnings.
+
+Full Darwin build is still running at `/tmp/nix-travel-darwin-build.log`. It
+started before the final known-host addition; assemble that last change after
+the build finishes. Do not start a duplicate expensive build. Publish the Linux
+result with this explicit Mac-build limit, then update the desktop's clean main
+checkout. The owner must activate the desktop with sudo before enrollment.
+After that, obtain the login link with `tailscale up`, test private SSH and ask
+for the off-LAN/reboot travel check. No activation, reboot or new-kernel hardware
+test has run yet. H07 and H08 are committed and pushed through 8b0653c.

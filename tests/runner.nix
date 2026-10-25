@@ -28,9 +28,22 @@ let
       builtins.elem "multi-user.target" service.wantedBy && service.serviceConfig.Restart == "always";
     noSleep =
       !config.systemd.sleep.settings.Sleep.AllowSuspend
-      && !config.systemd.sleep.settings.Sleep.AllowHibernation;
-    boundedBuilds = config.nix.settings.max-jobs == 1 && config.nix.settings.cores <= 4;
+      && !config.systemd.sleep.settings.Sleep.AllowHibernation
+      && !config.systemd.sleep.settings.Sleep.AllowHybridSleep
+      && !config.systemd.sleep.settings.Sleep.AllowSuspendThenHibernate;
+    boundedBuilds =
+      config.nix.settings.max-jobs == 1
+      && config.nix.settings.cores > 0
+      && config.nix.settings.cores <= 4;
     adminAccess = config.services.openssh.enable && config.networking.networkmanager.enable;
+    remoteAccess =
+      config.services.tailscale.enable
+      && builtins.elem "multi-user.target" config.systemd.services.tailscaled.wantedBy
+      && !config.networking.networkmanager.wifi.powersave;
+    buildResources =
+      !config.boot.tmp.useTmpfs
+      && config.environment.variables.CARGO_BUILD_JOBS == toString config.nix.settings.cores
+      && service.environment.CARGO_BUILD_JOBS == config.environment.variables.CARGO_BUILD_JOBS;
     nativeDevices = !service.serviceConfig.PrivateDevices && !service.serviceConfig.ProtectClock;
     dockerMounts =
       !service.serviceConfig.PrivateUsers

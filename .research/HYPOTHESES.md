@@ -132,3 +132,44 @@ Avahi settings before/after and require a warning-free desktop evaluation.
 Retained: evaluated Avahi settings are byte-identical, cursor enablement remains
 true, and the full Linux desktop toplevel evaluates without the deprecated-option
 warnings. No service behavior changed.
+
+## H09: bounded builds and persistent private access
+
+Baseline: i5-9400F, six cores, 15 GiB reported RAM, system and Nix store on SATA
+SSDs, source projects on HDD. The desktop profile allows auto parallel builds
+with every core per build; the runner already selects one build/four cores.
+Both lack Tailscale. The current Wi-Fi connection autoconnects for all users.
+The running host uses the performance governor, 8 GiB zram, and has no current
+memory pressure. `sudo -n true` needs a password. No Tailscale Mac app is present.
+
+Hypothesis: share the existing conservative runner build limits, Cargo job
+count, zram and performance governor between profiles. Keep build scratch space
+on SSD; retain existing desktop-specific memory/network settings. Disable sleep
+and Wi-Fi power saving for this always-on machine. Enable the supported Tailscale
+service in both profiles, with the same identity, existing OpenSSH keys, and
+unchanged DNS on the host. Add the official Mac client through existing Homebrew
+ownership and a separate remote SSH alias; retain the local alias.
+
+Reject configuration drift, relaxed SSH authentication, secret material in Nix,
+broken builds, loss of existing network access or claims of measured speedup
+without measurements. Verify both profiles, the Mac configuration, actual full
+Linux builds and runtime access after owner activation/sign-in. The original
+machine lacks /dev/kvm despite the user's kvm group; no VM qualification is
+claimed. Do not change firmware remotely.
+
+Review: the existing bound check accepted `cores = 0`, which Nix interprets as
+all cores. Require a positive value as well as the upper bound. The rendered
+Mac SSH configuration selects the private name, Mac key and no agent forwarding
+for `desktop-remote`. Its system known-host file contains the independently
+verified desktop Ed25519 key for both local and private names.
+
+The final runner check passes on aarch64-darwin. A separate evaluation changes
+only the core setting to zero and fails with `boundedBuilds` in the assertion;
+the test rejects that plausible regression. Logs:
+`/tmp/nix-travel-runner-final.log` and `/tmp/nix-travel-unbounded-negative.log`.
+
+Retained configuration: both complete Linux systems and the final Linux runner
+check build successfully. The final Mac configuration evaluates; its complete
+build remains in progress. This establishes build compatibility and bounded
+configuration, not a throughput improvement or working travel access. Desktop
+activation, account enrollment and off-LAN/reboot tests remain required.

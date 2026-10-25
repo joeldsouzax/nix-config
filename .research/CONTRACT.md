@@ -32,3 +32,10 @@ three parameters. Repair the selected driver's compatibility without changing
 the kernel series, GPU driver, adapter or generated hardware file. Add Codex to
 the regular desktop profile as well as the runner so either selected profile
 provides it. Keep actual build and hardware evidence separate from evaluation.
+
+Owner amendment, 2026-10-25: tune this desktop's performance and make it
+accessible while travelling to New York. The owner selected Tailscale and will
+keep the machine powered on. Preserve SSH key authentication and local access;
+do not expose a public deployment endpoint or configure router forwarding.
+Keep access and build limits consistent between desktop and runner profiles.
+Account sign-in and password-required activation remain owner actions.

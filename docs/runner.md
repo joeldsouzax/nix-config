@@ -6,7 +6,11 @@ The `main` profile remains available for desktop use. Both share the disk layout
 kernel series, Wi-Fi driver and NVIDIA driver selection in `hosts/main/`.
 
 The runner starts at boot and retries after failure. Sleep is disabled. Nix uses
-one build slot with four cores; Cargo uses the same compilation limit. Work files live on disk in
+one build slot with four cores; Cargo uses the same compilation limit. The
+six-core, 16 GB machine shares these limits with the desktop profile. Both use
+the performance CPU governor and 8 GB of compressed swap. Temporary build data
+and runner work stay on SSD, with disk swap as a fallback. These settings bound
+parallel work; they are not a measured build-speed guarantee. Work files live in
 `/var/lib/github-runner/work`; the NixOS module clears that directory whenever
 the service starts. Registration state lives separately in
 `/var/lib/github-runner/labcast`. A restart interrupts a running job, so wait for
@@ -39,8 +43,48 @@ production services need a separate decision.
 
 The runner needs outbound HTTPS to GitHub. No inbound port is needed for jobs.
 SSH remains available on port 22. `nixos.local` only works on the local network;
-verify a remote access route before leaving. Check the firmware's power-on-after-
+use the Tailscale route below while travelling. Check the firmware's power-on-after-
 power-loss setting at the machine. Nix cannot configure that setting here.
+
+## Remote access
+
+Both profiles run Tailscale at boot and keep the same device identity on disk.
+They disable sleep and Wi-Fi power saving. The existing NetworkManager connection
+must autoconnect without a desktop login. Keep the machine powered and connected.
+No public IP, router port forwarding or exit node is required. See
+[Tailscale connection types](https://tailscale.com/docs/reference/connection-types).
+
+The Mac client is owned by the Darwin configuration through Homebrew. Apply the
+configuration with the normal `nixswitch` command, then open the app:
+
+```bash
+open -a Tailscale
+```
+
+Approve the macOS VPN configuration and sign in. After applying either NixOS
+profile on the desktop, run this as `joel` and open the login link:
+
+```bash
+tailscale up
+```
+
+Use the same Tailscale account on both devices. The desktop appears as
+`labcast-desktop`. The service keeps the desktop's existing DNS settings; the Mac
+can use Tailscale's MagicDNS name. SSH still uses the committed Mac public key.
+Connect from the Mac with `ssh joel@labcast-desktop`. After applying the Mac's Home
+Manager configuration, `ssh desktop-remote` is the equivalent saved alias.
+`ssh desktop` continues to use the local `nixos.local` address.
+
+Before travelling, put the Mac on a phone hotspot and verify SSH, including after
+a desktop reboot. Check that the desktop's Tailscale key remains valid for the
+trip; disable key expiry for this trusted desktop in the Tailscale console if
+needed. Account sign-in and this connection test are required before claiming
+remote access works. See [Linux setup and key expiry](https://tailscale.com/docs/install/linux).
+
+The Mac's Nix builder also uses the private name and one build slot. Its separate
+root SSH key setup is still required as documented in `darwin/linux-builder.nix`.
+The desktop currently lacks `/dev/kvm`; enable Intel virtualization in firmware
+and verify KVM before advertising that capability or running VM-based jobs.
 
 ## Registration credential
 

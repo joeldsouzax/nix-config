@@ -87,6 +87,7 @@
     let
       vars = {
         user = "joel";
+        desktopHost = "labcast-desktop";
         location = "$HOME/.setup";
         terminal = "foot";
         editor = "nano";

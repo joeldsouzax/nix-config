@@ -82,3 +82,29 @@ Accessed 2026-10-25 for RTL8852AU:
   `pkgs/os-specific/linux/kmod/aggregator.nix` supplies the failing integration
   check. RTL8852AU's current upstream nixpkgs expression still copies the module
   directly, so a lock update does not supply this fix.
+# Travel access and host limits, 2026-10-25
+
+- Live desktop inspection: Intel i5-9400F (six physical cores), 15 GiB usable RAM,
+  SSD root and Nix store, HDD project directory; performance governor already
+  active. Wi-Fi profile autoconnects and has no per-user restriction. During the
+  bounded Hyprland build an SSH/memory probe completes in 0.50 s, with 10 GiB
+  available RAM and zero measured memory pressure. This is a responsiveness
+  sample, not a throughput comparison. `/tmp/nix-travel-build-responsiveness.log`.
+- https://tailscale.com/docs/reference/connection-types: private connectivity
+  uses direct connections or relays; router forwarding/public addresses are not
+  required for this setup.
+- https://tailscale.com/docs/install/linux and
+  https://tailscale.com/docs/how-to/run-unattended: Linux uses a system daemon,
+  with account enrollment and device-key expiry handled separately.
+- https://tailscale.com/docs/install/mac: official standalone macOS app and
+  user approval for VPN setup. The established Darwin Homebrew owner now contains
+  `tailscale-app`. `brew info --cask tailscale-app --json=v2` resolves version
+  1.104.2 from `pkgs.tailscale.com`; the installer is fetched, not installed.
+- Locked Nixpkgs `nixos/modules/services/networking/tailscale.nix` supplies the
+  boot service, firewall port and declarative `extraSetFlags`. Its NetworkManager
+  module supports `wifi.powersave = false`. No custom service is needed.
+- The owner subsequently installed and signed into the Mac app; the CLI reports
+  `Running`, online, with no peers before desktop enrollment. Installation remains
+  owned by the Darwin configuration. The remote host's verified Ed25519 key has
+  fingerprint `SHA256:a04A3OAMZkP9D8hGUQtEpwGgT7qlKMvecNNSWisDStg`; the Darwin
+  module renders it for both `nixos.local` and `labcast-desktop`.

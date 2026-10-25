@@ -2,25 +2,11 @@
 # Optimized for 16GB RAM desktop with swap partition
 #
 # Key optimizations:
-#   - zram compressed RAM swap (effectively adds ~8GB swap)
 #   - Aggressive dirty page writeback (prevents I/O stalls)
 #   - earlyoom (prevents system freeze under OOM pressure)
 #   - Tuned vm.swappiness for desktop responsiveness
 
-{ lib, pkgs, ... }:
-
 {
-  # ── zram: Compressed RAM-backed swap ──────────────────────────────────
-  # Creates a compressed block device in RAM. With 16GB, zram at 50%
-  # gives ~8GB compressed swap before hitting real disk swap.
-  # Compression ratio is typically 2-3x, so effectively 16-24GB virtual.
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";        # Best ratio + speed balance
-    memoryPercent = 50;        # Use up to 8GB RAM for compressed swap
-    priority = 100;            # Higher priority than disk swap (usually 0)
-  };
-
   # ── Kernel parameters for 16GB desktop ────────────────────────────────
   boot.kernel.sysctl = {
     # ── Virtual Memory ──
@@ -84,11 +70,4 @@
     enableUserSlices = true;
   };
 
-  # ── CPU frequency governor ────────────────────────────────────────────
-  # This is a desktop (always on AC): pin the governor to "performance" so the
-  # CPU stays at max clocks instead of ramping — snappier UI and faster builds.
-  # mkDefault so a laptop profile could override to "powersave".
-  powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
-
-  # NOTE: boot.tmp is already configured in hosts/configuration.nix (5GB tmpfs)
 }

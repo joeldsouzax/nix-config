@@ -77,6 +77,7 @@
       # Security (mirrors NixOS: 1password)
       "1password"
       "1password-cli"
+      "tailscale-app"        # Private access to the desktop while travelling
 
       # Virtualization (for `just up` VM management)
       "utm"

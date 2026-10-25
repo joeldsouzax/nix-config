@@ -28,7 +28,7 @@ CI evaluates both systems and parses all Nix files. Run the narrowest relevant c
 - `pkgs/`: custom derivations, including pinned agent CLIs.
 - `secrets/`: SOPS-encrypted material; never print decrypted secret values.
 
-Global values such as `user`, `location`, `terminal`, and `editor` are defined in `flake.nix` and passed through `specialArgs` as `vars`. Keep cross-platform configuration in shared Home Manager modules and use `pkgs.stdenv.isDarwin` or `pkgs.stdenv.isLinux` guards.
+Global values such as `user`, `location`, `terminal`, and `editor` are defined in `flake.nix` and passed through `specialArgs` as `vars`. Keep cross-platform configuration in shared Home Manager modules and use `pkgs.stdenv.hostPlatform.isDarwin` or `pkgs.stdenv.hostPlatform.isLinux` guards.
 
 ## Nix conventions
 

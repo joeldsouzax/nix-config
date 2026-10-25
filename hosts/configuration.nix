@@ -24,14 +24,12 @@ in
   boot = {
     tmp = {
       cleanOnBoot = true;
-      tmpfsSize = "5GB";
     };
   };
 
   users.users.${vars.user} = {
     isNormalUser = true;
     home = "/home/${vars.user}";
-    openssh.authorizedKeys.keyFiles = [ ./keys/joel-mac.pub ];
     extraGroups = [
       "wheel"
       "video"
@@ -229,8 +227,6 @@ in
       jack.enable = true;
     };
     openssh = {
-      enable = true;
-      allowSFTP = true;
       extraConfig = ''
         HostKeyAlgorithms +ssh-rsa
       '';
@@ -295,12 +291,6 @@ in
   nix = {
     settings = {
       auto-optimise-store = true;
-
-      # ── Build parallelism ──────────────────────────────────────────────
-      # max-jobs=auto → one build job per core; cores=0 → each job uses all
-      # cores. Saturates the desktop CPU during rebuilds.
-      max-jobs = "auto";
-      cores = 0;
 
       # ── Binary caches ──────────────────────────────────────────────────
       # The big win: pull Hyprland (and nix-community builds) as prebuilt

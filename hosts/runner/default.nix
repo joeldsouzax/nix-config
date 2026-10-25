@@ -9,6 +9,8 @@
 {
   imports = [
     ../main/hardware.nix
+    ../main/performance.nix
+    ../main/access.nix
   ];
 
   # This is another profile for the same machine, with the same disks and SSH
@@ -24,14 +26,11 @@
   users.users.${vars.user} = {
     isNormalUser = true;
     home = "/home/${vars.user}";
-    openssh.authorizedKeys.keyFiles = [ ../keys/joel-mac.pub ];
     extraGroups = [
       "wheel"
       "networkmanager"
     ];
   };
-  services.openssh.enable = true;
-  services.openssh.allowSFTP = true;
   services.avahi = {
     enable = true;
     nssmdns4 = true;
@@ -43,12 +42,6 @@
 
   hardware.nvidia.nvidiaSettings = false;
   hardware.nvidia-container-toolkit.enable = true;
-  systemd.sleep.settings.Sleep = {
-    AllowSuspend = false;
-    AllowHibernation = false;
-    AllowHybridSleep = false;
-    AllowSuspendThenHibernate = false;
-  };
 
   nix = {
     registry.nixpkgs.flake = inputs.nixpkgs-runner;
@@ -57,8 +50,6 @@
         "nix-command"
         "flakes"
       ];
-      max-jobs = 1;
-      cores = 4;
       auto-optimise-store = true;
       # Keep the existing administrator usable as an SSH Nix builder.
       trusted-users = [
@@ -73,11 +64,6 @@
       dates = "weekly";
       options = "--delete-older-than 14d";
     };
-  };
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
-    memoryPercent = 50;
   };
 
   virtualisation.docker = {

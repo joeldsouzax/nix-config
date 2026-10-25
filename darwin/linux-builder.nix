@@ -10,7 +10,7 @@
 #      from nixpkgs' fixed throwaway keypair, so no manual key setup is needed.
 #   2. /etc/nix/machines listing BOTH builders:
 #        • the local VM        → aarch64-linux  (offline fallback, TCG nested VM)
-#        • the NixOS desktop   → x86_64-linux   (KVM-accelerated, preferred)
+#        • the NixOS desktop   → x86_64-linux   (native Linux builds)
 #   3. `builders = @/etc/nix/machines` — wired into Determinate's nix.custom.conf
 #      over in darwin/default.nix.
 #
@@ -27,11 +27,16 @@ let
   builderPublicHostKey =
     "c3NoLWVkMjU1MTkgQUFBQUMzTnphQzFsWkRJMU5URTVBQUFBSUpCV2N4Yi9CbGFxdDFhdU90RStGOFFVV3JVb3RpQzVxQkorVXVFV2RWQ2Igcm9vdEBuaXhvcwo=";
 
-  # Remote NixOS desktop — reuses the SSH host you already have (nixos.local).
-  desktopHost = "nixos.local";
+  # Stable private name, including while the Mac is away from the home LAN.
+  desktopHost = vars.desktopHost;
   desktopUser = vars.user;
 in
 {
+  programs.ssh.knownHosts.desktop = {
+    hostNames = [ "nixos.local" desktopHost ];
+    publicKeyFile = ../hosts/keys/desktop.pub;
+  };
+
   # Ensure the VM's working directory exists before launchd loads the daemon.
   system.activationScripts.preActivation.text = lib.mkAfter ''
     mkdir -p ${workingDirectory}
@@ -70,7 +75,7 @@ in
   #   URI  systems  sshKey  maxJobs  speedFactor  supportedFeatures  mandatory  base64-hostkey
   environment.etc."nix/machines".text = ''
     ssh-ng://builder@linux-builder aarch64-linux /etc/nix/builder_ed25519 4 1 kvm,benchmark,big-parallel - ${builderPublicHostKey}
-    ssh-ng://${desktopUser}@${desktopHost} x86_64-linux - 8 2 kvm,benchmark,big-parallel - -
+    ssh-ng://${desktopUser}@${desktopHost} x86_64-linux - 1 2 benchmark,big-parallel - -
   '';
 
   # ── Remote desktop one-time setup (do these on the NixOS desktop) ──────────
@@ -79,7 +84,7 @@ in
   #   3. Authorise the Mac ROOT key on the desktop (daemon connects as root):
   #        sudo ssh-keygen -t ed25519 -f /var/root/.ssh/id_ed25519 -N ""   # on the Mac, if absent
   #        then add /var/root/.ssh/id_ed25519.pub to the desktop user's authorized_keys
-  #   4. Prime the host key so root trusts it:
+  #   4. Test access; this configuration supplies the verified host key:
   #        sudo ssh ${desktopUser}@${desktopHost} true
   # ───────────────────────────────────────────────────────────────────────────
 }

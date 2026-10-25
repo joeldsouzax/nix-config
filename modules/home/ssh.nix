@@ -28,6 +28,13 @@
         user = vars.user;
       };
 
+      # Tailscale MagicDNS name; the local alias remains usable during setup.
+      "desktop-remote" = {
+        hostname = vars.desktopHost;
+        user = vars.user;
+        forwardAgent = false;
+      };
+
       # GitHub — personal (joeldsouzax)
       "github.com" = { };
     }
