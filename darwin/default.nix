@@ -16,8 +16,7 @@
 
 let
   claude-code = pkgs.callPackage ../pkgs/claude-code.nix {};
-  # Custom binary derivation (pkgs/codex.nix) — pinned nixpkgs is behind
-  # upstream; this tracks the latest @openai/codex release directly.
+  # Official native binary and bundled helpers; avoids a local Rust/V8 build.
   codex = pkgs.callPackage ../pkgs/codex.nix {};
 in
 {

@@ -7,7 +7,7 @@ A single [Nix flake](https://nixos.wiki/wiki/Flakes) that declaratively manages
 | --- | --- | --- | --- |
 | **NixOS desktop** | `nixosConfigurations.main` | `x86_64-linux` | NVIDIA GPU, Hyprland (Wayland), foot terminal, declarative Doom Emacs |
 | **Desktop as runner** | `nixosConfigurations.runner` | `x86_64-linux` | Same machine and disks; headless GitHub Actions service, Docker, NVIDIA container support |
-| **macOS laptop** | `darwinConfigurations.joel` | `aarch64-darwin` | [nix-darwin](https://github.com/nix-darwin/nix-darwin), Aerospace WM, Homebrew for native apps, Ghostty |
+| **macOS laptop** | `darwinConfigurations.joel` | `aarch64-darwin` | [nix-darwin](https://github.com/nix-darwin/nix-darwin), Aerospace WM, Orca work app, Ghostty terminal |
 
 Shared user-level config (shell, git, SSH, terminal theme, AI tooling) lives in
 `modules/home/` and is consumed by **both** systems through home-manager.
@@ -87,6 +87,12 @@ Shared modules guard platform-specific behaviour with
 - **Terminal** — `modules/home/foot.nix` (Linux, `mkIf isLinux`) vs
   `modules/home/ghostty.nix` (macOS, `mkIf isDarwin`). `vars.terminal = "foot"`
   drives Linux WM keybinds; macOS keeps Ghostty via Homebrew.
+- **Work app (macOS)** — Stably [Orca](https://www.onorca.dev/) is the primary
+  project and coding-agent workspace, installed via its Homebrew cask.
+  `modules/home/orca.nix` puts Orca first in the Dock without replacing other
+  entries. Run `work` inside a project (or `work /path/to/project`) to launch Orca
+  and register that project; select its workspace in Orca. Ghostty remains the
+  shell terminal, including `$TERMINAL`, for programs expecting a terminal CLI.
 - **Shell** — `modules/home/shell.nix` dispatches the `rebuild`/`nixswitch`
   alias to the right command per platform.
 
@@ -146,7 +152,7 @@ nix build .#checks.aarch64-linux.integration -L  # local VM (slow, TCG)
 - Each module directory has a `default.nix` listing its imports.
 - Home-manager is nested under `home-manager.users.${vars.user}` with
   `useGlobalPkgs = true`.
-- Nixpkgs **unstable** is primary; `nixpkgs-stable` (25.05) is available as
+- Nixpkgs **unstable** is primary; `nixpkgs-stable` is available as
   `stable` in `specialArgs`.
 - Formatter: `nixfmt` (no enforced pre-commit hook).
 - Add shell aliases/functions to **both** Nushell and ZSH.

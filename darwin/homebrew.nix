@@ -35,6 +35,7 @@
     taps = [
       "nikitabobko/tap"       # Required for aerospace WM
       "can1357/tap"           # oh-my-pi (omp) — Rust-core AI coding agent
+      "stablyai/orca"         # Orca agent workspace
     ];
 
     onActivation = {
@@ -59,6 +60,7 @@
 
       # Development
       "figma"                # NixOS has figma-linux
+      "stablyai/orca/orca"    # Primary workspace for projects and coding agents
 
       # Media (mirrors NixOS: vlc via flatpak)
       "vlc"

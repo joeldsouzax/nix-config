@@ -23,5 +23,6 @@
   ./direnv.nix
   ./foot.nix # Linux/Wayland terminal (primary on the Hyprland desktop)
   ./ghostty.nix # macOS terminal (Darwin-guarded)
+  ./orca.nix # macOS work app and project launcher (Darwin-guarded)
   ./ssh.nix
 ]

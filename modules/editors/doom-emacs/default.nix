@@ -19,7 +19,8 @@ let
   inherit (pkgs.stdenv) isDarwin;
   # Doom's (spell +flyspell) shells out to aspell; it must carry its
   # dictionaries (a bare `aspell`/`ispell` binary finds none on Nix).
-  aspell = pkgs.aspellWithDicts (ds: with ds; [ en en-computers en-science ]);
+  # nixpkgs removed the computer/science add-ons after their upstreams vanished.
+  aspell = pkgs.aspellWithDicts (ds: [ ds.en ]);
 in
 {
   home-manager.users.${vars.user} = {

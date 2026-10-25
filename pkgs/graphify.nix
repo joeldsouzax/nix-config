@@ -1,7 +1,6 @@
 # Graphify — turn a codebase/corpus into a queryable knowledge graph for AI agents.
-# Vendored from nixpkgs pkgs/by-name/gr/graphify (stuck at 0.4.23) and bumped to
-# 0.9.32: the always-on Claude Code integration (`graphify claude install`,
-# PreToolUse hooks) and the pi/omp platform target only exist in newer releases.
+# Tracks upstream 0.9.93 ahead of nixpkgs 0.9.91, with the existing agent
+# integrations and Darwin grammar fixes retained.
 # Drop this file and use pkgs.graphify once nixpkgs catches up.
 {
   lib,
@@ -73,14 +72,14 @@ in
 python3Packages.buildPythonApplication rec {
   __structuredAttrs = true;
   pname = "graphify";
-  version = "0.9.32";
+  version = "0.9.93";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "Graphify-Labs";
     repo = "graphify";
     tag = "v${version}";
-    hash = "sha256-G7jvOjyst6ZlascLvPyTv5+zS9lCyUzBIpcSNPdZu54=";
+    hash = "sha256-SaQYg8oKqoUnkq4d0gG2YVSmnXjCtmG+EiWGbUatc4M=";
   };
 
   build-system = [
@@ -90,6 +89,15 @@ python3Packages.buildPythonApplication rec {
   # Upstream pins tight `<x.y` caps on tree-sitter and every grammar;
   # nixpkgs grammar versions move independently of those caps.
   pythonRelaxDeps = true;
+
+  # `graphify update` restarts through `python -m graphify`; its child process
+  # needs the same module paths as the Nix-wrapped entry point.
+  makeWrapperArgs = [
+    "--prefix"
+    "PYTHONPATH"
+    ":"
+    "${placeholder "out"}/${python3.sitePackages}:${python3.pkgs.makePythonPath dependencies}"
+  ];
 
   dependencies =
     (with python3.pkgs; [

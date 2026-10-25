@@ -17,8 +17,8 @@ jobs:
     name: Lint & syntax
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
+      - uses: actions/checkout@v7.0.1
+      - uses: cachix/install-nix-action@v31.11.2
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -40,16 +40,16 @@ jobs:
       - name: Formatting (nixfmt) — advisory
         continue-on-error: true
         run: |
-          nix run nixpkgs#nixfmt -- --check \
-            $(find . -name '*.nix' -not -path './.git/*')
+          find . -name '*.nix' -not -path './.git/*' -print0 \
+            | xargs -0 nix run nixpkgs#nixfmt -- --check
 
   # ── Real check: the whole NixOS closure must evaluate (incl. IFD) ─────────
   eval-nixos:
     name: Evaluate NixOS (main)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
+      - uses: actions/checkout@v7.0.1
+      - uses: cachix/install-nix-action@v31.11.2
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -67,8 +67,8 @@ jobs:
     name: Evaluate Darwin (joel)
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
+      - uses: actions/checkout@v7.0.1
+      - uses: cachix/install-nix-action@v31.11.2
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -82,7 +82,7 @@ jobs:
     name: Integration VM test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
 
       # nixosTest runs a QEMU guest — give the runner access to /dev/kvm.
       - name: Enable KVM
@@ -92,7 +92,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - uses: cachix/install-nix-action@v30
+      - uses: cachix/install-nix-action@v31.11.2
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes
@@ -110,8 +110,8 @@ jobs:
     name: Kernel modules build (6.12)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: cachix/install-nix-action@v30
+      - uses: actions/checkout@v7.0.1
+      - uses: cachix/install-nix-action@v31.11.2
         with:
           extra_nix_config: |
             experimental-features = nix-command flakes

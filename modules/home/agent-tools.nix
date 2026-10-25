@@ -9,8 +9,7 @@
 { pkgs, vars, ... }:
 
 let
-  # 0.9.x vendored in pkgs/ — nixpkgs' graphify (0.4.23) predates the
-  # agent integrations and pi platform support.
+  # Track the latest release with the Darwin grammar fixes and agent extras.
   graphify = pkgs.callPackage ../../pkgs/graphify.nix { };
 
   # PreToolUse hook for Claude Code (~/.claude/settings.json): denies POSIX
@@ -19,7 +18,10 @@ let
   # prompt but do NOT bypass this hook.
   toolkit-guard = pkgs.writeShellApplication {
     name = "agent-toolkit-guard";
-    runtimeInputs = [ pkgs.jq pkgs.gnugrep ];
+    runtimeInputs = [
+      pkgs.jq
+      pkgs.gnugrep
+    ];
     text = ''
       cmd=$(jq -r '.tool_input.command // empty')
       [ -z "$cmd" ] && exit 0

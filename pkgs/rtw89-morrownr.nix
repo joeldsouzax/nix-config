@@ -11,25 +11,39 @@
 # Build via the kernel's package set so `kernel` matches the running kernel:
 #   config.boot.kernelPackages.callPackage ./pkgs/rtw89-morrownr.nix { }
 
-{ lib, stdenv, fetchFromGitHub, kernel, bc, nukeReferences }:
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  kernel,
+  bc,
+  nukeReferences,
+}:
 
 let
   kdir = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
 in
 stdenv.mkDerivation {
   pname = "rtw89-morrownr";
-  version = "${kernel.version}-unstable-2026-07-04";
+  version = "${kernel.version}-unstable-2026-10-13";
 
   src = fetchFromGitHub {
     owner = "morrownr";
     repo = "rtw89";
-    rev = "8987afcc9277586557649fd1cb0e3a77d4295136";
-    hash = "sha256-06NDWwmpAN8C9NAlObjPBbrtdpyp7vvbBsRZjgGhob8=";
+    rev = "3cdbb6b81e00b72cf27bbdd4d4f1b96f9c15be27";
+    hash = "sha256-6z4RNg7OIbAc0IUuONuwfAkqjuIKyo+8ZULpX/GKwp4=";
   };
 
-  nativeBuildInputs = [ bc nukeReferences ] ++ kernel.moduleBuildDependencies;
+  nativeBuildInputs = [
+    bc
+    nukeReferences
+  ]
+  ++ kernel.moduleBuildDependencies;
 
-  hardeningDisable = [ "pic" "format" ];
+  hardeningDisable = [
+    "pic"
+    "format"
+  ];
   # Realtek out-of-tree trees trip newer-GCC default-init errors.
   env.NIX_CFLAGS_COMPILE = "-Wno-designated-init";
   enableParallelBuilding = true;
@@ -38,8 +52,11 @@ stdenv.mkDerivation {
     runHook preBuild
     make -j"$NIX_BUILD_CORES" \
       ARCH=${stdenv.hostPlatform.linuxArch} \
-      ${lib.optionalString (stdenv.hostPlatform != stdenv.buildPlatform)
-        "CROSS_COMPILE=${stdenv.cc.targetPrefix}"} \
+      ${
+        lib.optionalString (
+          stdenv.hostPlatform != stdenv.buildPlatform
+        ) "CROSS_COMPILE=${stdenv.cc.targetPrefix}"
+      } \
       KVER=${kernel.modDirVersion} KDIR=${kdir} \
       -C ${kdir} M="$PWD" modules
     runHook postBuild

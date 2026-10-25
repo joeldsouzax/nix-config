@@ -3,14 +3,14 @@
 
 with pkgs;
 let
-  version = "2.1.218";
+  version = "2.1.306";
   pname = "claude-code";
 
   # We bypass the generic wrapper package and download the macOS arm64
   # native binary directly from the registry.
   src = fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-${version}.tgz";
-    hash = "sha256-0UwGzyG4s7G+FL6Gwuc5T1fnSApWBQyScwAiBDMCnwg=";
+    hash = "sha256-GsbspD5HF+e7hjZ5Q2pyK4ZA8gyxGz46fPyHRtH4ZHI=";
   };
 
 in
