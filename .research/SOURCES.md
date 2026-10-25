@@ -238,3 +238,21 @@ Hyprland recovery, 2026-10-25:
 - GitHub check-run 121254542763 explicitly reports billing rejection before
   startup. Open PR merge states remain DIRTY for 239 and 244, UNSTABLE for 243;
   none has received the main branch's new desktop workflow yet.
+
+## Organisation runner registration, 2026-10-25
+
+- https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/add-runners
+  documents organisation registration for sharing one runner across repositories.
+- https://docs.github.com/en/rest/actions/self-hosted-runners#create-a-registration-token-for-an-organization
+  requires organisation Self-hosted runners write permission for fine-grained
+  PATs; choosing all repositories is not that permission. Registration tokens
+  expire after one hour, so retain the existing runtime PAT mechanism.
+- Locked nixpkgs 02c087f: nixos/modules/services/continuous-integration/
+  github-runner/options.nix supports organisation URLs. service.nix includes URL
+  in registration identity, clears local state on a change, and explicitly leaves
+  the old GitHub registration for manual cleanup in PAT mode. Reuse that module.
+- Live GitHub: Default organisation group id 1 has visibility all and
+  allows_public_repositories false. Repository runner id 21 is online and busy;
+  organisation and mobile runner lists are empty before migration. Both mobile
+  and Server repositories are private. This is API evidence, not inference from
+  PAT repository selection.

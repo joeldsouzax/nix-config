@@ -553,3 +553,29 @@ explicitly rejects their jobs before starting because of billing. PRs 239 and
 Linux jobs and an unset STUDIO_GPU_RUNNER variable. Main's successful desktop
 run does not qualify those PR heads or the GPU workload. Their live feature
 and maintenance worktrees remain untouched, including unfinished local edits.
+
+H15 runtime follow-up: the desktop now runs the built Node-enabled system
+3khlbs9560d9dvxb6j2gdbansiprhm75. Fresh SSH reports Node 24.21.0 and npm 11.19.0.
+The separate Orca connection still needs its own end-to-end verification.
+
+H16: Joel requested applying organisation registration, after GitHub showed the
+Default group allows all private repositories but has no registered runners.
+Changed the shared service URL to https://github.com/labcast. One service and
+one job slot remain; no labels, package pins, credentials or workflows changed.
+Both complete Linux systems build. The Linux flake gate passes with existing
+check outputs cached; incompatible Darwin/ARM checks were not run. Formatting,
+parsing, whitespace and Graphify update pass. Only the runner's systemd unit
+differs from the active main system. Main candidate:
+/nix/store/1hm0p34h0hw0yib4v8fkjcgmy8kqfhx1-nixos-system-nixos-26.11.20261020.02c087f.
+Build log: /tmp/nix-org-runner-build.log.
+
+Remote sudo requires Joel's password. The stored root-only PAT's organisation
+permission cannot be checked from the current SSH account. Prepared a one-time
+/tmp/move-labcast-runner.sh operation, checked with bash -n and ShellCheck. It
+checks that credential against the organisation registration endpoint without
+printing tokens, removes the old runner's routing label while draining its job,
+then applies the built configuration and checks organisation online status.
+On failure before migration it restores the old routing label. A busy job is
+never deliberately stopped; the drain has a five-minute retry bound. No new
+permanent orchestration tool or service was added. Activation, organisation
+visibility in both repositories and cleanup of obsolete runner 21 remain open.

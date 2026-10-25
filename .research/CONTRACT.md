@@ -67,3 +67,11 @@ keys and account credentials out of Git and the runner account. Prepare a fresh
 remote checkout without moving or deleting the active Mac worktrees. Account
 sign-in remains Joel's action; do not report an authenticated Codex session until
 verified. No public listener, root daemon key or new agent framework is needed.
+
+Owner amendment, 2026-10-25: register the existing desktop runner with the
+Labcast organisation so all private Labcast repositories can use it. Preserve
+one job at a time, existing labels, the desktop and repository workflows. Keep
+the organisation's existing public-repository exclusion. Check organisation
+credential permissions before replacing registration, let an active job finish,
+and remove the obsolete repository registration only after the organisation
+runner is verified online. Password-required activation remains an owner step.

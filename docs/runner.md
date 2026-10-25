@@ -1,11 +1,16 @@
 # Desktop GitHub runner
 
 `nixosConfigurations.main` keeps the graphical desktop and runs one GitHub
-Actions job at a time for private `labcast/labcast-server`.
+Actions job at a time across the private repositories in the `labcast` organisation.
 `nixosConfigurations.runner` provides the same service without the desktop.
 Both share the runner in `hosts/main/runner.nix`, disk layout, kernel series,
 Wi-Fi driver and NVIDIA driver selection. The runner package comes from the
 separate `nixpkgs-runner` input in both profiles.
+
+The runner registers at `https://github.com/labcast`. GitHub's Default runner
+group owns repository access; it allows all private Labcast repositories and
+excludes public repositories. Each repository must select this runner's labels
+in its workflows. Repository access on a PAT does not change a runner's scope.
 
 The runner starts at boot and retries after failure. Sleep is disabled. Nix uses
 one build slot with four cores; Cargo uses the same compilation limit. The
@@ -93,11 +98,12 @@ and verify KVM before advertising that capability or running VM-based jobs.
 
 ## Registration credential
 
-Create a fine-grained GitHub PAT with resource owner `labcast`, access only to
-`labcast-server`, and repository **Administration: read and write**. Complete
-organization approval if GitHub requests it. Choose an expiry that covers the
-trip, and rotate it before expiry. GitHub documents this permission for
-[runner registration](https://docs.github.com/en/rest/actions/self-hosted-runners#create-a-registration-token-for-a-repository).
+Create a fine-grained GitHub PAT with resource owner `labcast` and organisation
+**Self-hosted runners: read and write**. Repository **Administration** permission
+alone cannot register an organisation runner. Complete organisation approval if
+GitHub requests it. Choose an expiry that covers the trip, and rotate it before
+expiry. GitHub documents this permission for
+[organisation runner registration](https://docs.github.com/en/rest/actions/self-hosted-runners#create-a-registration-token-for-an-organization).
 
 Store it on the desktop as a root-owned file. The following prompt does not echo
 the token or put its value in shell history. Do not paste it into chat or Nix.
@@ -113,6 +119,13 @@ the existing SOPS rules in `.sops.yaml`; never commit the plaintext file.
 The module keeps its registration identity across ordinary restarts. Changes
 to the name, URL, labels or credential can cause registration again, which is
 why this profile uses a PAT rather than an expiring one-hour registration token.
+
+When moving an existing repository runner to the organisation, verify that the
+credential can create an organisation registration token before switching.
+Wait for the current job to finish. Changing the URL makes NixOS register again
+and clear its disposable work directory. The old repository registration stays
+in GitHub; remove it only after the new organisation runner is online and the
+old registration is offline. Keep the original system generation for rollback.
 
 ## Build and apply
 

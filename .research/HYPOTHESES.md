@@ -1,5 +1,23 @@
 # Hypotheses
 
+## H16: share the existing runner across the Labcast organisation
+
+GitHub reports repository runner 21 online and busy for labcast/labcast-server,
+zero organisation runners and zero runners for labcast/labcast. The Default
+organisation group allows all repositories and excludes public repositories.
+The shared Nix module still registers with the Server repository URL.
+
+Change only that URL to the organisation. The locked NixOS module supports this
+and registers again when the URL changes. Keep its PAT file, service name,
+labels, package and single-job capacity. The current PAT must successfully
+create an organisation registration token before system activation; repository
+selection alone does not grant organisation Self-hosted runners permission.
+The module leaves an obsolete repository registration, so remove that exact
+offline registration only after the organisation runner works. Falsifiers:
+credential rejection, interrupted work, extra runner processes, altered host
+services or repositories unable to select the new runner. Budget: the shared
+URL, existing guide and research evidence; no new permanent tooling or workflow.
+
 ## H15: provide Orca's remote runtime prerequisites
 
 The real Orca 1.4.222 connection reports Node.js and npm missing. Plain SSH and

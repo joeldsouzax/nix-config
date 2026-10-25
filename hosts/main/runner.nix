@@ -44,7 +44,7 @@
   services.github-runners.labcast = {
     enable = true;
     name = "labcast-desktop";
-    url = "https://github.com/labcast/labcast-server";
+    url = "https://github.com/labcast";
     # Runner updates stay independent of desktop and Mac package updates.
     package = inputs.nixpkgs-runner.legacyPackages.${pkgs.stdenv.hostPlatform.system}.github-runner;
     user = "github-runner";
