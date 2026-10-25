@@ -173,3 +173,30 @@ Hyprland recovery, 2026-10-25:
   temporary load must pass `-d <candidate>/kernel-modules` explicitly. A NixOS
   `test` activation installs the candidate blacklist without changing the boot
   default; ordinary modprobe could otherwise select the old module tree.
+
+### H13 runner and remote development sources (2026-10-25)
+
+- Locked nixpkgs github-runner service.nix/options.nix retain registration
+  between ordinary restarts, clear workDir at startup, and register again when
+  relevant config or token content changes. An expiring registration token
+  therefore cannot replace the existing PAT contract for unattended updates.
+- https://docs.github.com/en/actions/reference/runners/self-hosted-runners
+  documents labels, outbound connectivity and runtime update requirements.
+  GitHub API confirms labcast/labcast-server is private, Joel has admin access,
+  and no runner is registered yet.
+- https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+  documents fine-grained repository scoping and supported token-creation URL
+  parameters. The user must create the scoped PAT; do not reuse the broad gh
+  OAuth token from the Mac for this service.
+- https://nix.dev/manual/nix/2.35/advanced-topics/distributed-builds.html
+  requires the SSH builder user to be trusted and the local daemon's user to
+  have noninteractive SSH access. Remote builds offload compilation; editing
+  and building directly on the desktop also keeps project artifacts there.
+- https://code.visualstudio.com/docs/remote/ssh documents remote folders and
+  terminals. The existing desktop has nix-ld and tmux. No editor migration or
+  extension installation is assumed from this advice.
+- The pinned runner is 2.338.0; GitHub's latest release is 2.338.1, published
+  2026-10-22. The pin is within GitHub's update window, but is not the latest
+  patch. Keep the independent input and verify real registration before claiming
+  compatibility. GitHub's branch-protection/ruleset APIs return a plan-required
+  403 for this private repository; no protection setting was changed.

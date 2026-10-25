@@ -1,9 +1,11 @@
 # Desktop GitHub runner
 
-`nixosConfigurations.runner` turns the existing desktop into a headless runner
-for the private `labcast/labcast-server` repository. It runs one job at a time.
-The `main` profile remains available for desktop use. Both share the disk layout,
-kernel series, Wi-Fi driver and NVIDIA driver selection in `hosts/main/`.
+`nixosConfigurations.main` keeps the graphical desktop and runs one GitHub
+Actions job at a time for private `labcast/labcast-server`.
+`nixosConfigurations.runner` provides the same service without the desktop.
+Both share the runner in `hosts/main/runner.nix`, disk layout, kernel series,
+Wi-Fi driver and NVIDIA driver selection. The runner package comes from the
+separate `nixpkgs-runner` input in both profiles.
 
 The runner starts at boot and retries after failure. Sleep is disabled. Nix uses
 one build slot with four cores; Cargo uses the same compilation limit. The
@@ -16,7 +18,7 @@ the service starts. Registration state lives separately in
 `/var/lib/github-runner/labcast`. A restart interrupts a running job, so wait for
 the runner to be idle before maintenance.
 
-## Before switching
+## Before activation
 
 Confirm SSH access and a NetworkManager connection that starts without a GUI
 login. Existing passwords, SSH keys and connections remain on disk. The profile
@@ -62,10 +64,11 @@ open -a Tailscale
 ```
 
 Approve the macOS VPN configuration and sign in. After applying either NixOS
-profile on the desktop, run this as `joel` and open the login link:
+profile on the desktop, enroll it with the declared settings and open the login link:
 
 ```bash
-tailscale up
+sudo tailscale up --hostname=labcast-desktop --accept-dns=false --ssh=false --operator=joel
+sudo systemctl restart tailscaled-set.service
 ```
 
 Use the same Tailscale account on both devices. The desktop appears as
@@ -81,8 +84,10 @@ trip; disable key expiry for this trusted desktop in the Tailscale console if
 needed. Account sign-in and this connection test are required before claiming
 remote access works. See [Linux setup and key expiry](https://tailscale.com/docs/install/linux).
 
-The Mac's Nix builder also uses the private name and one build slot. Its separate
-root SSH key setup is still required as documented in `darwin/linux-builder.nix`.
+The Mac's Nix builder also uses the private name and one build slot. Apply the
+Darwin configuration and complete its separate root SSH key setup as documented
+in `darwin/linux-builder.nix`; the user's passphrase-protected key and agent do
+not automatically grant the Mac's Nix daemon access.
 The desktop currently lacks `/dev/kvm`; enable Intel virtualization in firmware
 and verify KVM before advertising that capability or running VM-based jobs.
 
@@ -115,22 +120,56 @@ Transfer the reviewed branch to the desktop. Run these commands from its checkou
 
 ```bash
 nix build .#checks.x86_64-linux.runner --no-update-lock-file
-nix build .#rtl8852au-runner --no-link --no-update-lock-file
-nix build .#nixosConfigurations.runner.config.system.build.toplevel --no-update-lock-file
+nix build .#rtw89-morrownr --no-link --no-update-lock-file
+nix build .#nixosConfigurations.main.config.system.build.toplevel --no-update-lock-file
 ```
 
 Apply only after the build succeeds and the credential and remote access are ready:
 
 ```bash
-sudo nixos-rebuild switch --flake .#runner
+sudo nixos-rebuild switch --flake .#main
+sudo systemctl restart tailscaled-set.service
 systemctl status github-runner-labcast docker
 journalctl -u github-runner-labcast -n 60 --no-pager
 ```
+
+Use `.#runner` instead of `.#main` only when choosing a headless machine.
+That profile has its own complete build and `.#rtw89-morrownr-runner` package.
 
 On the Mac, the configuration check is
 `nix build .#checks.aarch64-darwin.runner --no-update-lock-file`. It checks the
 evaluated configuration and NixOS assertions. It does not build the Linux host
 or test live hardware.
+
+## Remote development
+
+Keep working repositories under `/home/joel/Code`, the desktop's separate project
+disk. Edit those remote files from the Mac through Emacs TRAMP or an SSH-capable
+editor. Run terminals, development shells, containers and tests on the desktop.
+This keeps Cargo targets, Nix outputs and service data off the Mac. Ordinary
+distributed Nix builds can still copy completed outputs back to the Mac.
+
+After the Mac's SSH configuration is applied, start a persistent terminal with:
+
+```bash
+ssh -t desktop-remote 'tmux new-session -A -s dev'
+```
+
+Tmux keeps the session running when the SSH connection closes. Keep development
+repositories separate from `/var/lib/github-runner/work`, which the runner
+clears at startup. Clone or transfer projects deliberately; this configuration
+does not move or delete existing Mac projects. Keep project tools in their
+repository Nix environment.
+
+Forward a development HTTP port privately when needed:
+
+```bash
+ssh -N -L 8080:127.0.0.1:8080 desktop-remote
+```
+
+The Mac can then open `http://localhost:8080`. The service stays on the desktop.
+Linux CI and backend builds run here; iOS simulators, Xcode and macOS-specific
+checks still need a Mac.
 
 ## Codex
 

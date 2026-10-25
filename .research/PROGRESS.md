@@ -388,3 +388,34 @@ systems. The owner must run the persistent `nixos-rebuild switch` and restart
 the existing tailscaled-set unit with sudo. Verify system profile and Tailscale
 preferences afterward. Cold boot, 2.4 GHz, extended soak and off-LAN tests are
 unverified; do not reboot the owner's active desktop without instruction.
+
+H12 is merged and pushed as 8b61750; the desktop main checkout is updated.
+Published main and headless systems build. Main is still only test-activated.
+The owner now requests runner setup and remote-development advice, explicitly
+keeping the desktop GUI. H13 begins in feat/desktop-ci, local worktree
+/Users/joel/nix-config-worktrees/desktop-ci. A final combined main activation
+will persist the Wi-Fi change, start the runner and reapply Tailscale settings.
+GitHub has no registered runner; scoped PAT installation remains an owner step.
+
+H13 implementation and build checks pass. Main retains Hyprland and now has one
+boot-enabled runner under github-runner; trusted Nix users are root and joel,
+not the service account. Shared Docker configuration and runner ownership are
+in hosts/main/runner.nix; both profiles use runner package 2.338.0. No lock input
+changed. Main output fhrnhwvij907g8ksmyz3zdj1qn91q5vg; headless output
+14ayjlqfr1w3wzlqzcnmqgh25y45x8a6. Full builds, existing runner/native Hyprland
+checks and Linux flake evaluation pass. Final logs:
+/tmp/nix-desktop-ci-build.log and /tmp/nix-desktop-ci-final-build.log.
+
+Disk audit: Mac /nix/store 100 GB, Code 49 GB, Library/Developer 22 GB, local
+Linux-builder VM 20 GB, Cargo cache 4.4 GB, readable Library caches 4.3 GB.
+Some macOS cache folders deny read access; no data was deleted. The Mac still
+uses its old builder config (nixos.local, eight slots and unverified KVM); the
+already-built Darwin activation is pending. Its user SSH key is encrypted, so
+daemon access needs the separate root key setup. Prefer direct remote editing
+and building for disk relief; do not claim offloaded Nix outputs stay remote.
+
+Current Labcast main is 057130e; local main remains cbf76b1. Server and Studio
+worktrees remain separate and maintenance has unrelated uncommitted changes;
+leave all of them intact. Existing workflows still target GitHub-hosted Linux
+and macOS. Runner registration, real job qualification and Linux job routing
+are not yet complete; do not report the runner as operational from a Nix build.

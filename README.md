@@ -5,14 +5,15 @@ A single [Nix flake](https://nixos.wiki/wiki/Flakes) that declaratively manages
 
 | System | Attr | Platform | Highlights |
 | --- | --- | --- | --- |
-| **NixOS desktop** | `nixosConfigurations.main` | `x86_64-linux` | NVIDIA GPU, Hyprland (Wayland), foot terminal, declarative Doom Emacs |
+| **NixOS desktop** | `nixosConfigurations.main` | `x86_64-linux` | Hyprland desktop, NVIDIA GPU, Doom Emacs and GitHub Actions runner |
 | **Desktop as runner** | `nixosConfigurations.runner` | `x86_64-linux` | Same machine and disks; headless GitHub Actions service, Docker, NVIDIA container support |
 | **macOS laptop** | `darwinConfigurations.joel` | `aarch64-darwin` | [nix-darwin](https://github.com/nix-darwin/nix-darwin), Aerospace WM, Orca work app, Ghostty terminal |
 
 Shared user-level config (shell, git, SSH, terminal theme, AI tooling) lives in
 `modules/home/` and is consumed by **both** systems through home-manager.
-The runner profile excludes personal Home Manager and desktop services. See
-[runner setup and operation](docs/runner.md) before switching the desktop.
+Both desktop profiles use the same runner service. The headless profile excludes
+personal Home Manager and desktop services. See
+[runner setup and remote development](docs/runner.md) before activation.
 
 ---
 

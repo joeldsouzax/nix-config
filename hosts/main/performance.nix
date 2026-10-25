@@ -1,9 +1,16 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  vars,
+  ...
+}:
 {
   # Six CPU cores and 16 GiB RAM: keep room for SSH and other host services.
   nix.settings = {
     max-jobs = 1;
     cores = 4;
+    # The administrator also serves as the Mac's authenticated SSH builder.
+    trusted-users = [ vars.user ];
   };
   environment.variables.CARGO_BUILD_JOBS = toString config.nix.settings.cores;
 

@@ -47,3 +47,11 @@ Preserve SSH through the spare. Build and inspect the candidate before loading
 it. Use a separate worktree and temporary system activation; do not reboot or
 select it for normal boots before hardware evidence. Compilation alone does
 not establish connectivity. Password-required root commands remain owner actions.
+
+Owner amendment, 2026-10-25: use the desktop for GitHub Actions and remote
+development to reduce Mac disk use. The owner explicitly chose to keep the
+graphical desktop while adding the runner. Preserve the existing headless
+profile, working Wi-Fi, SSH and Tailscale identity. Reuse the existing runner
+service and registration contract for private labcast/labcast-server. Do not
+move or delete local projects, expose services publicly, weaken CI checks,
+register public/fork jobs, or copy broad personal credentials to the service.

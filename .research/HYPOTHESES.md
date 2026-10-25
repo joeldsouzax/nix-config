@@ -296,3 +296,36 @@ Internet pings and HTTPS 200. The temporary profile is removed and original
 autoconnect restored. No kernel error appears in the final reconnect log.
 This qualifies basic 5 GHz connectivity and reconnect, not 2.4 GHz, sustained
 throughput, long-duration stability, cold boot or off-LAN access.
+
+## H13: share the existing runner with the graphical desktop
+
+Baseline: main has Docker, Nix, tmux, Codex and nix-ld, but no runner service;
+GitHub reports zero runners for private labcast/labcast-server. The headless
+profile already defines one runner, a separate service account, persistent
+registration, disk-backed work, Docker/GPU integration and retry behavior.
+Mac free space is 5.7 GB; desktop free space is 73 GB on /, 121 GB in the Nix
+store and 869 GB on the project disk. Main trusts only root for Nix, so its
+configured SSH builder user is not yet usable as a trusted remote builder.
+
+Hypothesis: move the existing runner/Docker ownership into one shared host
+module and import it from both profiles. Use nixpkgs-runner for the runner
+package in both profiles, preserving its independent update policy. Add the
+existing administrator as a trusted Nix builder under the shared performance
+owner; never trust the runner account. Preserve main's graphical services and
+headless profile's absence of them. Keep registration as a restricted runtime
+PAT with the existing module, not a new credential daemon or custom runner.
+
+Verify both complete systems and existing native checks, rendered service
+account/boot/work directory/limits, and package version against GitHub releases.
+After owner credential installation and activation, require GitHub Idle state
+and a real manual Actions job covering checkout, a JavaScript action, Nix and
+Compose cleanup before routing normal Linux jobs. Preserve Mac-specific gates.
+Verify SSH remains available; do not restart a busy runner or reboot the desktop.
+
+Falsifiers: desktop disabled, duplicated runner, configuration conflicts,
+credential in the store/Git/logs, service running as root, failed registration,
+failing qualification job, or an unqualified claim that all CI now runs locally.
+Budget: shared host runner module, imports, shared Nix trust, runner docs and
+research evidence; separate minimal workflow change only for real qualification
+and supported Linux routing. Keep remote-development advice grounded in actual
+disk use and supported tools. No project migrations or local data removal yet.

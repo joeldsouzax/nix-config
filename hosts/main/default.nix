@@ -3,6 +3,7 @@
     ./hardware.nix
     ./performance.nix
     ./access.nix
+    ./runner.nix
   ]
   ++ (import ../../modules/desktops/virtualisation);
   services.xserver.enable = true;
