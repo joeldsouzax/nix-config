@@ -121,3 +121,14 @@ Linux. Both installed Wi-Fi modules contain PKCS#7 signatures, nonempty adjacent
 certificates, the expected kernel versions and the executable sleep helper.
 NVIDIA modules also compile for both kernels. Runtime loading remains untested
 until activation and boot. CI now builds both configured module trees directly.
+
+## H08: preserve settings through current option names
+
+Full desktop evaluation exposes obsolete Avahi publishing options and implicit
+cursor enablement. Replace only those names, using the locked modules' explicit
+equivalents. Reject changed Avahi settings or cursor behavior. Compare evaluated
+Avahi settings before/after and require a warning-free desktop evaluation.
+
+Retained: evaluated Avahi settings are byte-identical, cursor enablement remains
+true, and the full Linux desktop toplevel evaluates without the deprecated-option
+warnings. No service behavior changed.
