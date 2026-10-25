@@ -39,3 +39,11 @@ keep the machine powered on. Preserve SSH key authentication and local access;
 do not expose a public deployment endpoint or configure router forwarding.
 Keep access and build limits consistent between desktop and runner profiles.
 Account sign-in and password-required activation remain owner actions.
+
+Owner amendment, 2026-10-25: test morrownr/rtw89 for the original TP-Link
+2357:013f adapter after the existing 8852au driver repeatedly fails association.
+Keep Linux 6.12, the GPU configuration and the working rtl8xxxu spare unchanged.
+Preserve SSH through the spare. Build and inspect the candidate before loading
+it. Use a separate worktree and temporary system activation; do not reboot or
+select it for normal boots before hardware evidence. Compilation alone does
+not establish connectivity. Password-required root commands remain owner actions.

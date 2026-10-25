@@ -246,3 +246,53 @@ with zero restarts. The full main system, native compositor check and runner
 configuration check build. Udiskie's required system service is built but its
 runtime qualification awaits root activation. Nonfatal GTK/backlight warnings
 remain; no unrelated widget redesign or extra desktop package was introduced.
+
+## H12: test the maintained mac80211 driver on the original USB adapter
+
+Baseline: Linux 6.12.113, legacy 8852au from 865ab0f loads and detects USB
+2357:013f, but logs repeated association rejection on both 2412 and 5500 MHz.
+An isolated USB enumeration error -71 also occurred. This does not distinguish
+driver, USB path or hardware failure. Spare 0bda:8179 uses rtl8xxxu and provides
+SSH through wlp0s20f0u8, 10.0.0.22, default-route metric 600. Both saved profiles
+use WPA-PSK with system-owned credentials; no secret was read.
+
+Hypothesis: the existing pinned morrownr/rtw89 package, corrected to use Kbuild
+installation, can associate and exchange traffic through 2357:013f. Its exact
+source supports that ID and Linux 6.6+. Locked nixpkgs rtw89 only supplies an
+older PCIe driver. Keep the existing morrownr pin, which matches upstream main.
+Its required rtw8852a_fw-1.bin is already byte-identical in the system's
+linux-firmware package; do not duplicate firmware ownership.
+
+Before root loading: compile for desktop and runner kernels, inspect module
+aliases, vermagic, dependencies, signatures and certificates, build the actual
+module trees and desktop system. Use the existing package owner and Nix kernel
+builder flags. Reject build failures or dependencies on the old vendor module.
+Then temporarily activate on the matching running kernel and unload only
+8852au. Keep the spare, its route and the shared mac80211/cfg80211 modules live.
+Use a higher route metric for the candidate while checking association, DHCP,
+interface-bound LAN/Internet traffic, reconnect and new kernel errors.
+
+Falsifiers: no association or traffic, missing firmware, repeated USB faults,
+kernel errors, lost spare connection, or failure to reconnect. Roll back the
+candidate modules and temporary system to eb3ff73. Leave main unchanged until
+the hardware test provides evidence. Budget: existing driver package, hardware
+owner/selection, flake package names, obsolete patch and research records. Do not
+add a driver framework, replace kernel/GPU versions, change Wi-Fi credentials,
+or claim speed/stability from a short connectivity test.
+
+Build evidence: driver packages and complete module trees pass for 6.12.113
+and 6.12.114. Main system, runner invariants, native Hyprland validation and
+Linux flake evaluation pass. Module metadata contains USB 2357:013f, matching
+vermagic, the expected firmware name and PKCS#7 records; required .ko.cer files
+exist. The assembled module tree resolves the new module dependencies without
+8852au. Actual loading and network behavior remain untested.
+
+Runtime evidence now supports retaining H12: the adapter loads firmware,
+negotiates USB 3, associates at 5500 MHz and obtains 10.0.0.5 using the same
+saved credentials. After an interrupted interval during spare USB removal,
+a fresh run returns 20/20 LAN and 20/20 Internet pings and HTTPS 200. The
+normal saved profile then reconnects in seven seconds, with another 5/5
+Internet pings and HTTPS 200. The temporary profile is removed and original
+autoconnect restored. No kernel error appears in the final reconnect log.
+This qualifies basic 5 GHz connectivity and reconnect, not 2.4 GHz, sustained
+throughput, long-duration stability, cold boot or off-LAN access.

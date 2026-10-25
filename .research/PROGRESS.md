@@ -315,3 +315,76 @@ UDisks/udiskie and active store path afterward. Complete Tailscale enrollment
 and private SSH, then the off-LAN/reboot qualification. The final Mac system
 is already built; its sudo activation is also pending. Runner registration
 and Codex sign-in remain separate uncompleted operator steps.
+
+H11 system activation is now observed at l79q5a1m36kh03w200m481kd9a7cbvsa;
+udisks2 and the user udiskie service are both active. H12 starts in the isolated
+fix/desktop-wifi-driver worktree from eb3ff73. Main is unchanged. Source and
+firmware match verified; build and runtime qualification are pending. Remote
+candidate worktree: /tmp/nix-config-driver-check. Spare Wi-Fi still owns SSH.
+
+H12 build preparation is complete. Candidate desktop system:
+`/nix/store/db7k2pzddszy6q22isqxixfaq92f51a5-nixos-system-nixos-26.11.20261020.02c087f`.
+Desktop driver output swqf8yfissjingk34xzy356g5wkbzvpg; runner output
+v5kan3x96v2hyaqwm9jl4yyfmh7pln0l. Both module trees build, along with the
+desktop system and existing native checks. Linux flake evaluation passes.
+Nix formatting/parsing, whitespace and Graphify pass (existing extraction
+warnings only). Logs on the Mac: /tmp/nix-wifi-candidate-build.log,
+/tmp/nix-wifi-system-build.log and /tmp/nix-wifi-final-check.log.
+
+Prepared a one-off /tmp/test-wifi-driver.sh on the desktop, checked with
+ShellCheck and bash -n. It guards the kernel, current system and spare route;
+temporarily activates the built candidate, unloads only 8852au, then loads
+rtw89_8852au_git from the candidate module tree. It attempts rollback if loading
+fails. The owner has been asked to run it with sudo; do not assume it ran.
+No new boot generation was selected. No candidate code is on main.
+
+Temporary NetworkManager test profile: `RTL8852AU driver test`, UUID
+796b49fd-f783-4eed-9722-68e8300a71a9, cloned from the original adapter profile.
+It matches permanent MAC 20:23:51:20:3C:23 instead of the USB port name, keeps
+autoconnect off, uses route metric 900 and ignores automatic DNS. Original
+profile 12fff5e7-6696-4e04-b9c4-36793b1b19b2 has autoconnect disabled only in
+memory. The spare remains at 10.0.0.22 with metric 600. No password was exposed.
+
+After the owner runs sudo: verify candidate binding and firmware load, activate
+the temporary profile with a bounded timeout, inspect DHCP and interface-bound
+traffic, disconnect/reconnect it, and review kernel errors. If rejected, remove
+the temporary profile, restore the original profile's in-memory autoconnect,
+and use l79q5a1m36kh03w200m481kd9a7cbvsa plus 8852au for rollback. Reboot also
+returns to the unchanged default and clears temporary network profiles.
+
+The owner ran the test activation. The candidate loads its expected firmware,
+switches the adapter to USB 3 (5000 Mbit/s bus speed), and associates on 5500 MHz
+with the original saved credentials. DHCP gives 10.0.0.5. The first probe gets
+10/10 router replies, then loses packets during USB removal/reinsertion of the
+spare at 20:56:24 and final removal at 20:56:35. The original adapter also
+disconnects and reconnects at 20:56:56. Do not treat that interval as a clean
+driver stability measurement. The owner reports working Wi-Fi afterward.
+
+With the spare absent, the test profile's ignored automatic DNS no longer has
+the spare's DNS to rely on. Re-enabled automatic DNS on the temporary profile
+and reapplied it without disconnecting. A fresh stable traffic run is in
+/tmp/nix-wifi-runtime-stable.log. Initial interrupted run is in
+/tmp/nix-wifi-runtime.log. No new kernel entries after 20:57:00 at inspection.
+
+Tailscale enrollment is now complete. Verified key-authenticated SSH from the
+Mac to desktop 100.106.80.23 over Tailscale. Enrollment reset hostname/operator
+preferences again; ordinary Joel cannot run the declared tailscale set flags.
+Include `sudo systemctl restart tailscaled-set.service` with final persistent
+system activation, then verify hostname labcast-desktop, accept-dns=false and
+operator joel. This is an overlay test on the home LAN, not an off-LAN test.
+
+H12 runtime checks pass on 5 GHz. Fresh traffic: 20/20 router pings (1.998 ms
+mean), 20/20 Internet pings (16.772 ms mean), HTTPS 200 through wlp0s20f0u4.
+These are short samples, not a throughput or long-term stability claim. The
+saved original profile reconnects successfully in seven seconds, followed by
+5/5 Internet pings and HTTPS 200. Autoconnect is restored, credentials remain
+system-owned, automatic DNS is present, and the temporary test profile is
+deleted. Final log: /tmp/nix-wifi-reconnect.log. No kernel error appears there.
+The spare is no longer attached; all current access uses the original adapter.
+
+Retain the candidate and publish through the authorized main workflow. Next,
+fast-forward /home/joel/nix-config and build the published desktop/runner
+systems. The owner must run the persistent `nixos-rebuild switch` and restart
+the existing tailscaled-set unit with sudo. Verify system profile and Tailscale
+preferences afterward. Cold boot, 2.4 GHz, extended soak and off-LAN tests are
+unverified; do not reboot the owner's active desktop without instruction.

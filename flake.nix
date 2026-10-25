@@ -159,7 +159,7 @@
       # The runtime-critical kernel modules the desktop ACTUALLY uses, built
       # against each profile's kernel, exposed so CI can prove they COMPILE (the
       # toplevel eval/CI does NOT build kernel modules):
-      #   nix build .#packages.x86_64-linux.rtl8852au -L         # WiFi (Archer TX20U Plus)
+      #   nix build .#packages.x86_64-linux.rtw89-morrownr -L    # WiFi (Archer TX20U Plus)
       #   nix build .#packages.x86_64-linux.nvidia-legacy580 -L  # GTX 1070 (Pascal)
       packages.x86_64-linux =
         let
@@ -167,8 +167,8 @@
           runnerKernel = self.nixosConfigurations.runner.config.boot.kernelPackages;
         in
         {
-          rtl8852au = desktopKernel.rtl8852au;
-          rtl8852au-runner = runnerKernel.rtl8852au;
+          rtw89-morrownr = desktopKernel.rtw89-morrownr;
+          rtw89-morrownr-runner = runnerKernel.rtw89-morrownr;
           nvidia-legacy580 = desktopKernel.nvidiaPackages.legacy_580;
         };
     };

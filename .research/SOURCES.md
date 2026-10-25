@@ -143,3 +143,33 @@ Hyprland recovery, 2026-10-25:
 - SwayNC's installed systemd unit and live journal establish the duplicate
   startup: the direct UWSM process owns the instance while D-Bus starts the
   packaged service, which repeatedly exits with "already running".
+
+### H12 driver sources (2026-10-25)
+
+- https://github.com/morrownr/rtw89 at
+  3cdbb6b81e00b72cf27bbdd4d4f1b96f9c15be27 (2026-10-13), also upstream main
+  on inspection. README supports Linux 6.6+ and RTL8852AU USB. Exact
+  rtw8852au.c lists USB 2357:013f. Headers declare GPL-2.0 OR BSD-3-Clause.
+- Its Makefile builds rtw89_8852au_git, rtw89_8852a_git, rtw89_usb_git and
+  rtw89_core_git. Direct Kbuild installation supplies signing/certificates,
+  unlike upstream's manual copy target. Substitute the pinned commit for its
+  Git lookup because fetched source has no .git directory.
+- rtw8852a.c requires rtw89/rtw8852a_fw-1.bin. Source firmware and decompressed
+  /run/current-system/firmware copy both have SHA256
+  fdb5513cf7372440d7980a61aa4b753b192b056734a978458ae4a4ef7f4b2c1e.
+  Existing linux-firmware owns this; no extra firmware output is needed.
+- Locked nixpkgs rtw89 is lwfinger's PCIe-only 2022-12-18 source e834edf;
+  it cannot replace the required USB driver. Existing rtl8852au is vendor
+  source 865ab0f (2024-05-06), with runtime version based on 2021 code.
+- Live NetworkManager/kernel logs show association rejections on both bands
+  and one USB -71 error. Spare rtl8xxxu remains connected. No identified
+  upstream issue proves the cause on this machine; hardware testing is required.
+- https://networkmanager.dev/docs/api/latest/nmcli.html documents temporary
+  connection clones and modifications. The installed CLI supports both. A
+  temporary clone keeps the original credentials inside NetworkManager and
+  uses metric 900, above the spare's 600. Original autoconnect is disabled only
+  in memory for this test. Its saved disk profile is unchanged.
+- Locked nixpkgs kmod searches the booted system's module tree first. The
+  temporary load must pass `-d <candidate>/kernel-modules` explicitly. A NixOS
+  `test` activation installs the candidate blacklist without changing the boot
+  default; ordinary modprobe could otherwise select the old module tree.
