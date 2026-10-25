@@ -208,3 +208,13 @@ Hyprland recovery, 2026-10-25:
 - https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow
   supports dispatching an existing default-branch workflow against a topic ref.
   This allows real qualification before changing normal Linux job routing.
+- https://docs.docker.com/compose/how-tos/environment-variables/envvars/ gives
+  COMPOSE_PROJECT_NAME precedence over compose.yaml's top-level name. The CI
+  override isolates cleanup from the ordinary labcast-local development project.
+- Installed locked rustls-platform-verifier 0.7.1 source, verification/others.rs
+  lines 92-107, returns an error when no native CA roots load. Reqwest 0.13.5
+  async_impl/client.rs lines 758-760 propagates that constructor failure. The
+  published docs.rs source URL could not be fetched; these are local crate
+  sources, checked against the selected versions. Trive's nix/backend.nix and
+  nix/claude-code.nix use locked pkgs.cacert with SSL_CERT_FILE. An unchanged
+  Linux test derivation passes only after adding that declared bundle.

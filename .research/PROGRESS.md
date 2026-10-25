@@ -438,3 +438,52 @@ untouched. The first commit 10a2b2f changes manual Linux routing only. Nix's
 existing workflow derivation passes, including actionlint. Normal Linux routing
 must wait for actual checkout, build, telemetry and artifact evidence. Hosted
 macOS billing limits remain a separate gate; do not remove or bypass it.
+
+H13 real Actions qualification completed at Labcast cddcfc1 in run 40231857614:
+the Linux flake gate and telemetry job both pass on labcast-desktop. Checkout,
+JavaScript actions, Nix, API/telemetry artifact uploads, real stored telemetry
+and Compose cleanup are verified. The runner returns to Idle without restarts.
+No CI containers or network remain after cleanup. The existing five-minute
+manual fuzz workflow has not been run; the Linux flake fuzz smoke test passes.
+
+Actual failures exposed and fixed:
+
+- The runner's UMask=0066 made receiver files unreadable inside non-root
+  containers. The workflow sets only those two non-secret files to 0644 and
+  gives CI its own labcast-ci Compose project. The original unchanged test
+  fails before this fix and passes afterward. Fixed ports still prevent local
+  telemetry and CI from occupying them concurrently.
+- Linux sandbox test clients lacked native CA roots. The original derivation
+  also fails as Joel. Adding only locked cacert through SSL_CERT_FILE passes
+  all 13 unit and 12 process tests with unchanged assertions and deadlines.
+  The retained setting belongs to Linux testArgs; Darwin stays unchanged.
+
+PR https://github.com/labcast/labcast-server/pull/245 contains the bounded CI
+integration. Its final head 074c861 routes normal Linux and manual fuzz jobs to
+the desktop, declares its custom label for actionlint and preserves job names,
+Mac checks and test commands. Normal push/PR runs 40232173135 and 40232176376
+verify the final routing. The final local Mac flake gate passes. One initial
+Mac release-test packaging run logged a nonfatal audit-tmpdir shell segmentation
+fault after its tests passed; Nix returned success. This diagnostic is retained
+in /tmp/labcast-runner-macos-release.log and is not a runner failure.
+
+GitHub still refuses to start hosted macOS jobs because of its billing limit.
+Do not merge or remove that gate without the owner's decision; local Mac results
+are not a fabricated GitHub check. No feature/maintenance worktree was modified.
+The main Labcast checkout remains on the clean ci/desktop-runner branch. No
+application code, test assertions, Cargo dependencies or lockfiles changed.
+Host H13 is active and persisted; cold boot, service-restart and off-LAN tests
+remain unperformed. The Mac's Darwin activation and daemon builder key setup
+remain pending. Ordinary user SSH/Nix store access over Tailscale works.
+
+Logs: /tmp/labcast-runner-linux-job.log (original failure),
+/tmp/labcast-runner-linux-reproduce.log (outside runner),
+/tmp/labcast-runner-certs.log (certificate-only candidate),
+/tmp/labcast-runner-linux-passing.log, /tmp/labcast-runner-telemetry-job.log,
+/tmp/labcast-runner-telemetry-fixed.log and
+/tmp/labcast-runner-routing-push.log. GitHub run links above retain job evidence.
+
+Final normal PR run 40232176376 passes both Linux jobs at 074c861 on
+labcast-desktop. Its only failure is hosted macOS, with GitHub's explicit
+billing-before-start annotation. PR 245 is ready for review and remains
+unmerged. Linux routing becomes the main default only after that PR merges.

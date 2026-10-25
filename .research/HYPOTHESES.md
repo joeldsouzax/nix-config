@@ -340,3 +340,47 @@ all existing test commands, timeouts and always-run Compose cleanup. A successfu
 checkout, flake gate, telemetry integration and artifact upload must precede
 normal Linux routing. Reject or repair actual service incompatibilities without
 weakening tests. Do not merge around a failed macOS gate or billing failure.
+
+Persistent-host review: Compose currently uses the same labcast-local project
+name for CI and personal development. Set COMPOSE_PROJECT_NAME=labcast-ci in
+the telemetry job when retaining normal routing, using Compose's supported
+environment override. This keeps cleanup from selecting a developer's project.
+The existing integration test still requires its fixed loopback ports, so local
+telemetry and CI cannot occupy those ports together. Do not claim port isolation
+or change the application/test contract in this host task. The final manual
+run must prove startup, real stored telemetry and cleanup with the CI name.
+
+First real job 121282451946 rejects the candidate: checkout, Nix build, Compose
+startup command, always-run cleanup and artifact upload pass, but both receivers
+exit with config-file permission denied and the integration readiness assertion
+fails. The NixOS runner uses UMask=0066; checkout's ordinary 0644 files become
+0600. Hypothesis: chmod only nix/jaeger.yaml and nix/prometheus.yaml to 0644
+before Compose startup. Preserve the service umask, private workspace and secret
+handling. Reject unless the unchanged integration test stores and retrieves real
+traces and metrics, and cleanup removes the CI containers. Do not lengthen the
+deadline or replace the receiver assertion. Logs are retained in
+/tmp/labcast-runner-telemetry-job.log and /tmp/labcast-runner-telemetry-evidence.
+
+The full Linux gate also rejects the candidate in the two existing lifecycle
+tests: neither request reaches its held handler before the unchanged three-second
+deadline. Reqwest 0.13.5 uses rustls-platform-verifier 0.7.1 through unified TLS
+features; the verifier constructor rejects an empty native root store even for
+the client's initial HTTP configuration. The Nix test sandbox declares no CA
+bundle. Test the same derivation outside the runner account, then override only
+SSL_CERT_FILE with locked nixpkgs cacert in a temporary checkout. This matches
+Trive's existing certificate-package convention. Keep tests, timeout, network
+sandbox and TLS verification unchanged. Retain a narrow test-environment fix
+only if the negative control fails and the certificate override passes. Record
+the exact library error before treating the cause as established.
+
+Certificate experiment retained: the original derivation fails identically as
+Joel, outside the service account. The sole SSL_CERT_FILE override passes all
+13 unit and 12 process tests in the Linux sandbox, including both lifecycle
+cases, without timeout or source changes. Package output is
+4hxzk7bam2mha6bjd10w4an4jk97kiyj-labcast-debug-test-0.1.0. The exact library source
+error is "No CA certificates were loaded from the system"; the original fixture
+only exposes its later timeout, so this was not a captured runtime error message.
+Keep the bundle under the existing Linux testArgs environment owner; Darwin
+keeps its native trust store and unchanged derivations. Full Linux CI remains
+required. Logs: /tmp/labcast-runner-linux-reproduce.log and
+/tmp/labcast-runner-certs.log.
