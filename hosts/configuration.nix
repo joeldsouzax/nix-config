@@ -179,7 +179,6 @@ in
         zip
         maim
         gnuplot
-        grip
         usb-modeswitch
         expressvpn
         newsflash

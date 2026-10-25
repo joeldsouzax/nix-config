@@ -17,7 +17,7 @@
         identityFile = "~/.ssh/id_ed25519";
         addKeysToAgent = "yes";
         forwardAgent = true;
-      } // lib.optionalAttrs pkgs.stdenv.isDarwin {
+      } // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
         # macOS Keychain integration (keeps passphrase across reboots)
         UseKeychain = "yes";
       };
@@ -31,7 +31,7 @@
       # GitHub — personal (joeldsouzax)
       "github.com" = { };
     }
-    // lib.optionalAttrs pkgs.stdenv.isDarwin {
+    // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
       # ── Trive work (macOS only) ──────────────────────────────────────────
       "trive-vm" = {
         hostname = "192.168.123.100";

@@ -57,6 +57,16 @@ jobs:
             extra-substituters = https://hyprland.cachix.org https://nix-community.cachix.org
             extra-trusted-public-keys = hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc= nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
 
+      # Check package names before Doom's Linux-only evaluation work so a
+      # removed package cannot be hidden behind an unrelated build failure.
+      - name: Evaluate desktop package selections
+        run: |
+          nix eval --json .#nixosConfigurations.main.config.environment.systemPackages --apply 'map (p: p.name)'
+          nix eval --json .#nixosConfigurations.main.config.home-manager.users.joel.home.packages --apply 'map (p: p.name)'
+
+      - name: Check runner configuration
+        run: nix build --no-link --print-build-logs .#checks.x86_64-linux.runner
+
       # .drvPath forces the full module fixpoint + import-from-derivation
       # (nix-doom-emacs). No `|| true`, no `| head` — a failure fails the job.
       - name: Evaluate toplevel derivation

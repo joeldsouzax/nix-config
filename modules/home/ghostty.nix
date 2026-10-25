@@ -12,7 +12,7 @@ let
   c = colors.scheme.default.hex;
 in
 {
-  home-manager.users.${vars.user} = lib.mkIf pkgs.stdenv.isDarwin {
+  home-manager.users.${vars.user} = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     programs.ghostty = {
       enable = true;
       enableZshIntegration = true;

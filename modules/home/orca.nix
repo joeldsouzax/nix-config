@@ -8,7 +8,7 @@
 {
   home-manager.users.${vars.user} =
     { lib, ... }:
-    lib.mkIf pkgs.stdenv.isDarwin {
+    lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
       home.file.".local/bin/work" = {
         executable = true;
         text = ''

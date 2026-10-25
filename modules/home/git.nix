@@ -7,7 +7,7 @@
 { lib, pkgs, vars, ... }:
 
 let
-  isDarwin = pkgs.stdenv.isDarwin;
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
 in
 {
   home-manager.users.${vars.user} = {

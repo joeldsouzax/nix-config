@@ -34,3 +34,16 @@ Accessed 2026-10-25 for the desktop runner:
   build time into `/etc/ssh/authorized_keys.d/<name>` and preserves the user's
   home-directory authorized keys by default. Both evaluated profiles confirm
   this behavior for Joel.
+
+Accessed 2026-10-25 for desktop compatibility:
+
+- https://raw.githubusercontent.com/NixOS/nixpkgs/02c087f3fe673c9e317f206a627cb6b910336dbe/pkgs/top-level/aliases.nix
+  records `grip` removal on 2026-07-30 because it used GTK2. The locked package
+  fails evaluation; removing the obsolete application entry fixes that failure.
+- The same revision's `pkgs/stdenv/generic/default.nix` forwards the deprecated
+  `stdenv.isDarwin` and `stdenv.isLinux` aliases to `stdenv.hostPlatform` fields
+  while emitting warnings. Use the owning platform fields directly; this is a
+  spelling update with the same platform selection.
+- The actual package checks use locked nixpkgs revisions `02c087f` (desktop and
+  Mac) and `3ec6363` (runner). No dependency pin changed during this repair.
+  The Mac's full toplevel derivation stays identical after the platform update.

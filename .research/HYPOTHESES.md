@@ -41,3 +41,27 @@ configuration on the desktop first.
 Retained: both profiles render the exact public key for Joel, keep home-directory
 authorized keys enabled, and leave root and the runner account without added
 keys. The runner check passes. The public key file matches the Mac byte for byte.
+
+## H05: current Nix package compatibility
+
+Baseline: main at 67981b6 fails evaluation of desktop system packages because
+`grip` was removed with GTK2 support on 2026-07-30. Earlier toplevel evaluation
+stopped first at Doom's Linux build, leaving this package list unchecked. SSH
+still rejects the Mac key, so desktop execution is unavailable initially.
+
+Hypothesis: remove obsolete direct package references and use supported names
+or options for any further reproducible failures. Audit all explicit system and
+Home Manager package lists, assertions and available flake outputs. Limit changes
+to confirmed compatibility defects and their existing verification owners.
+Reject any change that suppresses a failure, removes an unrelated feature, adds
+custom machinery or claims an unrun Linux build. Preserve the Linux-only Doom
+build as a visible prerequisite rather than disabling it to make evaluation pass.
+
+Retained: removing `grip` fixes the reproduced package-selection failure. All
+310 system package derivations and 68 Home Manager derivations evaluate; the
+remaining Home Manager package is Doom Emacs, which requires Linux execution.
+All 69 Home Manager package names evaluate. Platform aliases now use their
+supported fields; the Mac toplevel derivation is unchanged. Existing CI now
+checks both package selections and the runner before full desktop evaluation.
+The full Linux evaluation and all-system flake check still stop at the explicit
+Linux-only Doom prerequisite, without suppressing it.

@@ -16,7 +16,7 @@
 { config, lib, pkgs, vars, inputs, ... }:
 
 let
-  inherit (pkgs.stdenv) isDarwin;
+  inherit (pkgs.stdenv.hostPlatform) isDarwin;
   # Doom's (spell +flyspell) shells out to aspell; it must carry its
   # dictionaries (a bare `aspell`/`ispell` binary finds none on Nix).
   # nixpkgs removed the computer/science add-ons after their upstreams vanished.

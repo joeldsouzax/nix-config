@@ -17,3 +17,11 @@ Owner amendment, 2026-10-25: commit this Mac's public SSH key and push main.
 Authorize that key for Joel on both profiles of the same desktop. Keep the
 private key off Git and preserve existing access. Publishing the configuration
 does not activate it on the desktop.
+
+Owner amendment, 2026-10-25: repair current package and module compatibility
+failures, starting with the removed `grip` package. Check the desktop, runner
+and Mac configurations against their locked inputs. Preserve current features
+where supported; remove obsolete entries instead of reviving removed packages
+or weakening checks. Keep existing pins unless a verified upstream fix requires
+an update. Commit and publish the corrections through the established main
+workflow. Do not claim live activation or a Linux build from Mac evaluation.

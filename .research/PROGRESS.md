@@ -71,3 +71,39 @@ saved SOPS host recipient, but authentication rejects the Mac's key. No system
 activation or live Codex version check has run. The next step is to pull the
 published main checkout on the desktop and add the public key using the commands
 in `docs/runner.md`, then complete the runner's build and activation prerequisites.
+
+## Current package compatibility repair
+
+The owner reported the removed `grip` package and requested a broader check.
+The desktop package list reproduced the GTK2 removal error before changes.
+Removed that obsolete entry and replaced deprecated `stdenv.isDarwin/isLinux`
+aliases with the supported `stdenv.hostPlatform` fields. Input pins are unchanged.
+The existing NixOS CI job now checks package selections and the runner before
+full desktop evaluation, preserving its job name and the full evaluation gate.
+
+Actual checks on 2026-10-25:
+
+- All 310 desktop system package derivations evaluate, with no failed entries.
+- All 69 Home Manager package names evaluate. All 68 packages other than Doom
+  Emacs evaluate their derivations. Doom remains enabled and unmodified.
+- NixOS assertions return no failures. Full option warnings, Home Manager
+  derivation evaluation and the desktop toplevel require Doom's Linux build.
+- The full Mac toplevel evaluates to the same derivation as before the repair:
+  `/nix/store/z8ciyac22rp8sk6fajm4dq3jj7v9cql7-darwin-system-26.11.f0ec2b3.drv`.
+- The runner configuration check passes after the changes. All nonempty Nix
+  files parse. Actionlint 1.7.12 runs through the locked Nix environment and
+  passes. The formatted Orca file and diff whitespace checks pass; other touched
+  files retain their existing formatting. Graphify refresh succeeds.
+- `nix flake check --all-systems --no-build --no-update-lock-file` and direct
+  desktop toplevel evaluation both stop at
+  `/nix/store/lpr1gm2rgw75vjcbmv1j3lh3krm3zljg-doom-intermediates.drv`, which
+  requires x86_64-linux. This Mac is aarch64-darwin. No passing full flake gate or
+  Linux runtime build is claimed.
+
+The remaining prerequisite is desktop SSH access or running the full Linux
+check locally on that desktop. SSH still rejects the configured key. The public
+key bootstrap in `docs/runner.md` does not need a NixOS rebuild, so it can unblock
+remote work even while the current desktop configuration fails to rebuild.
+Raw audit results are in `/tmp/nix-desktop-*.json`, `/tmp/nix-home-*.json` and the
+matching `.log` files. The retained fix is ready for main publication; nothing
+has been activated on either host.

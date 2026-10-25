@@ -13,7 +13,7 @@ let
 in
 {
   # Linux-only: pkgs.foot does not exist on Darwin.
-  home-manager.users.${vars.user} = lib.mkIf pkgs.stdenv.isLinux {
+  home-manager.users.${vars.user} = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     programs.foot = {
       enable = true;
       package = pkgs.foot;

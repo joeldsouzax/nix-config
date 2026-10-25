@@ -50,7 +50,7 @@ in
           if [[ -f "$HOME/.secrets/deepseek-api-key" ]]; then
             export DEEPSEEK_API_KEY="$(<"$HOME/.secrets/deepseek-api-key")"
           fi
-        '' + lib.optionalString pkgs.stdenv.isDarwin ''
+        '' + lib.optionalString pkgs.stdenv.hostPlatform.isDarwin ''
           # Homebrew paths (Darwin only)
           export PATH="/opt/homebrew/bin:$PATH"
           export PATH="/opt/homebrew/sbin:$PATH"
@@ -75,7 +75,7 @@ in
         omp-design = "omp --profile design"; # preserved design-partner persona
         # Local Qwen3-Coder-Rust (llama.cpp) — autoresearch only; start `rust-llm` first
         omp-research = "omp --profile autoresearch";
-      } // (if pkgs.stdenv.isDarwin then {
+      } // (if pkgs.stdenv.hostPlatform.isDarwin then {
         nixswitch = "sudo darwin-rebuild switch --flake ~/.setup#joel";
         nixup = "pushd ~/.setup; nix flake update; nixswitch; popd";
       } else {
@@ -127,7 +127,7 @@ in
         if ($deepseek_key | path exists) {
           $env.DEEPSEEK_API_KEY = (open --raw $deepseek_key | str trim)
         }
-      '' + (if pkgs.stdenv.isDarwin then ''
+      '' + (if pkgs.stdenv.hostPlatform.isDarwin then ''
         def nixswitch [] { sudo darwin-rebuild switch --flake ~/.setup#joel }
       '' else ''
         def nixswitch [] { sudo nixos-rebuild switch --flake /home/${vars.user}/.setup#main }
@@ -144,7 +144,7 @@ in
           | prepend "/run/current-system/sw/bin"
           | prepend "/nix/var/nix/profiles/default/bin"
         ${
-          if pkgs.stdenv.isDarwin then
+          if pkgs.stdenv.hostPlatform.isDarwin then
             ''| prepend "/opt/homebrew/bin"''
           else
             # NixOS setuid wrappers (sudo, mount, ...) MUST win over the
