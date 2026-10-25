@@ -487,3 +487,28 @@ Final normal PR run 40232176376 passes both Linux jobs at 074c861 on
 labcast-desktop. Its only failure is hosted macOS, with GitHub's explicit
 billing-before-start annotation. PR 245 is ready for review and remains
 unmerged. Linux routing becomes the main default only after that PR merges.
+
+H14 owner clarification supersedes the previous Mac gate decision: Joel wants
+Orca on the Mac to connect over SSH and perform backend work on Linux. PR 245
+removed the hosted Mac job, retained optional Darwin outputs, and documented
+the remote development workflow. No tests or assertions changed. Final head
+b28596c passes both jobs in PR run 40232902453 and push run 40232897556.
+PR 245 merged normally as c79108a; main run 40233091770 also passes both jobs.
+The local Labcast root is clean on main. Other active worktrees are untouched.
+
+Prepared /home/joel/Code/labcast/labcast-server as a fresh clone on the desktop
+and fast-forwarded it to c79108a. Its Nix development environment loads and
+reports Linux, the remote checkout path, Codex on PATH, Cargo 1.99.0 and Just
+1.58.0. Git identity is Joel's personal identity and repository access works.
+Log: /tmp/labcast-remote-environment.log. No Mac projects or build files were
+deleted, and no active agent was migrated.
+
+Orca setup remains pending user authentication. Its existing desktop target
+uses local-only nixos.local and is asking for an SSH password. The owner has
+the exact Tailscale target and identity-file fields for a separate connection.
+Codex is installed but login status is still Not logged in; a device login is
+waiting for the owner. Do not copy credentials or claim an end-to-end Orca
+session yet. After connection, register the prepared remote path with Orca's
+existing Labcast project and verify a remote terminal and Codex session.
+Mac Darwin activation is still pending; direct Orca SSH does not require the
+separate Mac root-daemon builder key. Cold boot and off-LAN tests remain open.

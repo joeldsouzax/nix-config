@@ -55,3 +55,15 @@ profile, working Wi-Fi, SSH and Tailscale identity. Reuse the existing runner
 service and registration contract for private labcast/labcast-server. Do not
 move or delete local projects, expose services publicly, weaken CI checks,
 register public/fork jobs, or copy broad personal credentials to the service.
+
+Owner clarification, 2026-10-25: development means Orca on the Mac connecting
+over SSH to the Linux desktop. Repositories, Codex, builds and tests run on Linux.
+The earlier native Mac CI requirement was an incorrect interpretation and is
+superseded. Remove the hosted Mac job from Labcast PR 245; preserve the complete
+Linux gate, telemetry assertions and cleanup. Keep optional Darwin flake outputs
+for existing users; do not change the separate mobile project's requirements.
+Configure Orca through its supported SSH interface over Tailscale. Keep private
+keys and account credentials out of Git and the runner account. Prepare a fresh
+remote checkout without moving or deleting the active Mac worktrees. Account
+sign-in remains Joel's action; do not report an authenticated Codex session until
+verified. No public listener, root daemon key or new agent framework is needed.

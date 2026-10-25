@@ -1,5 +1,17 @@
 # Hypotheses
 
+## H14: Orca as a remote Linux development client
+
+Joel clarified that the Mac is the Orca interface and Linux owns backend work.
+The native Mac CI gate does not represent that workflow. Remove only that job
+and retain the unchanged Linux checks. Use Orca's supported SSH target and remote
+project setup, with the verified Tailscale route and key. Falsifiers: work
+executes on the Mac, the remote shell cannot launch Codex, files land in the
+runner's disposable directory, SSH setup exposes credentials, or a Linux
+invariant check regresses. Verify connection, remote path and terminal execution
+before claiming readiness. Codex sign-in and an actual agent turn must be
+distinguished from installation and SSH connectivity.
+
 ## H01: dependency refresh
 
 Implemented; local checks and full Mac evaluation pass. Full Linux evaluation and flake gate remain unverified, with exact failures recorded in PROGRESS.md. Updates preserve both host definitions and agent integrations. Change budget stayed within dependency pins, required compatibility fixes and their documentation. Linux runtime benchmarks and kernel/VM execution cannot be claimed from Mac assertions or derivation evaluation.

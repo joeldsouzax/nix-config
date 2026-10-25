@@ -144,12 +144,24 @@ or test live hardware.
 ## Remote development
 
 Keep working repositories under `/home/joel/Code`, the desktop's separate project
-disk. Edit those remote files from the Mac through Emacs TRAMP or an SSH-capable
-editor. Run terminals, development shells, containers and tests on the desktop.
+disk. Use Orca on the Mac to open projects over SSH. The editor stays on the Mac;
+agents, terminals, development shells, containers and tests run on the desktop.
 This keeps Cargo targets, Nix outputs and service data off the Mac. Ordinary
 distributed Nix builds can still copy completed outputs back to the Mac.
 
-After the Mac's SSH configuration is applied, start a persistent terminal with:
+In Orca, open **Settings → SSH Hosts → Add Target**. Use `labcast-desktop`, user
+`joel`, port `22` and the Mac's `~/.ssh/id_ed25519` identity. The desktop's
+Tailscale address also works when MagicDNS or the saved SSH alias is unavailable.
+Test and connect, then add the remote folder `/home/joel/Code/labcast/labcast-server`
+to the Labcast project. Choose this SSH host when creating new worktrees.
+See [Orca SSH worktrees](https://www.onorca.dev/docs/ssh).
+
+Open a remote terminal and run `pwd` and `uname -s`. They must show the Linux
+checkout and `Linux`. Run `direnv allow` in that checkout, then use its existing
+Nix and Just commands. Codex authentication belongs to this Linux user account.
+An existing Mac chat or worktree does not move merely because a host was added.
+
+For a separate persistent SSH terminal, after applying the Mac's SSH config:
 
 ```bash
 ssh -t desktop-remote 'tmux new-session -A -s dev'
@@ -168,15 +180,16 @@ ssh -N -L 8080:127.0.0.1:8080 desktop-remote
 ```
 
 The Mac can then open `http://localhost:8080`. The service stays on the desktop.
-Linux CI and backend builds run here; iOS simulators, Xcode and macOS-specific
-checks still need a Mac.
+Linux CI and backend builds run here. Native mobile tools such as Xcode still
+run on the Mac; the separate mobile repository owns its requirements.
 
 ## Codex
 
-Both desktop profiles include Codex CLI from their locked nixpkgs inputs. After
-applying the profile, sign in as `joel`, open a project directory and run
-`codex`. Complete the first-run sign-in using your own account. See the
-[Codex CLI guide](https://learn.chatgpt.com/docs/cli).
+Both desktop profiles include Codex CLI from their locked nixpkgs inputs. In an
+Orca terminal on the SSH host, run `codex login --device-auth` and complete the
+printed sign-in flow in the Mac browser. Then run `codex login status`. Open a
+Codex agent in the remote project after sign-in succeeds. See
+[Codex authentication](https://learn.chatgpt.com/docs/auth).
 
 Keep Codex credentials in your user account; do not put them in Nix or the
 GitHub runner service account. Updating the profile's nixpkgs input also updates
@@ -192,10 +205,11 @@ runs-on: [self-hosted, Linux, X64, labcast-desktop]
 ```
 
 Nix is already installed. Skip Nix installer actions on this runner. Keep the
-existing tests and job names, use an explicit job timeout, and always clean up
+existing tests, use an explicit job timeout, and always clean up
 Compose services, including after failure. A persistent runner reuses its disk
 between jobs. Route a manual test first; only then change the required PR jobs.
-This Linux host cannot run the `macos-26` job.
+The Labcast backend gate targets Linux. Optional native Darwin flake outputs do
+not require a hosted macOS job for this remote development workflow.
 
 Qualification must include checkout and a JavaScript action, a Nix build, Docker
 Compose startup and cleanup, a service restart, and a cold boot with no login.

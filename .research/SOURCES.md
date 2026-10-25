@@ -218,3 +218,12 @@ Hyprland recovery, 2026-10-25:
   sources, checked against the selected versions. Trive's nix/backend.nix and
   nix/claude-code.nix use locked pkgs.cacert with SSL_CERT_FILE. An unchanged
   Linux test derivation passes only after adding that declared bundle.
+
+- https://www.onorca.dev/docs/ssh establishes the supported SSH target, remote
+  files, agents, terminal persistence and forwarding workflow. Installed Orca
+  1.4.222 exposes Settings / SSH Hosts and its supported project setup CLI.
+  Current published server-management details are newer than that installed
+  release; no upgrade or restart of active Mac sessions was performed.
+- https://learn.chatgpt.com/docs/auth documents headless device login. The
+  desktop's installed Codex 0.163.0 exposes login --device-auth and login status.
+  Installation and SSH reachability do not establish account authentication.
