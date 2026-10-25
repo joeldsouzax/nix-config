@@ -67,6 +67,9 @@ jobs:
       - name: Check runner configuration
         run: nix build --no-link --print-build-logs .#checks.x86_64-linux.runner
 
+      - name: Validate desktop configuration with Hyprland
+        run: nix build --no-link --print-build-logs .#checks.x86_64-linux.hyprland
+
       # .drvPath forces the full module fixpoint + import-from-derivation
       # (nix-doom-emacs). No `|| true`, no `| head` — a failure fails the job.
       - name: Evaluate toplevel derivation

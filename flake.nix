@@ -152,6 +152,7 @@
           aarch64-linux.integration = mkTest "aarch64-linux";
           x86_64-linux.runner = runnerCheck "x86_64-linux";
           aarch64-darwin.runner = runnerCheck "aarch64-darwin";
+          x86_64-linux.hyprland = self.nixosConfigurations.main.config.system.build.hyprlandCheck;
         };
 
       # ── Packages ───────────────────────────────────────────────────────────
