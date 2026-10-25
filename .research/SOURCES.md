@@ -227,3 +227,14 @@ Hyprland recovery, 2026-10-25:
 - https://learn.chatgpt.com/docs/auth documents headless device login. The
   desktop's installed Codex 0.163.0 exposes login --device-auth and login status.
   Installation and SSH reachability do not establish account authentication.
+
+## Orca remote runtime follow-up, 2026-10-25
+
+- Installed Orca 1.4.222's actual `ssh:connect` error requires Node.js 18+ and
+  npm. The old desktop profile provides neither command in a fresh SSH session.
+- Both locked host inputs resolve `pkgs.nodejs` to 24.21.0 (MIT,
+  https://nodejs.org). Built system outputs report Node 24.21.0 and npm 11.19.0.
+  Use this existing maintained package; no package builder or pin is added.
+- GitHub check-run 121254542763 explicitly reports billing rejection before
+  startup. Open PR merge states remain DIRTY for 239 and 244, UNSTABLE for 243;
+  none has received the main branch's new desktop workflow yet.

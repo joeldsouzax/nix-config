@@ -1,5 +1,19 @@
 # Hypotheses
 
+## H15: provide Orca's remote runtime prerequisites
+
+The real Orca 1.4.222 connection reports Node.js and npm missing. Plain SSH and
+SFTP work, and Codex authentication now reports Logged in using ChatGPT. Add
+the locked nixpkgs nodejs package to each desktop profile's existing tool list.
+It supplies Node and npm without a custom builder or imperative package install.
+The graphical host already provides make, GCC and Python for native modules;
+do not add project Python or change the Labcast environment. Build the active
+system and check node/npm in its resulting PATH before owner sudo activation.
+Falsifiers: missing executables, Node older than Orca's required 18, unexpected
+service changes, or Orca still unable to start its helper after activation.
+Budget: two package-list entries and existing remote-development documentation
+and evidence. No reboot, OS input update, credential copy or app restart.
+
 ## H14: Orca as a remote Linux development client
 
 Joel clarified that the Mac is the Orca interface and Linux owns backend work.

@@ -68,6 +68,7 @@
 
   environment.systemPackages = with pkgs; [
     codex
+    nodejs # Orca's SSH helper needs Node.js and npm on the remote host.
     git
     jq
     nano

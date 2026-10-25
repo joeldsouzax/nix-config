@@ -524,3 +524,32 @@ using the specified identity. Orca still lists only the old desktop target;
 the new Tailscale target is not saved. Its window became unavailable during
 inspection, and logs did not expose the reported error. The exact Orca error
 is requested; SSH/SFTP success does not yet prove Orca runtime startup.
+
+H15 resolves that missing evidence: the actual Orca 1.4.222 connection reports
+"Node.js not found on remote host" and requires Node.js 18+ with npm. Both
+commands are absent in the active system. Add the existing locked nixpkgs nodejs
+package to both host tool lists. No input, service declaration, credential or
+project change is required. Codex login now reports Logged in using ChatGPT.
+
+Both complete candidate systems build, and the full Linux `nix flake check`
+passes, including its nginx VM integration test. Both system outputs run Node
+24.21.0 and npm 11.19.0. The main closure diff adds only 27.9 KiB of system
+metadata; the package dependencies were already in the system closure. Nix
+parsing, whitespace and Graphify update pass. The runner file passes nixfmt.
+The desktop file has a pre-existing nixfmt failure, reproduced on HEAD; its
+one-line package addition does not reformat unrelated settings.
+The kernel is identical. SSH, Tailscale and runner units are identical. Only
+generated D-Bus and polkit restart-trigger paths differ with the system package
+path, so normal system activation can restart those services.
+Log: /tmp/nix-orca-node-build.log. Candidate main output:
+/nix/store/3khlbs9560d9dvxb6j2gdbansiprhm75-nixos-system-nixos-26.11.20261020.02c087f.
+Root activation and an actual Orca helper connection remain pending. The saved
+Orca target still uses nixos.local; use its Tailscale address for travel.
+
+The owner also asked why the other Labcast PRs are stuck. Current GitHub checks
+on PRs 239, 243 and 244 still use their old hosted-runner workflows. GitHub
+explicitly rejects their jobs before starting because of billing. PRs 239 and
+244 also conflict with main. PR 239 has a separate Studio workflow with hosted
+Linux jobs and an unset STUDIO_GPU_RUNNER variable. Main's successful desktop
+run does not qualify those PR heads or the GPU workload. Their live feature
+and maintenance worktrees remain untouched, including unfinished local edits.

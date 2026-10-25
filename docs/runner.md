@@ -149,6 +149,11 @@ agents, terminals, development shells, containers and tests run on the desktop.
 This keeps Cargo targets, Nix outputs and service data off the Mac. Ordinary
 distributed Nix builds can still copy completed outputs back to the Mac.
 
+Both desktop profiles provide Node.js and npm through Nix for Orca's remote
+helper. Apply the host configuration before connecting. In a fresh SSH session,
+`node --version` and `npm --version` must succeed. Orca 1.4.222 requires Node.js
+18 or later; it cannot start the helper when these commands are missing.
+
 In Orca, open **Settings → SSH Hosts → Add Target**. Use `labcast-desktop`, user
 `joel`, port `22` and the Mac's `~/.ssh/id_ed25519` identity. The desktop's
 Tailscale address also works when MagicDNS or the saved SSH alias is unavailable.
