@@ -256,3 +256,8 @@ Hyprland recovery, 2026-10-25:
   organisation and mobile runner lists are empty before migration. Both mobile
   and Server repositories are private. This is API evidence, not inference from
   PAT repository selection.
+- https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/manage-access
+  confirms group policy controls which repositories can use an organisation
+  runner. After activation, group 1 contains runner 15, allows all private
+  repositories and has no workflow restriction. Mobile Actions is enabled;
+  runtime qualification so far covers the backend, not a mobile job.

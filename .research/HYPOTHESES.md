@@ -18,6 +18,14 @@ credential rejection, interrupted work, extra runner processes, altered host
 services or repositories unable to select the new runner. Budget: the shared
 URL, existing guide and research evidence; no new permanent tooling or workflow.
 
+Retained and active: organisation runner 15 is online in the Default group,
+which allows all private repositories and has no workflow restriction. Both
+backend jobs in run 40237360297 pass on that runner. The previous repository
+runner 21 was removed only after it was offline and idle. The active and boot
+system profiles match the built candidate; there is one listener, zero service
+restarts, and the desktop, Docker and Tailscale remain active. Mobile access is
+established by the group policy; no mobile job has yet selected this runner.
+
 ## H15: provide Orca's remote runtime prerequisites
 
 The real Orca 1.4.222 connection reports Node.js and npm missing. Plain SSH and

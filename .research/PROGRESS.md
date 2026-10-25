@@ -1,5 +1,14 @@
 # Progress
 
+Current state, 2026-10-25: H16 is active and verified. One organisation runner,
+labcast-desktop (id 15), serves all private Labcast repositories through the
+Default group. Backend main run 40237360297 passed both Linux jobs on this
+runner. The obsolete repository registration 21 has been removed. The intended
+system is active and selected for the next boot. Mobile workflow routing, an
+actual Orca remote agent turn, cold boot and off-LAN checks remain unverified.
+
+## Earlier implementation evidence
+
 The owner requested integration of all pending changes on main on 2026-10-25.
 The desktop runner is merged at 890e148. The dependency refresh and Orca setup
 are included in the same main checkout. No system activation was performed.
@@ -576,6 +585,34 @@ checks that credential against the organisation registration endpoint without
 printing tokens, removes the old runner's routing label while draining its job,
 then applies the built configuration and checks organisation online status.
 On failure before migration it restores the old routing label. A busy job is
-never deliberately stopped; the drain has a five-minute retry bound. No new
-permanent orchestration tool or service was added. Activation, organisation
-visibility in both repositories and cleanup of obsolete runner 21 remain open.
+never deliberately stopped. The final operation allows 45 minutes to drain and
+requires two idle observations with no local Runner.Worker process. No new
+permanent orchestration tool or service was added.
+
+The owner replaced the PAT locally through a hidden prompt. Terminal bracketed
+paste markers caused the earlier malformed Authorization header. The temporary
+operation now removes only paired paste wrappers and surrounding whitespace,
+rejects other malformed input before HTTP, and saves the token only after both
+registration permission checks succeed. Bash syntax, ShellCheck, 14 synthetic
+input cases and a bracketed-paste test through a real SSH terminal pass. No real
+credential was printed or added to Git. The owner completed password-required
+activation; no further credential prompt is needed for this migration.
+
+Live verification: both /run/current-system and the persistent system profile
+resolve to the main candidate above. The runner service is active as
+github-runner with NRestarts=0. One Runner.Listener remains after jobs finish.
+SSH through Tailscale, Docker, tailscaled and the graphical display manager work;
+Node remains 24.21.0. Organisation runner 15 is online in Default group 1, with
+visibility=all, allows_public_repositories=false and no workflow restriction.
+The private mobile repository has Actions enabled. Repository runner-list API
+responses alone do not demonstrate inherited organisation access; no mobile job
+has yet selected the runner.
+
+Backend main run https://github.com/labcast/labcast-server/actions/runs/40237360297
+at 73c837c5c7eabbe7c53c6d37a1fb5c76f42a22f6 passed Server environment (Linux)
+and Local telemetry (Linux), both on organisation runner 15. After checking the
+new runner online and old repository runner 21 offline and idle, removed only
+registration 21. The repository now has zero obsolete local registrations.
+Mobile's existing workflow still needs its own Linux routing change; its active
+worktree and PR hold remain untouched. Cold boot, off-LAN access and an actual
+Orca remote agent turn remain separate acceptance gaps.
