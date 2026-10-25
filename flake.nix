@@ -2,6 +2,9 @@
   description = "NixOS + nix-darwin configuration";
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # Runner updates have a GitHub deadline. Keep them independent of the
+    # desktop and Mac upgrade cycle.
+    nixpkgs-runner.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.05";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -134,12 +137,20 @@
       #   nix build .#checks.aarch64-linux.integration -L  # → local builder VM
       checks =
         let
-          mkTest = system:
-            (import nixpkgs { inherit system; }).testers.runNixOSTest ./tests/integration.nix;
+          mkTest = system: (import nixpkgs { inherit system; }).testers.runNixOSTest ./tests/integration.nix;
+          # Evaluate runner invariants on either host without building a VM.
+          runnerCheck =
+            system:
+            import ./tests/runner.nix {
+              pkgs = import inputs.nixpkgs-runner { inherit system; };
+              config = self.nixosConfigurations.runner.config;
+            };
         in
         {
           x86_64-linux.integration = mkTest "x86_64-linux";
           aarch64-linux.integration = mkTest "aarch64-linux";
+          x86_64-linux.runner = runnerCheck "x86_64-linux";
+          aarch64-darwin.runner = runnerCheck "aarch64-darwin";
         };
 
       # ── Packages ───────────────────────────────────────────────────────────
@@ -150,10 +161,11 @@
       #   nix build .#packages.x86_64-linux.nvidia-legacy580 -L  # GTX 1070 (Pascal)
       packages.x86_64-linux =
         let
-          linuxPkgs = (import nixpkgs {
-            system = "x86_64-linux";
-            config.allowUnfree = true;
-          }).linuxPackages_6_12;
+          linuxPkgs =
+            (import nixpkgs {
+              system = "x86_64-linux";
+              config.allowUnfree = true;
+            }).linuxPackages_6_12;
         in
         {
           rtl8852au = linuxPkgs.rtl8852au;

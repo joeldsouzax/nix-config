@@ -1,5 +1,16 @@
-{ inputs, nixpkgs, nixpkgs-stable, home-manager, nur, doom-emacs, hyprland
-, hyprspace, sops-nix, vars, ... }:
+{
+  inputs,
+  nixpkgs,
+  nixpkgs-stable,
+  home-manager,
+  nur,
+  doom-emacs,
+  hyprland,
+  hyprspace,
+  sops-nix,
+  vars,
+  ...
+}:
 
 let
   system = "x86_64-linux";
@@ -9,12 +20,25 @@ let
   };
 
   lib = nixpkgs.lib;
-in {
+in
+{
+  runner = inputs.nixpkgs-runner.lib.nixosSystem {
+    specialArgs = { inherit inputs vars; };
+    modules = [ ./runner ];
+  };
+
   main = lib.nixosSystem {
     # Platform is set via nixpkgs.hostPlatform in hardware-configuration.nix
     # Do NOT pass `system` here — it's deprecated and triggers warnings
     specialArgs = {
-      inherit inputs stable hyprland hyprspace vars sops-nix;
+      inherit
+        inputs
+        stable
+        hyprland
+        hyprspace
+        vars
+        sops-nix
+        ;
       host = {
         hostname = "main";
         mainMonitor = "DP-3";

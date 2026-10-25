@@ -3,6 +3,7 @@
 This repository is a unified Nix flake for two systems:
 
 - `nixosConfigurations.main`: x86_64-linux desktop with NVIDIA and Hyprland.
+- `nixosConfigurations.runner`: the same desktop as a headless GitHub runner.
 - `darwinConfigurations.joel`: aarch64-darwin laptop with Aerospace and Homebrew.
 
 ## Commands
