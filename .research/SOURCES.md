@@ -47,3 +47,25 @@ Accessed 2026-10-25 for desktop compatibility:
 - The actual package checks use locked nixpkgs revisions `02c087f` (desktop and
   Mac) and `3ec6363` (runner). No dependency pin changed during this repair.
   The Mac's full toplevel derivation stays identical after the platform update.
+
+Accessed 2026-10-25 for RTL8852AU:
+
+- Owner photo `/Users/joel/Downloads/IMG_4539.HEIC`: actual Linux 6.12.113 build
+  rejects the callback's two-parameter function pointer. The system build then
+  fails through its kernel-module dependency. The photo also shows a Codex
+  invocation after the failed regular desktop build.
+- https://github.com/gregkh/linux/commit/4dae80dd259b5c24f6c657f434afd5de1f791d12
+  backports `net_device` into `set_monitor_channel`. The maintainer's GitHub API
+  supplies the exact diff; raw published `include/net/cfg80211.h` files at
+  v6.12.100 and v6.12.101 establish the release boundary. The v6.12.113,
+  v6.12.114 and v6.13 headers confirm the supported callback signatures.
+- https://raw.githubusercontent.com/NixOS/nixpkgs/master/pkgs/os-specific/linux/rtl8852au/default.nix
+  and the locked package both retain source 865ab0fa91471d595c283d2f3db323f7f15455f5
+  with nixpkgs' `fix-build-for-kernels-6.13-6.14.patch`. Nixpkgs' and the driver's
+  current GitHub histories contain no newer fix for this backport.
+- https://github.com/lwfinger/rtl8852au/pull/115 supplies the existing callback
+  compatibility patch. Extend its version guard to 6.12.101; keep its existing
+  implementation and the separate namespace/get-txpower guards.
+- Both locked inputs supply Codex 0.163.0. The regular desktop's Linux output
+  `/nix/store/03h8zqzsxqrvlr143r5h2vzzx8mhqp95-codex-0.163.0` is present in the
+  signed NixOS binary cache. No custom Linux Codex builder is needed.

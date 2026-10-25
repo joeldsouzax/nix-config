@@ -155,21 +155,19 @@
 
       # ── Packages ───────────────────────────────────────────────────────────
       # The runtime-critical kernel modules the desktop ACTUALLY uses, built
-      # against its kernel (6.12), exposed so CI can prove they COMPILE (the
+      # against each profile's kernel, exposed so CI can prove they COMPILE (the
       # toplevel eval/CI does NOT build kernel modules):
       #   nix build .#packages.x86_64-linux.rtl8852au -L         # WiFi (Archer TX20U Plus)
       #   nix build .#packages.x86_64-linux.nvidia-legacy580 -L  # GTX 1070 (Pascal)
       packages.x86_64-linux =
         let
-          linuxPkgs =
-            (import nixpkgs {
-              system = "x86_64-linux";
-              config.allowUnfree = true;
-            }).linuxPackages_6_12;
+          desktopKernel = self.nixosConfigurations.main.config.boot.kernelPackages;
+          runnerKernel = self.nixosConfigurations.runner.config.boot.kernelPackages;
         in
         {
-          rtl8852au = linuxPkgs.rtl8852au;
-          nvidia-legacy580 = linuxPkgs.nvidiaPackages.legacy_580;
+          rtl8852au = desktopKernel.rtl8852au;
+          rtl8852au-runner = runnerKernel.rtl8852au;
+          nvidia-legacy580 = desktopKernel.nvidiaPackages.legacy_580;
         };
     };
 }

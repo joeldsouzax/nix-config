@@ -107,3 +107,37 @@ remote work even while the current desktop configuration fails to rebuild.
 Raw audit results are in `/tmp/nix-desktop-*.json`, `/tmp/nix-home-*.json` and the
 matching `.log` files. The retained fix is ready for main publication; nothing
 has been activated on either host.
+
+## RTL8852AU build repair
+
+The owner's photo supplies the Linux build failure that Mac evaluation cannot
+detect. The failure is a callback signature mismatch after Linux 6.12.101
+backported an API change. Added one compatibility patch to the existing nixpkgs
+driver through the shared kernel package set. Both desktop profiles use it.
+The kernel series, NVIDIA driver, generated hardware file and original driver
+source remain unchanged.
+
+The flake's Wi-Fi/NVIDIA outputs now use the actual desktop kernel package set;
+the Wi-Fi job also builds the runner's selected version. Codex is available in
+both profiles. The runner guide checks its Wi-Fi module before the full build.
+
+Checks passed:
+
+- Exact source plus existing nixpkgs patches accepts the compatibility patch
+  with zero fuzz and zero offset.
+- Clang checks the source's callback signature against actual kernel header
+  declarations for 6.12.100, 6.12.101, 6.12.113, 6.12.114 and 6.13. The original
+  fails at .101/.113/.114 with the photographed type mismatch; the candidate
+  passes every version. The test uses a stub body and does not compile the
+  complete module. Inputs and diagnostics are `/tmp/rtl8852au-*.c` and `.log`,
+  `/tmp/cfg80211-*.h`, and the patched source directory named in
+  `/tmp/rtl8852au-check-dir`.
+- CI Wi-Fi derivations equal the configured module derivations for desktop
+  6.12.113 and runner 6.12.114. Both include Codex 0.163.0.
+- The runner configuration check, touched formatted Nix files, configuration
+  parsing, Actionlint and whitespace checks pass. Graphify refresh succeeds.
+
+Full module compilation and hardware checks remain unrun: SSH still rejects the
+Mac key. A pending user request gives the Bash key-bootstrap command, which does
+not require a rebuild. No host activation was attempted. Build the two exposed
+Wi-Fi packages on Linux before claiming the repair is fully validated.

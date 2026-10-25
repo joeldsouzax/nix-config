@@ -150,6 +150,7 @@ in
         nchat
         sqlite
         nil
+        codex
         claude-code # Claude Code CLI (nixpkgs) — declarative, no imperative install
 
         #audio/video

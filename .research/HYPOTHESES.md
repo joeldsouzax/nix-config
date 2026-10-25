@@ -65,3 +65,34 @@ supported fields; the Mac toplevel derivation is unchanged. Existing CI now
 checks both package selections and the runner before full desktop evaluation.
 The full Linux evaluation and all-system flake check still stop at the explicit
 Linux-only Doom prerequisite, without suppressing it.
+
+## H06: RTL8852AU and Linux 6.12 backport
+
+Baseline: the owner's desktop build fails in `cfg80211_rtw_set_monitor_channel`
+for Linux 6.12.113. The locked driver already contains nixpkgs' upstream patch,
+but its new parameter is guarded by kernel >= 6.13. Linux stable commit
+4dae80dd259b5c24f6c657f434afd5de1f791d12 backports the new signature. Published
+headers confirm two parameters in 6.12.100 and three in 6.12.101.
+
+Hypothesis: extend the existing compatibility guard to >= 6.12.101, preserving
+the callback body, other upstream patches and compiler checks. Append that one
+patch through the supported kernel package extension in shared hardware config.
+Expose the configured driver to CI instead of independently reconstructing the
+kernel package set; test both desktop and runner versions. Reject if the patch
+does not apply after nixpkgs' patch, changes behavior beyond the signature, or
+either configured module still fails compilation. Keep the old two-argument
+form for 6.12.100. Do not switch drivers or suppress the type error.
+
+Budget: one compatibility patch, shared hardware package override, flake/CI
+package ownership, one Codex package entry and this evidence. Verify exact
+configured derivations, patch application and the kernel boundary. Build on
+Linux when SSH access is available; a Mac cannot validate this module's runtime.
+
+Retained pending full Linux build: the patch applies after nixpkgs' existing
+patch with no fuzz or offset. A native compiler checks the extracted callback
+signature against the actual published kernel declarations at 6.12.100,
+6.12.101, 6.12.113, 6.12.114 and 6.13. The original source fails for all three
+affected 6.12 versions; the patched signature passes all five. CI outputs match
+the installed module derivations in each profile, and the runner check passes.
+This verifies the reported type mismatch, not compilation of the whole module
+or hardware behavior. The desktop still rejects SSH; that remains a prerequisite.

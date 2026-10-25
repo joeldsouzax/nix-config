@@ -2,9 +2,16 @@
 {
   imports = [ ./hardware-configuration.nix ];
 
-  # This kernel series works with the desktop's RTL8852AU Wi-Fi and GTX 1070.
+  # Both profiles use this kernel series for RTL8852AU Wi-Fi and the GTX 1070.
   boot = {
-    kernelPackages = pkgs.linuxPackages_6_12;
+    kernelPackages = pkgs.linuxPackages_6_12.extend (
+      _: previous: {
+        rtl8852au = previous.rtl8852au.overrideAttrs (old: {
+          # Linux 6.12.101 backported the monitor-channel callback change.
+          patches = old.patches ++ [ ../../pkgs/rtl8852au-monitor.patch ];
+        });
+      }
+    );
     kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
     loader = {
       systemd-boot = {

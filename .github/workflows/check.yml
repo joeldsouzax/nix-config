@@ -130,7 +130,7 @@ jobs:
             extra-trusted-public-keys = nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=
 
       - name: WiFi — rtl8852au (Archer TX20U Plus)
-        run: nix build --print-build-logs .#packages.x86_64-linux.rtl8852au
+        run: nix build --no-link --print-build-logs .#packages.x86_64-linux.rtl8852au .#packages.x86_64-linux.rtl8852au-runner
 
       - name: GPU — NVIDIA legacy_580 (GTX 1070 / Pascal)
         run: nix build --print-build-logs .#packages.x86_64-linux.nvidia-legacy580

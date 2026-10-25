@@ -71,6 +71,7 @@ Transfer the reviewed branch to the desktop. Run these commands from its checkou
 
 ```bash
 nix build .#checks.x86_64-linux.runner --no-update-lock-file
+nix build .#rtl8852au-runner --no-link --no-update-lock-file
 nix build .#nixosConfigurations.runner.config.system.build.toplevel --no-update-lock-file
 ```
 
@@ -89,13 +90,14 @@ or test live hardware.
 
 ## Codex
 
-The runner profile includes Codex CLI from its locked nixpkgs input. After
+Both desktop profiles include Codex CLI from their locked nixpkgs inputs. After
 applying the profile, sign in as `joel`, open a project directory and run
 `codex`. Complete the first-run sign-in using your own account. See the
 [Codex CLI guide](https://learn.chatgpt.com/docs/cli).
 
 Keep Codex credentials in your user account; do not put them in Nix or the
-GitHub runner service account. Updating `nixpkgs-runner` also updates Codex.
+GitHub runner service account. Updating the profile's nixpkgs input also updates
+Codex.
 
 ## Route and qualify jobs
 

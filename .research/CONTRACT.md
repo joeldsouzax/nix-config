@@ -25,3 +25,10 @@ where supported; remove obsolete entries instead of reviving removed packages
 or weakening checks. Keep existing pins unless a verified upstream fix requires
 an update. Commit and publish the corrections through the established main
 workflow. Do not claim live activation or a Linux build from Mac evaluation.
+
+Owner evidence, 2026-10-25: IMG_4539.HEIC shows the desktop RTL8852AU module
+failing to compile for Linux 6.12.113 because `set_monitor_channel` now takes
+three parameters. Repair the selected driver's compatibility without changing
+the kernel series, GPU driver, adapter or generated hardware file. Add Codex to
+the regular desktop profile as well as the runner so either selected profile
+provides it. Keep actual build and hardware evidence separate from evaluation.
