@@ -109,7 +109,10 @@ with host;
       imports = [ hyprland.homeManagerModules.default ];
 
       # Enable services here instead of exec-once for better reliability
-      services.hypridle.enable = true;
+      services.hypridle = {
+        enable = true;
+        settings.general.lock_cmd = "${pkgs.hyprlock}/bin/hyprlock";
+      };
       services.hyprpaper.enable = true;
 
       # Note: Ensure you have services.waybar.enable = true; in your waybar module
@@ -255,7 +258,7 @@ with host;
             hl.exec_cmd("${pkgs.hyprlock}/bin/hyprlock")
             hl.exec_cmd("ln -s $XDG_RUNTIME_DIR/hypr /tmp/hypr")
             hl.exec_cmd("${pkgs.uwsm}/bin/uwsm app -- ${pkgs.waybar}/bin/waybar -c $HOME/.config/waybar/config")
-            hl.exec_cmd("${pkgs.uwsm}/bin/uwsm app -- ${pkgs.swaynotificationcenter}/bin/swaync")
+            hl.exec_cmd("${pkgs.systemd}/bin/systemctl --user start swaync.service")
             hl.exec_cmd("${pkgs.uwsm}/bin/uwsm app -- ${pkgs.blueman}/bin/blueman-applet")
             hl.exec_cmd("${pkgs.uwsm}/bin/uwsm app -- ${
               config.home-manager.users.${vars.user}.programs.ags.finalPackage

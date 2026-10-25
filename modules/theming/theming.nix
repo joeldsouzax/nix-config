@@ -1,7 +1,14 @@
-{ lib, config, pkgs, host, vars, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  host,
+  vars,
+  ...
+}:
 
 let
-  themeName = "Catppuccin-Mocha-Standard-Blue-Dark";
+  themeName = "catppuccin-mocha-blue-standard";
   themePackage = pkgs.catppuccin-gtk.override {
     accents = [ "blue" ];
     size = "standard";
@@ -12,7 +19,8 @@ let
   cursorPackage = pkgs.bibata-cursors;
   cursorSize = 24;
 
-in {
+in
+{
   home-manager.users.${vars.user} = {
     home.file = {
       ".config/wall.png".source = ./pure-black.jpg;
@@ -60,7 +68,9 @@ in {
       };
 
       gtk4 = {
-        extraConfig = { gtk-application-prefer-dark-theme = 1; };
+        extraConfig = {
+          gtk-application-prefer-dark-theme = 1;
+        };
         # HM changed the default `gtk4.theme` to null; keep GTK4 apps themed as before.
         theme = {
           name = themeName;
@@ -73,8 +83,7 @@ in {
       enable = true;
       platformTheme.name = "gtk3"; # Syncs Qt dialogs with GTK (modern native Qt GTK3 plugin)
       style = {
-        name =
-          "kvantum"; # Requires 'qt5ct' and 'libsForQt5.qtstyleplugin-kvantum' in system packages
+        name = "kvantum"; # Requires 'qt5ct' and 'libsForQt5.qtstyleplugin-kvantum' in system packages
       };
     };
 

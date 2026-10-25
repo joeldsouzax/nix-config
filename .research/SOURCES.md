@@ -128,3 +128,18 @@ Hyprland recovery, 2026-10-25:
   supported. `extraConfig` holds ordinary Lua for callbacks and loops.
 - Locked NixOS `system/activation/top-level.nix`: `system.checks` requires
   successful build-time checks without retaining them in the system closure.
+
+### H11 desktop startup sources (2026-10-25)
+
+- https://aylur.github.io/gnim/gobject.html requires
+  `experimentalDecorators: false` and `target: ES2020` (or earlier). The actual
+  locked GNIM failure is decorator metadata undefined in `gnim/dist/dbus.ts`.
+- https://wiki.hypr.land/hypr-ecosystem/user/hypridle/ documents the mandatory
+  config and `general.lock_cmd`. No new idle listener or sleep action is needed.
+- Locked Home Manager `modules/services/udiskie.nix` explicitly requires
+  NixOS `services.udisks2.enable`; live D-Bus reports it is not activatable.
+- The installed Catppuccin package lists `catppuccin-mocha-blue-standard`,
+  `-hdpi` and `-xhdpi`; the configured title-case name does not exist.
+- SwayNC's installed systemd unit and live journal establish the duplicate
+  startup: the direct UWSM process owns the instance while D-Bus starts the
+  packaged service, which repeatedly exits with "already running".

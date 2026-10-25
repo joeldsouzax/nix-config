@@ -10,7 +10,14 @@
 # a services panel). Treat it as a starting point — extend it with the Astal
 # service libs wired in `extraPackages` below.
 
-{ config, lib, pkgs, vars, inputs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  vars,
+  inputs,
+  ...
+}:
 
 let
   agsPkgs = inputs.ags.packages.${pkgs.stdenv.hostPlatform.system};
@@ -24,22 +31,22 @@ in
         enable = true;
         configDir = ./ags;
 
-        # Launched from Hyprland's exec-once via UWSM (see hyprland.nix), the
-        # same way waybar/swaync start — so it comes up on every session start
+        # Launched from Hyprland's start hook via UWSM (see hyprland.nix), like
+        # Waybar, so it comes up on every session start
         # with no graphical-session.target / re-login caveat. Hence NOT the
         # module's systemd service (which would double-start it).
         systemd.enable = false;
 
         # Astal libraries available to the GJS runtime (import as "gi://Astal…").
         extraPackages = with agsPkgs; [
-          astal4        # GTK4 layer-shell windows
-          io            # subprocess + file IO (read /proc, run `systemctl`, curl)
-          hyprland      # workspaces / active window
-          network       # wifi / ethernet
-          wireplumber   # audio
-          tray          # system tray
-          mpris         # media players
-          battery       # harmless on desktop
+          astal4 # GTK4 layer-shell windows
+          io # subprocess + file IO (read /proc, run `systemctl`, curl)
+          hyprland # workspaces / active window
+          network # wifi / ethernet
+          wireplumber # audio
+          tray # system tray
+          mpris # media players
+          battery # harmless on desktop
           powerprofiles
         ];
       };

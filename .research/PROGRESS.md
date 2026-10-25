@@ -287,3 +287,31 @@ decorators, the GTK theme name does not match its package, hypridle has no confi
 udiskie lacks the UDisks system service, and SwayNC is launched both directly and
 by D-Bus/systemd. Keep these separate from H10 and record their contract before
 changes. No new graphical session, reboot or off-LAN check is verified yet.
+
+H10 is committed and pushed as 67b4962. H11 corrects the five existing owner
+files named in its hypothesis. Main and both native checks build successfully;
+the final main output is
+`/nix/store/l79q5a1m36kh03w200m481kd9a7cbvsa-nixos-system-nixos-26.11.20261020.02c087f`.
+Home Manager activation and Hyprland reload pass. The dashboard is mapped,
+the selected theme CSS exists, and hypridle and the single systemd-owned
+notification service are active with zero restarts. The old unmanaged SwayNC
+process was stopped once during recovery. Udiskie remains failed until the
+new UDisks system service is activated with sudo. Logs:
+`/tmp/nix-desktop-startup-build.log`, `/tmp/nix-desktop-startup-final-check.log`,
+and remote `/tmp/nix-ags-fixed-start.log` (old failing startup at
+`/tmp/nix-ags-start.log`). Linux flake evaluation passes. Nonfatal legacy
+GTK/backlight warnings remain, outside these startup fixes.
+
+The first manual `tailscale up` reset the initial hostname/DNS preferences.
+Reapplied all `services.tailscale.extraSetFlags` from the evaluated repository:
+hostname labcast-desktop, CorpDNS=false, RunSSH=false, operator joel. Account
+enrollment is still pending. On future first enrollment, preserve those flags
+or apply the declared settings afterward; verify actual prefs rather than
+assuming the boot oneshot remains authoritative after manual `up`.
+
+Next: publish H11 and fast-forward the desktop main checkout, then have the
+owner run the already-built system activation with their sudo password. Verify
+UDisks/udiskie and active store path afterward. Complete Tailscale enrollment
+and private SSH, then the off-LAN/reboot qualification. The final Mac system
+is already built; its sudo activation is also pending. Runner registration
+and Codex sign-in remain separate uncompleted operator steps.

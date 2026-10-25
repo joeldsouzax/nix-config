@@ -211,3 +211,38 @@ build passes, Home Manager activation and compositor reload succeed, and live
 config errors are empty. The corrected menu command produces one, zero, one,
 zero Wofi layers over four successive invocations. Owner app-selection
 confirmation and root activation of the new system generation remain pending.
+
+## H11: restore the existing desktop startup services
+
+Baseline after H10: the managed dashboard exits with GNIM decorator metadata
+undefined; its tsconfig enables legacy decorators and targets ES2023. Official
+GNIM instructions require standard decorators and ES2020 or earlier. The GTK
+package contains `catppuccin-mocha-blue-standard`, while configuration names a
+nonexistent title-case theme. Hypridle repeatedly exits because it has no
+configuration file. Udiskie fails because UDisks is not enabled. A direct SwayNC
+startup competes with its existing D-Bus-activated systemd service.
+
+Hypothesis: correct the two TypeScript compiler settings, use the actual GTK
+theme name, give hypridle its existing lock command with no new idle/sleep
+timers, enable UDisks under the existing udiskie owner, and use SwayNC's existing
+systemd service as its sole startup owner. Preserve existing appearance,
+dashboard metrics, notifications, removable-drive mounting and always-on host
+policy. No new dependencies, framework, custom daemon or lock update.
+
+Falsifiers: dashboard exits, theme files remain missing, service restarts keep
+increasing, more than one notification daemon, new sleep behavior, configuration
+errors, changed launcher behavior or failing full-system builds. Test the
+dashboard on the live Wayland session, inspect actual service state and restart
+counts, check package paths, build main and recheck runner invariants. UDisks
+runtime needs root system activation and must not be claimed from evaluation.
+Budget: five existing owner files plus evidence. Keep any unexpected additional
+widget issue within the demonstrated startup failure; do not redesign widgets.
+
+Retained evidence: before the compiler correction, AGS exits 1 with undefined
+GNIM decorator metadata; afterward it survives the eight-second startup probe
+and the managed dashboard is mapped in the live session. The configured GTK4
+CSS path exists. Hypridle and the single systemd-owned SwayNC process both run
+with zero restarts. The full main system, native compositor check and runner
+configuration check build. Udiskie's required system service is built but its
+runtime qualification awaits root activation. Nonfatal GTK/backlight warnings
+remain; no unrelated widget redesign or extra desktop package was introduced.
