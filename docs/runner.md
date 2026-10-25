@@ -20,6 +20,18 @@ keeps `joel` as the administrator and uses a separate `github-runner` service
 account. Confirm the machine's current hostname before applying the configured
 `nixos` name. Prefer Ethernet while travelling if it is available.
 
+Both desktop profiles authorize this Mac's public key from
+`hosts/keys/joel-mac.pub` for `joel`. The private key stays on the Mac. This takes
+effect after rebuilding the desktop; pushing Git alone does not grant access.
+To enable SSH before rebuilding, run these commands as `joel` on the desktop
+from the updated checkout:
+
+```bash
+install -d -m 0700 ~/.ssh
+cat hosts/keys/joel-mac.pub >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+```
+
 Only trusted repository code may run here. Docker access gives jobs control of
 the host; the separate user is not a sandbox for hostile jobs. Keep fork jobs off
 this runner. Personal files remain on its disks. Deployment credentials and
@@ -74,6 +86,16 @@ On the Mac, the configuration check is
 `nix build .#checks.aarch64-darwin.runner --no-update-lock-file`. It checks the
 evaluated configuration and NixOS assertions. It does not build the Linux host
 or test live hardware.
+
+## Codex
+
+The runner profile includes Codex CLI from its locked nixpkgs input. After
+applying the profile, sign in as `joel`, open a project directory and run
+`codex`. Complete the first-run sign-in using your own account. See the
+[Codex CLI guide](https://learn.chatgpt.com/docs/cli).
+
+Keep Codex credentials in your user account; do not put them in Nix or the
+GitHub runner service account. Updating `nixpkgs-runner` also updates Codex.
 
 ## Route and qualify jobs
 

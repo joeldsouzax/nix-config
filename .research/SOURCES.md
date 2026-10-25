@@ -14,3 +14,23 @@ Accessed 2026-10-21:
 - https://raw.githubusercontent.com/NixOS/nixpkgs/02c087f3fe673c9e317f206a627cb6b910336dbe/pkgs/development/libraries/aspell/dictionaries.nix — en-computers and en-science were removed 2026-09-28; retained ds.en avoids compromised/unavailable sources.
 - Locked nixpkgs python-packages-base.nix: makePythonPath includes requiredPythonModules transitively. Use the supported wrapper argument instead of patching upstream Python code.
 - Locked nixpkgs Codex is also 0.163.0, but builds Rust/V8 from source. Retain the existing upstream native-binary packaging and its bundled helpers to preserve behavior and limit build cost.
+
+Accessed 2026-10-25 for the desktop runner:
+
+- https://learn.chatgpt.com/docs/cli — the CLI supports Linux; run `codex` in a
+  project and complete first-run sign-in. Nix remains the package owner here.
+- Locked `nixpkgs-runner` at `3ec636362e1816bc2f0888fa0fa2c69f1bc9e504`,
+  `pkgs/by-name/co/codex/package.nix`: Codex 0.163.0, Apache-2.0, Unix platforms,
+  maintained source package with code-mode/voice helpers, Linux bubblewrap,
+  shell completions and a version installation check. Reuse this Linux package;
+  the existing custom package is specifically for the Mac.
+- cache.nixos.org has the signed x86_64-linux output
+  `/nix/store/85jfacgc74z186chfvivryyb61nbxa63-codex-0.163.0`:
+  181,795,535 bytes compressed, 612,490,376 bytes unpacked for this output alone.
+  This avoids a local Rust/V8 build; it does not establish runtime correctness.
+- The same locked nixpkgs input's
+  `nixos/modules/services/networking/ssh/sshd.nix` defines
+  `users.users.<name>.openssh.authorizedKeys.keyFiles`. It reads public keys at
+  build time into `/etc/ssh/authorized_keys.d/<name>` and preserves the user's
+  home-directory authorized keys by default. Both evaluated profiles confirm
+  this behavior for Joel.

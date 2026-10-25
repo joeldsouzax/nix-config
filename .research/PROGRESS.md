@@ -45,3 +45,29 @@ Next: run the remaining Linux checks in CI/on the desktop and apply the configur
   did not activate the system. Linux runtime checks remain as listed above.
 - Staged diff has no whitespace errors. Research records are included because
   the owner requested committing everything, including the pending Orca work.
+
+## Desktop Codex and SSH access
+
+The owner requested Codex on the runner and then requested committing this Mac's
+public SSH key and pushing main. The runner now includes the maintained Codex
+0.163.0 package from its existing input. Both desktop profiles read Joel's key
+from `hosts/keys/joel-mac.pub`. No private key or sign-in credential is included.
+
+Verification:
+
+- The existing runner configuration check passes with both additions.
+- Package selection resolves to the cached x86_64-linux Codex output recorded
+  in SOURCES.md. No lock update or custom Linux package is needed.
+- The committed public key matches `~/.ssh/id_ed25519.pub` byte for byte and
+  `ssh-keygen -lf` reports
+  `SHA256:gMrpHXjPGSYgUWHw8YnkB7+6AXZnVcJEmScIJKU20jI`.
+- Evaluation of both NixOS profiles renders that key for Joel, preserves
+  home-directory keys and adds no key for root or the runner service account.
+- Runner formatting, desktop configuration parsing and diff whitespace checks
+  pass. Graphify updates successfully; its existing JSON-file warnings remain.
+
+The desktop is now reachable at `nixos.local`. Its SSH host key matches the
+saved SOPS host recipient, but authentication rejects the Mac's key. No system
+activation or live Codex version check has run. The next step is to pull the
+published main checkout on the desktop and add the public key using the commands
+in `docs/runner.md`, then complete the runner's build and activation prerequisites.

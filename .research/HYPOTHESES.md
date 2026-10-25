@@ -7,3 +7,37 @@ Implemented; local checks and full Mac evaluation pass. Full Linux evaluation an
 ## H02: Finder metadata cleanup
 
 Complete. Matching files were removed, including the tracked editors file. Both spellings are ignored at any depth; a final checkout search is empty and nested git check-ignore succeeds.
+
+## H03: Codex on the desktop runner
+
+Baseline: main at 392abeb has no Codex package in the runner profile. Its locked
+nixpkgs input provides Codex 0.163.0 for x86_64-linux, including the code-mode and
+voice helpers. The package is available from cache.nixos.org.
+
+Hypothesis: adding that package to the existing system package list supplies
+Codex without another derivation or dependency pin. Limit changes to the runner
+package list, its usage document and this evidence. Reject the change if runner
+evaluation fails, resolves a different package, or requires custom packaging.
+Check formatting, the existing runner configuration check and evaluated package
+selection. Run the CLI version check on the desktop when SSH access is available;
+configuration evaluation alone does not prove installation or runtime behavior.
+
+Retained: the runner check and package selection pass. Codex resolves to the
+cached Linux output recorded in SOURCES.md. Live installation remains pending
+SSH access and profile activation.
+
+## H04: declarative desktop access from the Mac
+
+Baseline: the desktop's public host key matches its saved SOPS recipient, but
+SSH rejects the Mac's key. Neither NixOS profile declares an authorized user key.
+Store the existing public key once in `hosts/keys/joel-mac.pub` and reference it
+from Joel's existing user declaration in both profiles. Preserve other keys and
+SSH settings. Reject the change if the evaluated authorized-key file differs
+from this Mac's public key, either profile loses its existing access settings,
+or the key is assigned to root or the runner account. Check both evaluated
+profiles and the existing runner check. Live access requires applying the
+configuration on the desktop first.
+
+Retained: both profiles render the exact public key for Joel, keep home-directory
+authorized keys enabled, and leave root and the runner account without added
+keys. The runner check passes. The public key file matches the Mac byte for byte.

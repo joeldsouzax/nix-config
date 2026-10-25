@@ -31,6 +31,7 @@ in
   users.users.${vars.user} = {
     isNormalUser = true;
     home = "/home/${vars.user}";
+    openssh.authorizedKeys.keyFiles = [ ./keys/joel-mac.pub ];
     extraGroups = [
       "wheel"
       "video"

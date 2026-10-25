@@ -7,3 +7,13 @@ Use Nix and existing package builders. Add no project tooling or Python files. D
 Owner amendment, 2026-10-25: commit all pending changes to main, including Orca
 and the dependency refresh, alongside the merged desktop runner. This authorizes
 their integration; it does not request system activation or publication.
+
+Owner amendment, 2026-10-25: add Codex CLI to the desktop runner host. Use the
+runner's locked nixpkgs package if it supports Linux and preserves the CLI
+helpers. Keep authentication under the administrator's account. This addition
+does not require a new package builder, a lock update or CI automation.
+
+Owner amendment, 2026-10-25: commit this Mac's public SSH key and push main.
+Authorize that key for Joel on both profiles of the same desktop. Keep the
+private key off Git and preserve existing access. Publishing the configuration
+does not activate it on the desktop.
