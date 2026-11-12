@@ -18,6 +18,29 @@ let
   claude-code = pkgs.callPackage ../pkgs/claude-code.nix {};
   # Official native binary and bundled helpers; avoids a local Rust/V8 build.
   codex = pkgs.callPackage ../pkgs/codex.nix {};
+
+  # Removes the folders that ended Nix builds left in the build directory.
+  # The folder name holds the process of the build (nix-<pid>-<number>). The
+  # process list is taken after the folders, so the process of every listed
+  # folder whose build still runs is in it. A folder goes only when its process
+  # is not in that list or is not a Nix process, and when it is older than six
+  # hours. Without a process list that holds this script, nothing is removed.
+  # The argument serves a test with another directory.
+  nixBuildSweep = pkgs.writeShellScript "nix-build-sweep" ''
+    set -uo pipefail
+    builds=''${1:-/nix/var/nix/builds}
+    dirs=("$builds"/nix-*)
+    table=$(/bin/ps -A -o pid=,comm=) || exit 1
+    /usr/bin/grep -qE "^ *$$ " <<< "$table" || exit 1
+    for dir in "''${dirs[@]}"; do
+      [ -d "$dir" ] && [ ! -L "$dir" ] || continue
+      [[ "''${dir##*/}" =~ ^nix-([0-9]+)-[0-9]+$ ]] || continue
+      line=$(/usr/bin/grep -E "^ *''${BASH_REMATCH[1]} " <<< "$table" || true)
+      [[ "$line" != *nix* ]] || continue
+      [ -n "$(/usr/bin/find "$dir" -maxdepth 0 -mmin +360)" ] || continue
+      /bin/rm -rf "$dir" && echo "$(/bin/date '+%Y-%m-%d %H:%M') removed $dir"
+    done
+  '';
 in
 {
   imports = (import ../modules/home) ++ [
@@ -85,6 +108,20 @@ in
       StandardOutPath = "/var/log/nix-gc.log";
       StandardErrorPath = "/var/log/nix-gc.log";
       RunAtLoad = false;
+    };
+  };
+
+  # A Nix build that is kept (--keep-failed) or killed leaves its folder in
+  # /nix/var/nix/builds. The folders belong to build users, no garbage
+  # collection removes them, and they held more than 35 GiB on 2026-11-12.
+  # This hourly job removes them for every project on this machine.
+  launchd.daemons.nix-build-sweep = {
+    serviceConfig = {
+      ProgramArguments = [ "${nixBuildSweep}" ];
+      StartInterval = 3600;
+      RunAtLoad = true;
+      StandardOutPath = "/var/log/nix-build-sweep.log";
+      StandardErrorPath = "/var/log/nix-build-sweep.log";
     };
   };
 

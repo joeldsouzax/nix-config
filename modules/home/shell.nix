@@ -10,9 +10,14 @@ let
   # Safely check if SOPS claude_key secret exists (NixOS only)
   claudeKeyPath = lib.attrByPath [ "sops" "secrets" "claude_key" "path" ] "" config;
 
+  # The lead command of an automatic run in a project (`just run <lane>`,
+  # architecture/run.sh). Joel chose this command and its access level on
+  # 2026-11-12. Every shell gets it, so a run starts from any terminal tab.
+  stepLead = "codex exec -m gpt-6.1-sol -s danger-full-access";
 in
 {
   home-manager.users.${vars.user} = {
+    home.sessionVariables.STEP_LEAD = stepLead;
 
     programs.zsh = {
       enable = true;
@@ -125,6 +130,7 @@ in
       '';
       environmentVariables = {
         EDITOR = "vim";
+        STEP_LEAD = stepLead;
       };
     };
   };
