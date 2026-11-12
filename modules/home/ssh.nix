@@ -2,7 +2,7 @@
 # Shared between NixOS and Darwin via home-manager.
 #
 # Trive work hosts (trive-vm, github.com-trive) are macOS-ONLY — the NixOS
-# desktop is for devrandom work only.
+# desktop never carries the Trive identity.
 
 { lib, pkgs, vars, ... }:
 
@@ -22,17 +22,23 @@
         UseKeychain = "yes";
       };
 
-      # NixOS desktop — accessible from Mac via mDNS
+      # NixOS desktop over Tailscale (direct on the home LAN, relayed away from
+      # it). Orca's `desktop` SSH target uses this alias.
       "desktop" = {
-        hostname = "nixos.local"; # Avahi mDNS name
+        hostname = vars.desktopHost;
         user = vars.user;
+        forwardAgent = false;
       };
-
-      # Tailscale MagicDNS name; the local alias remains usable during setup.
       "desktop-remote" = {
         hostname = vars.desktopHost;
         user = vars.user;
         forwardAgent = false;
+      };
+
+      # Avahi mDNS fallback for when Tailscale is down.
+      "desktop-lan" = {
+        hostname = "nixos.local";
+        user = vars.user;
       };
 
       # GitHub — personal (joeldsouzax)

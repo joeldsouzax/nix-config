@@ -34,7 +34,6 @@
 
     taps = [
       "nikitabobko/tap"       # Required for aerospace WM
-      "can1357/tap"           # oh-my-pi (omp) — Rust-core AI coding agent
       "stablyai/orca"         # Orca agent workspace
     ];
 
@@ -51,7 +50,6 @@
       # Browsers (mirrors NixOS: firefox + google-chrome)
       "google-chrome"
       "firefox"
-      
 
       # Communication (mirrors NixOS: slack from systemPackages)
       "discord"
@@ -64,6 +62,7 @@
 
       # Media (mirrors NixOS: vlc via flatpak)
       "vlc"
+      "spotify"
 
       # Terminal
       "ghostty"              # GPU-accelerated terminal (Nix pkg is Linux-only)
@@ -78,20 +77,11 @@
       "1password"
       "1password-cli"
       "tailscale-app"        # Private access to the desktop while travelling
-
-      # Virtualization (for `just up` VM management)
-      "utm"
-      "spotify"
     ];
 
     # ── CLI Tools (Brews) ───────────────────────────────────────────────
     brews = [
-      "omp"                  # oh-my-pi — terminal AI coding agent (Rust core + TS harness)
       "pinentry-mac"
-      "qemu"
-      "libvirt"
-      "dnsmasq"
-      "nginx"
     ];
 
     # Mac App Store apps

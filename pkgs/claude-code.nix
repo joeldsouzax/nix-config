@@ -1,85 +1,48 @@
-# Claude Code CLI - Native Binary (macOS arm64)
+# Claude Code CLI - native packages for the Mac and Linux desktop profiles.
 { pkgs }:
 
 with pkgs;
 let
-  version = "2.1.306";
+  version = "2.1.322";
   pname = "claude-code";
 
   # We bypass the generic wrapper package and download the macOS arm64
   # native binary directly from the registry.
   src = fetchurl {
     url = "https://registry.npmjs.org/@anthropic-ai/claude-code-darwin-arm64/-/claude-code-darwin-arm64-${version}.tgz";
-    hash = "sha256-GsbspD5HF+e7hjZ5Q2pyK4ZA8gyxGz46fPyHRtH4ZHI=";
+    hash = "sha512-OAx5Y7V7tGCi0tWuDV3lwcDWmIua512NgpClLbqvwC9m+mbLiaytgVLXf4unTXBjMf+QbQiIUO1Kus90PklDhA==";
   };
 
 in
-stdenv.mkDerivation rec {
-  inherit pname version src;
+if stdenv.hostPlatform.isLinux then
+  # Keep Nixpkgs' supported loader, search and sandbox integration.
+  claude-code.override {
+    manifest = {
+      inherit version;
+      platforms.linux-x64 = {
+        binary = "claude.zst";
+        checksum = "9bb7558bd992ca457e6458bf1686572f7a3156b8331dd8443391dbfe590c1eed";
+      };
+    };
+  }
+else
+  stdenvNoCC.mkDerivation rec {
+    inherit pname version src;
 
-  dontUnpack = true;
+    dontUnpack = true;
+    nativeBuildInputs = [ makeWrapper ];
 
-  # Bun and Node are completely gone! We only need jq for your plugin repair script.
-  nativeBuildInputs = [ jq ];
+    installPhase = ''
+      mkdir -p $out/bin $out/libexec
+      tar -xzf ${src}
+      install -m755 package/claude $out/libexec/claude
+      makeWrapper $out/libexec/claude $out/bin/claude --set DISABLE_AUTOUPDATER 1
+    '';
 
-  installPhase = ''
-    mkdir -p $out/bin $out/libexec
-
-    # Extract the platform-specific tarball
-    tar -xzf ${src}
-
-    # The tarball contains the actual compiled binary inside a 'package' folder
-    cp package/claude $out/libexec/claude
-    chmod +x $out/libexec/claude
-
-    # Recreate your wrapper with the plugin self-repair module
-    cat > $out/bin/claude << 'EOF'
-    #!${bash}/bin/bash
-
-    export CLAUDE_EXECUTABLE_PATH="$HOME/.local/bin/claude"
-    export DISABLE_AUTOUPDATER=1
-
-    # --- PLUGIN SELF-REPAIR MODULE ---
-    PLUGIN_DIR="$HOME/.claude/plugins"
-    CLAUDE_CONF="$HOME/.claude/config.json"
-    CLAUDE_DIR="$HOME/.claude"
-
-    if [ ! -d "$CLAUDE_DIR" ]; then
-        mkdir -p "$CLAUDE_DIR"
-    fi
-
-    if [ -d "$PLUGIN_DIR" ]; then
-        find "$PLUGIN_DIR" -type f -name "*.sh" 2>/dev/null | while read -r script; do
-            if grep -q "^#!/bin/bash" "$script"; then
-                # BSD sed syntax for macOS
-                sed -i "" 's|^#!/bin/bash|#!/usr/bin/env bash|' "$script"
-            fi
-            if [ ! -x "$script" ]; then
-                chmod +x "$script"
-            fi
-        done
-
-        if [ -f "$CLAUDE_CONF" ]; then
-             chmod 644 "$CLAUDE_CONF" 2>/dev/null || true
-             if ! grep -q "ralph-loop" "$CLAUDE_CONF" 2>/dev/null; then
-                 ${jq}/bin/jq '.autoExecute = (.autoExecute // []) + ["*ralph-loop*"] | .autoExecute |= unique' \
-                   "$CLAUDE_CONF" > "$CLAUDE_CONF.tmp" && mv "$CLAUDE_CONF.tmp" "$CLAUDE_CONF"
-             fi
-        fi
-    fi
-
-    # Execute the native binary directly
-    exec $out/libexec/claude "$@"
-    EOF
-
-    chmod +x $out/bin/claude
-    substituteInPlace $out/bin/claude --replace '$out' "$out"
-  '';
-
-  meta = with lib; {
-    description = "Claude Code - AI coding assistant in your terminal (Native macOS arm64)";
-    homepage = "https://www.anthropic.com/claude-code";
-    license = licenses.unfree;
-    platforms = [ "aarch64-darwin" ];
-  };
-}
+    meta = with lib; {
+      description = "Claude Code - AI coding assistant in your terminal (Native macOS arm64)";
+      homepage = "https://www.anthropic.com/claude-code";
+      license = licenses.unfree;
+      platforms = [ "aarch64-darwin" ];
+    };
+  }

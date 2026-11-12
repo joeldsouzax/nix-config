@@ -436,3 +436,39 @@ Keep the bundle under the existing Linux testArgs environment owner; Darwin
 keeps its native trust store and unchanged derivations. Full Linux CI remains
 required. Logs: /tmp/labcast-runner-linux-reproduce.log and
 /tmp/labcast-runner-certs.log.
+
+## 2026-10-30 agent packages
+
+Use the existing native Codex recipe for both configured platforms, preserving
+its complete vendor layout; patch Linux ELF helpers with autoPatchelfHook if
+needed. Reuse Nixpkgs' supported Claude manifest override on Linux, retaining
+its search/process/sandbox dependencies and updater settings. Keep the existing
+Mac Claude wrapper. Share Linux installation ownership in hosts/default.nix.
+Falsifiers: wrong version, missing vendor helpers, Linux loader failure, lost
+Claude sandbox dependencies, changed Mac wrapper/authentication or broken
+profile evaluation. Verify actual version/help on both architectures, package
+presence in all system lists, Darwin full evaluation and existing runner gate.
+No new permanent test suite, tools, credentials or dependencies beyond the
+existing supported builders and runtime libraries. Scope limit: eight files,
+no new public types, no flake-input changes. Do not interpret local checks as
+host activation or authenticated agent acceptance.
+
+Fresh package audit found both prebuilt local recipes used the compiler-bearing
+stdenv despite only extracting/copying archives. Match Nixpkgs' native Claude
+builder with stdenvNoCC for both recipes. Preserve Linux autoPatchelfHook and its
+runtime C++ libraries. This removes compiler/SDK requirements from future native
+package builds. Repeat the changed package builds and profile checks; no new
+compiler, installer or framework is introduced.
+
+## Storage cleanup 2026-10-30
+
+Remove the stale UTM package registration and cask declaration so it cannot
+return on rebuild. Use brew cleanup and Nix store GC for eligible garbage.
+Clean DerivedData and tool download caches only after checking for active
+builds. Discover large Cargo target directories, verify their Cargo cache tag,
+and use cargo clean through Nix rather than deleting projects or archives.
+Falsifier: any target contains unique source/evidence, an active build uses it,
+or ordinary services/volumes would need deletion. Preserve current profiles and
+all ambiguous VM/application data. Compare free space before/after, verify UTM
+absent, touched Nix syntax and evaluated cask selection. No new permanent cleanup
+script, service or test suite.

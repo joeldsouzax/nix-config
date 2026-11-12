@@ -80,8 +80,9 @@ Use the same Tailscale account on both devices. The desktop appears as
 `labcast-desktop`. The service keeps the desktop's existing DNS settings; the Mac
 can use Tailscale's MagicDNS name. SSH still uses the committed Mac public key.
 Connect from the Mac with `ssh joel@labcast-desktop`. After applying the Mac's Home
-Manager configuration, `ssh desktop-remote` is the equivalent saved alias.
-`ssh desktop` continues to use the local `nixos.local` address.
+Manager configuration, `ssh desktop` (and the older `desktop-remote`) use this
+Tailscale name, so Orca's `desktop` host works on and off the LAN.
+`ssh desktop-lan` uses the local `nixos.local` mDNS address.
 
 Before travelling, put the Mac on a phone hotspot and verify SSH, including after
 a desktop reboot. Check that the desktop's Tailscale key remains valid for the
@@ -201,17 +202,23 @@ The Mac can then open `http://localhost:8080`. The service stays on the desktop.
 Linux CI and backend builds run here. Native mobile tools such as Xcode still
 run on the Mac; the separate mobile repository owns its requirements.
 
-## Codex
+## Coding agents
 
-Both desktop profiles include Codex CLI from their locked nixpkgs inputs. In an
-Orca terminal on the SSH host, run `codex login --device-auth` and complete the
+Both desktop profiles include Codex CLI and Claude Code. Their versions and
+download hashes are pinned in `pkgs/codex.nix` and `pkgs/claude-code.nix`, which
+also supply the Mac packages. Update these pins and rebuild the host to upgrade.
+
+In an Orca terminal on the SSH host, run `codex login --device-auth` and complete the
 printed sign-in flow in the Mac browser. Then run `codex login status`. Open a
 Codex agent in the remote project after sign-in succeeds. See
 [Codex authentication](https://learn.chatgpt.com/docs/auth).
 
-Keep Codex credentials in your user account; do not put them in Nix or the
-GitHub runner service account. Updating the profile's nixpkgs input also updates
-Codex.
+For Claude Code, run `claude` in the remote project and complete its sign-in flow.
+Choose Claude Code when starting an Orca agent for that remote project. See
+[Claude Code authentication](https://code.claude.com/docs/en/authentication).
+
+Keep each agent's credentials in your user account; do not put them in Nix or the
+GitHub runner service account.
 
 ## Route and qualify jobs
 

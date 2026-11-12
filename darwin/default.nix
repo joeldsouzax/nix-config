@@ -79,7 +79,7 @@ in
       ProgramArguments = [
         "/bin/sh"
         "-c"
-        "/nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-older-than 14d && /nix/var/nix/profiles/default/bin/nix store optimise"
+        "/nix/var/nix/profiles/default/bin/nix-collect-garbage --delete-older-than 14d"
       ];
       StartCalendarInterval = [{ Weekday = 0; Hour = 3; Minute = 0; }];
       StandardOutPath = "/var/log/nix-gc.log";
@@ -180,8 +180,7 @@ in
 
       # Web LSP servers (global; Rust/Go/etc. come from project devshells)
       nodejs_22
-      bun                    # JS runtime; oh-my-pi (omp) shells out to it to
-                             # install npm extensions like pi-autoresearch
+      bun
       typescript-language-server
       tailwindcss-language-server
       vscode-langservers-extracted
@@ -373,132 +372,6 @@ in
       pinentry-program ${pkgs.pinentry_mac}/bin/pinentry-mac
     '';
 
-    # ── oh-my-pi extensions ─────────────────────────────────────────────
-    # `omp` (installed via homebrew.nix) loads TS extensions at runtime with
-    # no external deps, but *installing* an npm extension shells out to `bun`.
-    # This seeds each listed extension once, idempotently, on a fresh machine:
-    #   • pi-autoresearch     — autonomous experiment-loop
-    #   • pi-loop-mode        — finite goal/check loop for evidence-driven audits
-    #   • @hypabolic/pi-hypa  — context compression (noisy tool output kept
-    #                           out of the agent's context window)
-    #
-    # STRICTLY best-effort: an npm fetch can fail offline / on a registry
-    # hiccup, and this repo has been burned by activation scripts that exit 1
-    # and abort the whole switch (see darwin/homebrew.nix). So it is guarded on
-    # omp's presence, skips extensions already installed, and can never fail
-    # activation. Runs after HM writes files (equivalent to lib.hm.dag.entryAfter
-    # [ "writeBoundary" ]; inlined because the outer `lib` here is nixpkgs'
-    # lib, without the home-manager `hm` extension).
-    #
-    # A scoped name (@hypabolic/pi-hypa) lands in node_modules/@hypabolic/
-    # pi-hypa, so the gate dir is node_modules/<name> for both scoped and flat.
-    home.activation.ohMyPiExtensions = let
-      ompExtensions = [
-        "pi-autoresearch"
-        "pi-loop-mode"
-        "@hypabolic/pi-hypa"
-        "@mammothb/pi-mermaid"    # skill: teaches the model to author Mermaid/UML
-        "@tifan/pi-mermaid-open"  # extract & open Mermaid diagrams as images
-      ];
-    in {
-      after = [ "writeBoundary" ];
-      before = [ ];
-      data = ''
-        omp_bin=/opt/homebrew/bin/omp
-        if [ -x "$omp_bin" ]; then
-          for ext in ${lib.concatStringsSep " " ompExtensions}; do
-            plugin_dir="$HOME/.omp/plugins/node_modules/$ext"
-            if [ ! -d "$plugin_dir" ]; then
-              $DRY_RUN_CMD env PATH="${pkgs.bun}/bin:$PATH" \
-                "$omp_bin" install "$ext" >/dev/null 2>&1 || \
-              echo "note: 'omp install $ext' failed (offline?); retry manually" >&2
-            fi
-          done
-          # Architecture-review and autoresearch loops run under isolated
-          # profiles. Seed only pi-loop-mode there; do not implicitly copy
-          # every default-profile plugin into either independent plugin store.
-          for profile in kimi autoresearch; do
-            loop_dir="$HOME/.omp/profiles/$profile/plugins/node_modules/pi-loop-mode"
-            if [ ! -d "$loop_dir" ]; then
-              $DRY_RUN_CMD env PATH="${pkgs.bun}/bin:$PATH" \
-                "$omp_bin" --profile "$profile" plugin install pi-loop-mode >/dev/null 2>&1 || \
-                echo "note: 'omp --profile $profile plugin install pi-loop-mode' failed (offline?); retry manually" >&2
-            fi
-          done
-          # pi-hypa rewrites omp's shell commands through a `hypa` CLI shim it
-          # drops at ~/.local/bin via a postinstall that bun skips on install —
-          # without it every omp bash command dies with "command not found:
-          # hypa". Generate it if missing (needs node; ~/.local/bin is added to
-          # PATH in modules/home/shell.nix). Best-effort, never fails activation.
-          hypa_postinstall="$HOME/.omp/plugins/node_modules/@hypabolic/pi-hypa/scripts/postinstall.js"
-          if [ -f "$hypa_postinstall" ] && [ ! -x "$HOME/.local/bin/hypa" ]; then
-            $DRY_RUN_CMD env PATH="${pkgs.nodejs}/bin:$PATH" \
-              node "$hypa_postinstall" >/dev/null 2>&1 || \
-              echo "note: pi-hypa shim install failed; run its postinstall.js manually" >&2
-          fi
-        fi
-      '';
-    };
-
-    # ── oh-my-pi Kimi model policy ──────────────────────────────────────
-    # omp runs on the Kimi Code subscription OAuth (`kimi-code` provider,
-    # logged in once per profile — no API key). Every role is pinned to K3
-    # so nothing can silently fall back to the provider default
-    # `kimi-for-coding` (a k2.7-class alias). The old free-tier/freerouter
-    # policy is gone: pi-freerouter kept hijacking the default model slot.
-    #
-    # `enabledModels` is an allowlist guard: only these appear in the
-    # picker, so a fallback model can't be selected by accident.
-    #
-    # Per-profile gotcha: `--profile <name>` reads its config from
-    # ~/.omp/profiles/<name>/agent/config.yml (mirroring ~/.omp/agent/).
-    # A config.yml at the profile ROOT is silently ignored and omp falls
-    # back to kimi-for-coding.
-    #
-    # Also enables omp's local, keyless persistent memory (mnemopi): a local
-    # SQLite semantic store where an on-device LLM (`memoryModel`, downloaded
-    # below) extracts facts and a bundled local embedder (mnemopi's `en`
-    # variant — no key) indexes them. This is the cross-session "knowledge
-    # base" for Rust/design work.
-    #
-    # Set on every activation (repo is the source of truth for the policy);
-    # `omp config set` is idempotent and this is guarded + non-fatal like the
-    # extension seeder above.
-    home.activation.ohMyPiModels = let
-      kimiModels = [
-        "kimi-code/k3"          # main — full-strength K3
-        "kimi-code/k3-256k"     # long-context K3 for planning
-        "kimi-code/kimi-k2.5"   # smol/fast tasks
-      ];
-      memoryModel = "lfm2-1.2b";   # local ONNX extractor for mnemopi (keyless)
-      enabledJson = builtins.toJSON kimiModels;
-      rolesJson = builtins.toJSON {
-        main = "kimi-code/k3:max";
-        plan = "kimi-code/k3-256k:max";
-        slow = "kimi-code/k3:max";
-        smol = "kimi-code/kimi-k2.5:high";
-        designer = "kimi-code/k3:max";
-      };
-    in {
-      after = [ "writeBoundary" "ohMyPiExtensions" ];
-      before = [ ];
-      data = ''
-        omp_bin=/opt/homebrew/bin/omp
-        if [ -x "$omp_bin" ]; then
-          $DRY_RUN_CMD "$omp_bin" config set enabledModels '${enabledJson}' >/dev/null 2>&1 || \
-            echo "note: 'omp config set enabledModels' failed; set manually" >&2
-          $DRY_RUN_CMD "$omp_bin" config set modelRoles '${rolesJson}' >/dev/null 2>&1 || \
-            echo "note: 'omp config set modelRoles' failed; set manually" >&2
-          # Local keyless persistent memory (mnemopi + on-device extractor).
-          # `tiny-models download` is idempotent (skips if already cached).
-          $DRY_RUN_CMD "$omp_bin" config set memory.backend mnemopi >/dev/null 2>&1 || true
-          $DRY_RUN_CMD "$omp_bin" config set providers.memoryModel ${memoryModel} >/dev/null 2>&1 || true
-          $DRY_RUN_CMD env PATH="${pkgs.bun}/bin:$PATH" \
-            "$omp_bin" tiny-models download ${memoryModel} >/dev/null 2>&1 || \
-            echo "note: 'omp tiny-models download ${memoryModel}' failed (offline?); retry manually" >&2
-        fi
-      '';
-    };
   };
 
   system.stateVersion = 4;

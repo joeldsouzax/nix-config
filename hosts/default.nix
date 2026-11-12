@@ -20,11 +20,22 @@ let
   };
 
   lib = nixpkgs.lib;
+
+  # Keep the desktop and headless profile on the same native CLI releases.
+  agents = { pkgs, ... }: {
+    environment.systemPackages = [
+      (pkgs.callPackage ../pkgs/codex.nix { })
+      (pkgs.callPackage ../pkgs/claude-code.nix { })
+    ];
+  };
 in
 {
   runner = inputs.nixpkgs-runner.lib.nixosSystem {
     specialArgs = { inherit inputs vars; };
-    modules = [ ./runner ];
+    modules = [
+      agents
+      ./runner
+    ];
   };
 
   main = lib.nixosSystem {
@@ -45,6 +56,7 @@ in
       };
     };
     modules = [
+      agents
       nur.modules.nixos.default
       ./main
       ./configuration.nix

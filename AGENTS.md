@@ -46,6 +46,5 @@ Prefer `rg`/`rg --files` for search, `fd` for interactive file discovery, `ast-g
 
 ## Agent interoperability
 
-- Codex workflows live under `.codex/skills/`.
+- Agents in use: Codex and Claude Code, driven from Orca.
 - Claude Code reads this guide through `CLAUDE.md`.
-- OMP/Kimi remains available for independent review and long-running autoresearch; use the repo-local Codex skills when those workflows are requested.

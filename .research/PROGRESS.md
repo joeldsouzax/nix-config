@@ -616,3 +616,87 @@ registration 21. The repository now has zero obsolete local registrations.
 Mobile's existing workflow still needs its own Linux routing change; its active
 worktree and PR hold remain untouched. Cold boot, off-LAN access and an actual
 Orca remote agent turn remain separate acceptance gaps.
+
+## 2026-10-30: Claude Code and Codex update
+
+User requested adding Claude Code alongside Codex and updating both to latest.
+Verified publisher npm latest tags: Claude Code 2.1.314, Codex 0.166.0. Updated
+both native package recipes, added x86_64-linux support to the existing native
+Codex recipe, and reused Nixpkgs' supported manifest argument for Linux Claude.
+Both Linux profiles now share agent installation through hosts/default.nix;
+removed their superseded package entries. Updated docs/runner.md with both
+agents, pin ownership and per-user authentication. Mac Claude's existing plugin
+wrapper remains. No lock/input update, authentication, service restart or system
+activation was performed. Local changes remain available for review.
+
+Native recipes now use stdenvNoCC, avoiding the compiler/SDK solely for archive
+extraction on future updates. Kept Linux Codex's needed runtime C++ libraries
+and autoPatchelfHook; the upstream voice companion and shared libraries are
+bundled and dynamically linked even though Codex and its other helpers are static.
+Full vendor layout remains in both packages. No Rust/V8 compilation is needed.
+
+Verification:
+- Final Mac native packages build, report exact versions and show help. Claude's
+  wrapper passes bash -n; its user-owned plugin repair was not run during smoke
+  checks (tested native executable), and Codex code-mode helper is present.
+- Final Linux Codex and both distinct Claude wrappers (desktop/headless Nixpkgs)
+  build on the existing desktop via SSH, without system activation. Version/help
+  checks pass; bundled rg and bubblewrap execute. Linux Claude's existing Nixpkgs
+  version check also passes. Linux artifacts remain on Linux.
+- All three actual system package selections evaluate to the requested versions.
+- Full Darwin toplevel derivation evaluation passes.
+- checks.aarch64-darwin.runner builds and passes existing NixOS assertions.
+- Touched Nix parses, touched package/selection formatting and git diff --check
+  pass; graphify update . passes.
+- Broad `nix flake check --no-build --no-update-lock-file` fails at an existing
+  invalid /nix/store/nk5cg1j81q22vk9lpmni6qzk9h4mhvi6-gtk4 path in Hyprland
+  Home Manager evaluation. The unchanged committed HEAD reproduces the identical
+  error. Do not call the full flake gate green; no unrelated desktop repair was
+  folded into this package update.
+
+Two final fresh scoped audits: (1) installation lists, pins, supported builders,
+platform artifacts, updater ownership, vendor layout and runtime dependencies;
+(2) docs, authentication/service boundaries, final outputs, failure evidence and
+change size. No further untested package-update hypothesis found. Six setup/docs
+files changed; no production application code, dependencies or public types added.
+Actual updated tool activation still requires the user's normal Nix rebuild on
+Mac/Linux. Existing sessions keep running their old executables until replaced.
+
+Evidence: /tmp/agent-profile-selections.json, /tmp/agents-darwin-build.json,
+/tmp/agents-linux-build.json, /tmp/agents-linux-smoke.log,
+/tmp/agents-linux-final-smoke.log, /tmp/agents-darwin-eval.txt,
+/tmp/agents-runner-check.log, /tmp/agents-flake-check.log,
+/tmp/agents-baseline-flake-check.log and /tmp/agents-graphify-update.log.
+
+2026-10-30 storage scope correction: the user stopped further disk cleanup and
+asked only to remove unwanted apps from Nix config. UTM was uninstalled from
+Homebrew (only a stale receipt remained) and removed from darwin/homebrew.nix.
+Other casks, formulae and taps are preserved; evaluated selection comparison
+passed. Docker and iOS simulators were explicitly retained. Before the stop,
+DerivedData, CocoaPods/Gradle/Cargo download caches, Homebrew downloads and Studio
+Cargo debug/release output were cleaned. Studio evidence and Git status match
+their before snapshots. Docker build-cache prune failed with an existing metadata
+I/O error; no volumes were deleted. Nix GC was interrupted at the user's request.
+Do not resume cleanup. Disk had about 109 GiB free before the last download-cache
+cleanup. Existing agent package changes remain uncommitted and intact.
+
+## 2026-10-30: Home Manager skill collision repair
+
+The reported nixswitch failure was reproduced with the evaluated Darwin Home
+Manager generation's own checkLinkTargets script and its Nix-provided tools.
+The existing backupFileExtension="backup" already handles the regular work
+file and three real skill directories. It deliberately excludes unmanaged
+symlinks: the autoresearch skill was still a link into this checkout.
+
+Moved only that symlink to the unused sibling devrandom-research.backup after
+checking its exact target and the absence of a backup. Source skill contents,
+other home files, Nix configuration and unrelated changes were preserved.
+The same complete collision scan then passed (exit 0); expected automatic
+backup notices for the other four paths remain. No force option, global backup
+policy change, system switch, Homebrew action or commit was performed.
+
+Evidence: /tmp/nix-config-collision-check.sh,
+/tmp/nix-config-collision-before.log (exit 1), and
+/tmp/nix-config-collision-after.log (exit 0). The user still needs to rerun
+nixswitch to apply the generation. Passing the collision scan does not establish
+that later activation steps have completed.

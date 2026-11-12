@@ -148,9 +148,7 @@ in
         nchat
         sqlite
         nil
-        codex
         nodejs # Orca's SSH helper needs Node.js and npm on the remote host.
-        claude-code # Claude Code CLI (nixpkgs) — declarative, no imperative install
 
         #audio/video
         alsa-utils
@@ -181,7 +179,11 @@ in
         gnuplot
         usb-modeswitch
         expressvpn
-        newsflash
+        # Nixpkgs' cargo setup hook makes aws-lc-sys require a system AWS-LC;
+        # newsflash does not list it as an input yet.
+        (newsflash.overrideAttrs (old: {
+          buildInputs = old.buildInputs ++ [ aws-lc ];
+        }))
 
         #encryption
         age

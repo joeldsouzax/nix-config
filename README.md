@@ -54,7 +54,7 @@ flake.nix              # inputs, vars, and both system outputs + `checks`
 │  ├─ default.nix      #   entry point; imports shared modules/home
 │  ├─ homebrew.nix     #   casks/brews for native macOS apps (incl. Ghostty)
 │  ├─ networking.nix   #   DNS/proxy
-│  └─ linux-builder.nix#   remote Linux builders (local aarch64 VM + the desktop over SSH)
+│  └─ linux-builder.nix#   remote Linux builder (the desktop over SSH)
 ├─ modules/
 │  ├─ home/            # SHARED home-manager modules (shell, git, ssh, direnv,
 │  │                   #   foot [Linux], ghostty [macOS], ai-agents)
@@ -131,20 +131,17 @@ compiled from source.
 home modules use `lib.attrByPath` to no-op when SOPS is absent (macOS).
 
 ### Remote Linux builds from macOS
-`darwin/linux-builder.nix` wires two builders: a local `aarch64-linux` VM
-(offline fallback) and the `x86_64-linux` **desktop over SSH** (`nixos.local`,
-KVM, preferred). This lets the Mac build/eval Linux derivations and the
-`checks.*.integration` nixosTests:
+`darwin/linux-builder.nix` wires the `x86_64-linux` **desktop over SSH**
+(Tailscale name, KVM) as the Mac's only Linux builder. The local `aarch64-linux`
+VM was removed: it crashed on boot (Hypervisor.framework SME assertion).
 
 ```bash
-nix build .#checks.x86_64-linux.integration -L   # on the desktop (fast)
-nix build .#checks.aarch64-linux.integration -L  # local VM (slow, TCG)
+nix build .#checks.x86_64-linux.integration -L   # on the desktop
 ```
 
-> **Known limitation:** on some macOS/QEMU versions the local aarch64 VM crashes
-> on boot (Hypervisor.framework SME assertion), and the declarative Doom Emacs
-> build needs IFD — so the full NixOS closure realistically builds **on the
-> desktop**. `nix eval` still validates the config from either machine.
+> **Known limitation:** the declarative Doom Emacs build needs IFD, so the full
+> NixOS closure realistically builds **on the desktop**. `nix eval` of the runner
+> profile still works from either machine.
 
 ---
 

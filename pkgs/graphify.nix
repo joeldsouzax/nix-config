@@ -72,14 +72,14 @@ in
 python3Packages.buildPythonApplication rec {
   __structuredAttrs = true;
   pname = "graphify";
-  version = "0.9.93";
+  version = "0.9.105";
   pyproject = true;
 
   src = fetchFromGitHub {
     owner = "Graphify-Labs";
     repo = "graphify";
     tag = "v${version}";
-    hash = "sha256-SaQYg8oKqoUnkq4d0gG2YVSmnXjCtmG+EiWGbUatc4M=";
+    hash = "sha256-sX2W/em6DW5N0TY/EnD2UPLPSiH2z+gYvNKXXAC8Eks=";
   };
 
   build-system = [
@@ -105,7 +105,8 @@ python3Packages.buildPythonApplication rec {
       numpy
       rapidfuzz
       tree-sitter
-      # extras baked in: kimi/openai/gemini backends, anthropic backend,
+      pyyaml
+      # extras baked in: openai/gemini backends, anthropic backend,
       # pdf ingestion, file watching
       openai
       tiktoken

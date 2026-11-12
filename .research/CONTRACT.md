@@ -75,3 +75,20 @@ the organisation's existing public-repository exclusion. Check organisation
 credential permissions before replacing registration, let an active job finish,
 and remove the obsolete repository registration only after the organisation
 runner is verified online. Password-required activation remains an owner step.
+
+Owner request, 2026-10-30: add Claude Code alongside Codex to the remote development
+profiles and update both CLIs to their current latest published releases. Keep
+Mac support, existing Mac Claude plugin wrapper, Orca SSH setup, one runner slot,
+package-managed updates and credentials unchanged. Nix owns the installations;
+no npm global installs, authentication, sudo activation, runner restart or broad
+flake-input update. Scope: the two existing package recipes, shared Linux package
+selection, removal of superseded per-profile selections and remote usage docs.
+
+Owner request, 2026-10-30: remove UTM and unnecessary disk use. Remove UTM from
+Homebrew and its Nix declaration. Reclaim only verified regenerable build/download
+caches and unreachable Nix paths, using existing tools. Preserve projects, worktree
+changes, evidence archives, credentials, current profile generations, running
+builds and databases. VM disks, simulator data and active Docker volumes are not
+ordinary caches; keep them unless separately confirmed. Do not uninstall declared
+Trive networking/virtualization tools merely because their services look idle.
+Preserve earlier uncommitted agent CLI changes. No sudo rebuild is authorized.

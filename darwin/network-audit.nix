@@ -19,7 +19,11 @@
     # Inspect local bandwidth and connections.
     bandwhich
     iftop
-    sniffnet
+    # Nixpkgs' cargo setup hook makes aws-lc-sys require a system AWS-LC;
+    # sniffnet does not list it as an input yet.
+    (sniffnet.overrideAttrs (old: {
+      buildInputs = old.buildInputs ++ [ aws-lc ];
+    }))
 
     # Audit Wi-Fi and diagnose routing, DNS, latency, and throughput.
     aircrack-ng

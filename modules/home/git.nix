@@ -2,7 +2,7 @@
 # Shared between NixOS and Darwin via home-manager.
 #
 # The Trive work identity (joel@trive.ai / trivejoel) is macOS-ONLY — the NixOS
-# desktop is for devrandom work only, so trive leaves no trace there.
+# desktop never carries the Trive identity, so trive leaves no trace there.
 
 { lib, pkgs, vars, ... }:
 

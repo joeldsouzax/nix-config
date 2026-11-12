@@ -12,17 +12,17 @@
 
 let
   kdir = "${kernel.dev}/lib/modules/${kernel.modDirVersion}/build";
-  revision = "3cdbb6b81e00b72cf27bbdd4d4f1b96f9c15be27";
+  revision = "f2ce66eda6277e5505d5914a8a08454440518702";
 in
 stdenv.mkDerivation {
   pname = "rtw89-morrownr";
-  version = "${kernel.version}-unstable-2026-10-13";
+  version = "${kernel.version}-unstable-2026-11-09";
 
   src = fetchFromGitHub {
     owner = "morrownr";
     repo = "rtw89";
     rev = revision;
-    hash = "sha256-6z4RNg7OIbAc0IUuONuwfAkqjuIKyo+8ZULpX/GKwp4=";
+    hash = "sha256-u2sJ/1tvDM6MloulU7l3w9eLCc2GZqOBebI7/eQbeC8=";
   };
 
   nativeBuildInputs = [ nukeReferences ] ++ kernel.moduleBuildDependencies;

@@ -261,3 +261,13 @@ Hyprland recovery, 2026-10-25:
   runner. After activation, group 1 contains runner 15, allows all private
   repositories and has no workflow restriction. Mobile Actions is enabled;
   runtime qualification so far covers the backend, not a mobile job.
+
+| 2026-10-30 CLI package releases | https://registry.npmjs.org/@openai%2fcodex/latest and https://registry.npmjs.org/@anthropic-ai%2fclaude-code/latest | 2026-10-30 | Publisher latest tags 0.166.0 / 2.1.314; platform package metadata verified | Tags can advance after this task |
+| Codex official installation | https://learn.chatgpt.com/docs/codex/cli | 2026-10-30 | CLI updater guidance; retain Nix ownership instead of imperative global install | Does not pin our hashes |
+| Claude official setup | https://code.claude.com/docs/en/setup | 2026-10-30 | Native binaries, package-managed updates, supported release channels | Authentication remains user-owned |
+| Claude compressed manifest | https://downloads.claude.ai/claude-code-releases/2.1.314/manifest.zst.json | 2026-10-30 | Linux x64 binary checksum for supported Nixpkgs manifest override | Actual fetch/build still required |
+| Locked Nixpkgs Claude recipe | pkgs/by-name/cl/claude-code/package.nix in nixpkgs-runner | 2026-10-30 | Exposes manifest argument; uses autoPatchelfHook, binary wrapper, procps/ripgrep/bubblewrap/socat and version check | Mac wrapper remains locally owned |
+
+| Homebrew cleanup/uninstall | https://docs.brew.sh/Manpage | 2026-10-30 | Supported uninstall, cleanup previews, prune and orphan dependency handling | Cask zap can remove user VM data; do not use it |
+| Docker build cache prune | https://docs.docker.com/reference/cli/docker/builder/prune/ | 2026-10-30 | Prunes disposable build cache with age filters; preserve volumes | Current Docker image metadata has I/O errors |
+| Nix store GC | Installed `nix store gc --help` | 2026-10-30 | Deletes unreachable store paths, supports dry-run | Keep profile generations and active roots |
