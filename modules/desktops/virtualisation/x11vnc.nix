@@ -19,6 +19,10 @@
       description = "VNC Server for X11";
       requires = [ "display-manager.service" ];
       after = [ "display-manager.service" ];
+      # Without the password file x11vnc fails at once, and -loop100 starts it
+      # again every 0.6 s: 2.5 million starts and 4 GiB of journal in 18 days
+      # on the runner host (2026-11-13). The unit starts only when the file is there.
+      unitConfig.ConditionPathExists = "/home/${vars.user}/passwd";
       serviceConfig = {
         # Password stored in document "passwd" at $HOME. This needs auth and link to display. Otherwise x11vnc won't detect the display
         ExecStart = "${pkgs.x11vnc}/bin/x11vnc -passwdfile /home/${vars.user}/passwd -noxdamage -nap -many -repeat -clear_keys -capslock -xkb -forever -loop100 -auth /var/run/lightdm/root/:0 -display :0 -clip 1920x1080+1920+0";
