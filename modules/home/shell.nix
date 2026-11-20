@@ -12,8 +12,9 @@ let
 
   # The lead command of an automatic run in a project (`just run <lane>`,
   # architecture/run.sh). Joel chose this command and its access level on
-  # 2026-11-12. Every shell gets it, so a run starts from any terminal tab.
-  stepLead = "codex exec -m gpt-6.1-sol -s danger-full-access";
+  # 2026-11-12, and the model gpt-6.2-sol on 2026-11-18. Every shell gets it,
+  # so a run starts from any terminal tab.
+  stepLead = "codex exec -m gpt-6.2-sol -s danger-full-access";
 in
 {
   home-manager.users.${vars.user} = {

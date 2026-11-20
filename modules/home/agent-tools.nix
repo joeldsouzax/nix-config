@@ -75,7 +75,17 @@ in
 
     # --- Knowledge graphs ---
     graphify # codebase → queryable knowledge graph (`graphify .`, `graphify query`)
+    # Graph store of the agent harness: work, code and decision graph. Rust and
+    # embeddable, Apache-2.0/MIT; quads merge by set union, which fits the later
+    # p2p harness. What we use and why: labcast-server
+    # .agents/skills/harness-owner/references/stack.md
+    oxigraph # RDF/SPARQL graph store (`oxigraph serve|load|query`)
     toolkit-guard # agent-toolkit-guard — hook denying grep -r/find -name/diff
+
+    # --- Harness telemetry ---
+    # Local OTLP receiver with a file exporter: one trace per harness step from
+    # Claude Code and Codex.
+    opentelemetry-collector-contrib # `otelcol-contrib`
 
     # --- System introspection ---
     dust # tree-view disk usage (nix store investigations)

@@ -16,8 +16,8 @@ update-agents:
     codex_darwin=$(npm_meta "@openai/codex/$codex-darwin-arm64" .dist.integrity)
     codex_linux=$(npm_meta "@openai/codex/$codex-linux-x64" .dist.integrity)
     sd 'version = "[^"]+";' "version = \"$codex\";" pkgs/codex.nix
-    sd '(npm = "darwin-arm64";\s+triple = "[^"]+";\s+hash = )"[^"]+"' "\${1}\"$codex_darwin\"" pkgs/codex.nix
-    sd '(npm = "linux-x64";\s+triple = "[^"]+";\s+hash = )"[^"]+"' "\${1}\"$codex_linux\"" pkgs/codex.nix
+    sd -A '(npm = "darwin-arm64";\s+triple = "[^"]+";\s+hash = )"[^"]+"' "\${1}\"$codex_darwin\"" pkgs/codex.nix
+    sd -A '(npm = "linux-x64";\s+triple = "[^"]+";\s+hash = )"[^"]+"' "\${1}\"$codex_linux\"" pkgs/codex.nix
 
     echo "claude-code $claude, codex $codex"
 

@@ -3,19 +3,19 @@
 
 with pkgs;
 let
-  version = "0.167.0";
+  version = "0.170.0";
   pname = "codex";
   platform =
     {
       aarch64-darwin = {
         npm = "darwin-arm64";
         triple = "aarch64-apple-darwin";
-        hash = "sha512-7YtMDZX/jbWH9+fCVQg7BVsov8WvBzu4iuedXJEDlUdZxaTrYX2bEQwHIn3p0gxgSMfm30HGK9+bZm1aGSZaHw==";
+        hash = "sha512-sQyOGJabAUTEWCKe1O6GNsE7NKnHCHSjzLrazfYUgw8OFsFDeAQGVEwzvpXTK1yW1hJiLLAMRzC/W2Vu7m9DwQ==";
       };
       x86_64-linux = {
         npm = "linux-x64";
         triple = "x86_64-unknown-linux-musl";
-        hash = "sha512-FNc7danfUng9Sp6w+Fh7kofNHHZpA6VMyNKWsWrS3OwHly69gywTWeiuwrUPXpJSho8Df4xqRsHfHRPzj7zYQg==";
+        hash = "sha512-6cCZJaZL17tiTAvhd1Pirt8vsV1dP8CfG94+IHygUO4m24oYLQrIInJJLyKzcMv/uUonbu1dF2JmcXhA/s5bsg==";
       };
     }
     .${stdenv.hostPlatform.system};
