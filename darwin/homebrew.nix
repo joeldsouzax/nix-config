@@ -57,6 +57,8 @@
       "telegram"
 
       # Development
+      "antigravity"
+      "antigravity-cli"
       "figma"                # NixOS has figma-linux
       "stablyai/orca/orca"    # Primary workspace for projects and coding agents
 
